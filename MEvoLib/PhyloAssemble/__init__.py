@@ -8,14 +8,14 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 30/Jan/2016 )
+# Last version :  v1.0 ( 12/Feb/2016 )
 # Description :  Functions aimed to provide an easy interface to handle
 #       different phylogenetic assembly tools (supertrees, consensus trees,
 #       ...).
 #-------------------------------------------------------------------------------
 # Historical report :
 #
-#   DATE :  30/Jan/2016
+#   DATE :  12/Feb/2016
 #   VERSION :  v1.0
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
@@ -58,16 +58,18 @@ def get_keywords ( tool ) :
             If the tool introduced isn't included in MEvoLib.PhyloAssemble.
     """
     tool = tool.lower()
-    tool_lib_keys = viewkeys(_STREE_TOOL_TO_LIB) | viewkeys(_CONS_TOOL_TO_LIB)
+    #tool_lib_keys = viewkeys(_STREE_TOOL_TO_LIB) | viewkeys(_CONS_TOOL_TO_LIB)
+    tool_lib_keys = viewkeys(_CONS_TOOL_TO_LIB)
     if ( tool not in tool_lib_keys ) :
         message = 'The tool "{}" isn\'t included in ' \
                   'MEvoLib.PhyloAssemble'.format(tool)
         raise ValueError(message)
     # else : # tool in tool_lib_keys
     keyword_dict = {}
-    if ( tool in _STREE_TOOL_TO_LIB ) :
-        tool_lib_dict = _STREE_TOOL_TO_LIB
-    else : # tool in _CONS_TOOL_TO_LIB
+#    if ( tool in _STREE_TOOL_TO_LIB ) :
+#        tool_lib_dict = _STREE_TOOL_TO_LIB
+#    else : # tool in _CONS_TOOL_TO_LIB
+    if ( tool in _CONS_TOOL_TO_LIB ) :
         tool_lib_dict = _CONS_TOOL_TO_LIB
     for key, value in iter(viewitems(tool_lib_dict[tool].KEYWORDS)) :
         keyword_dict[key] = ' '.join(value)

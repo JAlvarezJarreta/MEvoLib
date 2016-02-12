@@ -8,11 +8,11 @@
 #
 #-------------------------------------------------------------------------------
 # File :  setup.py
-# Last version :  v1.0 ( 08/Feb/2016 )
+# Last version :  v1.0 ( 12/Feb/2016 )
 #-------------------------------------------------------------------------------
 # Historical report :
 #
-#   DATE :  08/Feb/2016
+#   DATE :  12/Feb/2016
 #   VERSION :  v1.0
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
@@ -173,11 +173,11 @@ setup_args = { 'name': 'MEvoLib',
                              'MEvoLib.Fetch',
                              'MEvoLib.Inference',
                              'MEvoLib.PhyloAssemble',
-                             'MEvoLib._py3k' ] }
+                             'MEvoLib._py3k' ],
+               'package_data': {'MEvoLib.Data': ['*.gb']}, }
 
 try:
     setup(**setup_args)
 finally:
     del sys.path[0]
     os.chdir(old_path)
-
