@@ -90,11 +90,11 @@ def get_subsets ( method, seqfile, fileformat = 'genbank', *extra_args ) :
     mapseqs_func = _METHOD_TO_FUNC[method_key]
     filepath = get_abspath(seqfile)
     if ( method_key in ['prd', 'genes'] ) :
-        # Non data-driven (throught input slicing) parallelizable methods
+        # Non data-driven (through input slicing) parallelizable methods
         seq_list = (x  for x in SeqIO.parse(filepath, fileformat))
         set_dict = mapseqs_func(seq_list, *extra_args)
     else :
-        # Data-driven (throught input slicing) parallelizable methods
+        # Data-driven (through input slicing) parallelizable methods
         manager = multiprocessing.Manager()
         seq_list = manager.list([x  for x in SeqIO.parse(filepath, fileformat)])
         num_seqs = len(seq_list)

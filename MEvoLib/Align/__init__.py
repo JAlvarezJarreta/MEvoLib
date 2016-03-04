@@ -79,7 +79,7 @@ def get_alignment ( binary, infile, infile_format, args = 'default',
     """
     Align the sequences of the input file using the alignment tool and arguments
     given. The resultant alignment is returned as a Bio.Align.MultipleSeqAlign
-    object and saved in the ouput file (if provided). If 'infile' or 'outfile'
+    object and saved in the output file (if provided). If 'infile' or 'outfile'
     contain a relative path, the current working directory will be used to get
     the absolute path. If the output file already exists, the old file will be
     overwritten without any warning.
@@ -96,7 +96,7 @@ def get_alignment ( binary, infile, infile_format, args = 'default',
         infile_format  ( string )
             Input file format.
         args  ( Optional[string] )
-            Keyword or arguments to use in the call of the aligment tool,
+            Keyword or arguments to use in the call of the alignment tool,
             excluding infile and outfile arguments.  By default, 'default'
             arguments are used.
         outfile  ( Optional[string] )
@@ -105,7 +105,7 @@ def get_alignment ( binary, infile, infile_format, args = 'default',
             Output file format. By default, FASTA format.
         **kwargs  ( Optional[dict] )
             Keyworded arguments required to execute alignment tools not included
-            in the current version of MEvoLib. It is neccesary to pass a list
+            in the current version of MEvoLib. It is necessary to pass a list
             of supported infile formats under "informats" key, and the infile
             argument (e.g. "-in") with "incmd" key.
 

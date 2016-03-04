@@ -76,7 +76,7 @@ def gen_args ( args, infile_path, bootstraps ) :
     if ( '-log' not in argument_list ) :
         log_tmpfile = tempfile.NamedTemporaryFile(delete=False)
         argument_list += ['-log', log_tmpfile.name]
-    # Add the bootstrapping generation option if 'boostraps' is greater than 0
+    # Add the bootstrapping generation option if 'bootstraps' is greater than 0
     if ( bootstraps > 0 ) :
         argument_list += ['-boot', str(bootstraps)]
     # Add the input file option

@@ -83,7 +83,7 @@ def gen_args ( args, infile_path, bootstraps ) :
                          '-w', tmpdir_path] + KEYWORDS[args]
     else : # args not in KEYWORDS
         argument_list = [arg  for arg in args.split(' ')]
-    # Add the bootstrapping generation option if 'boostraps' is greater than 0
+    # Add the bootstrapping generation option if 'bootstraps' is greater than 0
     if ( bootstraps > 0 ) :
         argument_list += ['-N', str(bootstraps)]
     # Add the input file option

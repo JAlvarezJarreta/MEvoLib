@@ -512,7 +512,7 @@ class BioSeqs :
     def write ( self, bioseqs_file ) :
         """
         Save all sequences stored at the BioSeqs object in the 'bioseqs_file'
-        (in genbank format). A file with a detailed report of the sequences will
+        (in GENBANK format). A file with a detailed report of the sequences will
         be created replacing the extension of 'bioseqs_file' by ".rep". If
         'bioseqs_file' contains a relative path, the current working directory
         will be used to get the absolute path. If any file already exists, it

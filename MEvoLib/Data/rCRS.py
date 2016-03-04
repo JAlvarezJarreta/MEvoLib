@@ -10,7 +10,7 @@
 # File :  rCRS.py
 # Last version :  v1.0 ( 05/Feb/2016 )
 # Description :  Human mitochondrial DNA revised Cambridge Reference Sequence
-#       (rCRS)'s filepath and Bio.SeqRecord object.
+#       (rCRS)'s file path and Bio.SeqRecord object.
 #-------------------------------------------------------------------------------
 # Historical report :
 #

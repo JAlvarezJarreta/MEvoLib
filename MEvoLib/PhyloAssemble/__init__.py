@@ -83,7 +83,7 @@ def get_consensus_tree ( binary, infile, infile_format, args = 'default',
     """
     Calculate the consensus tree of the input trees file with the given
     arguments. The resultant consensus tree is returned as a Bio.Phylo.BaseTree
-    object and saved in the ouput file (if provided). If 'infile' or 'outfile'
+    object and saved in the output file (if provided). If 'infile' or 'outfile'
     contain a relative path, the current working directory will be used to get
     the absolute path. If the output file already exists, the old file will be
     overwritten without any warning.

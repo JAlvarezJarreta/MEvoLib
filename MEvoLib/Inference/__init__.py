@@ -83,7 +83,7 @@ def get_phylogeny ( binary, infile, infile_format, args = 'default',
     """
     Infer the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
-    Bio.Phylo.BaseTree object and saved in the ouput file (if provided). If
+    Bio.Phylo.BaseTree object and saved in the output file (if provided). If
     'infile' or 'outfile' contain a relative path, the current working directory
     will be used to get the absolute path. If the output file already exists,
     the old file will be overwritten without any warning.

@@ -245,7 +245,7 @@ class PhyTrees :
     def write ( self, phytrees_file ) :
         """
         Save all trees stored at the PhyTrees object in the 'phytrees_file' (in
-        newick format). A file with a detailed report of the trees will be
+        NEWICK format). A file with a detailed report of the trees will be
         created replacing the extension of 'phytrees_file' by ".rep". If
         'phytrees_file' contains a relative path, the current working directory
         will be used to get the absolute path. If any file already exists, it

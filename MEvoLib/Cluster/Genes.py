@@ -126,7 +126,7 @@ def _normalization ( record, refseq_record, alignment_bin ) :
     SeqIO.write([refseq_record, record], tmpfile.name, 'fasta')
     alignment = Align.get_alignment(alignment_bin, tmpfile.name, 'fasta')
     # Get the normalized sequence by removing the sites that correspond to gaps
-    # introduced in the reference sequence during the alingment process
+    # introduced in the reference sequence during the alignment process
     record_seq = ''.join((x  for i, x in enumerate(alignment[1])
                                  if alignment[0][i] != '-'))
     return ( Seq(record_seq, alignment[1].seq.alphabet),
@@ -168,7 +168,7 @@ def get_features ( ) :
 def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                alignment_bin = None ) :
     """
-    Gene splicing of the sequences at 'record_list'. By defautl, the gene
+    Gene splicing of the sequences at 'record_list'. By default, the gene
     location is extracted from the feature list of each sequence. If there is no
     list, that sequence is classified as "unprocessable" or, if a reference
     sequence is given, the reference features are used to extract the different

@@ -177,7 +177,7 @@ def map_seqs ( record_list, tree_file, file_format, subset_size, overlapping,
             further_decomp += output[1]
         start = end
         to_process = len(further_decomp[start:])
-    # Remove all the temporal files created for the multirpocessing stage
+    # Remove all the temporal files created for the multiprocessing stage
     for file_path in further_decomp :
         os.remove(file_path)
     record_dict = {record.id: record  for record in record_list}

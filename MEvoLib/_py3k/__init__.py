@@ -106,7 +106,7 @@ else: # sys.version_info[0] < 3
 
         Returns :
             bool
-                True if value is instance of interger or long, False otherwise.
+                True if value is instance of integer or long, False otherwise.
         """
         return ( isinstance(value, (int, long)) )
 
