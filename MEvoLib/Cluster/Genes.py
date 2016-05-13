@@ -8,11 +8,21 @@
 #
 #-------------------------------------------------------------------------------
 # File :  Genes.py
-# Last version :  v1.0 ( 07/Feb/2016 )
+# Last version :  v1.1 ( 11/May/2016 )
 # Description :  Clustering where each resulting set is composed by a gene of
 #       all the input sequences (from GenBank data or reference sequence).
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  11/May/2016
+#   VERSION :  v1.1
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * The map_seqs() method now generates a report of possible wrong
+#                  pairs of terms (maybe a typo in GenBank information?) based
+#                  on sampling statistics applied to the input sequences.
+#              * Fixed a bug in map_seqs() method with a possible random
+#                  ordering of terms for the same gene making it not unique in
+#                  the generation of the qualifier id.
 #
 #   DATE :  07/Feb/2016
 #   VERSION :  v1.0
@@ -23,6 +33,8 @@
 from __future__ import absolute_import
 
 import tempfile
+import itertools
+import math
 
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -166,7 +178,7 @@ def get_features ( ) :
 
 
 def map_seqs ( record_list, feature_filter = None, ref_seq = None,
-               alignment_bin = None ) :
+               alignment_bin = None, log_file = None ) :
     """
     Gene splicing of the sequences at 'record_list'. By default, the gene
     location is extracted from the feature list of each sequence. If there is no
@@ -174,20 +186,23 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
     sequence is given, the reference features are used to extract the different
     genes (through a normalization process using an alignment tool). All the
     features are returned unless a list of feature keywords are passed through
-    'feature_filter' parameter.
+    'feature_filter' parameter. If a log file path is given and any file exists
+    with that name, the file will be overwritten without any warning.
 
     Arguments :
         record_list  ( list )
             List of SeqRecord objects (from Biopython).
-        feature_filter  ( list )
+        feature_filter  ( Optional[list] )
             List of feature keywords the user wants to be returned (from all the
             possible ones).
-        ref_seq  ( string )
+        ref_seq  ( Optional[string] )
             Keyword (from MEvoLib.Data) or file path (GENBANK format) of the
             reference sequence.
-        alignment_bin  ( string )
+        alignment_bin  ( Optional[string] )
             Binary path of the alignment tool (only required if a reference
             sequence is passed).
+        log_file  ( Optional[string] )
+            Absolute path for the log file.
 
     Returns :
         dict
@@ -202,11 +217,15 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
 
     * Reference sequence's file must be in GENBANK format.
     """
-    # Load the desired feature keywords as keys of the gene dictionary
+    # Load the desired feature keywords as keys of the gene dictionary and a
+    # term dictionary with a list of sequences for each qualifier of any
+    # selected feature
     if ( feature_filter ) :
         gene_dict = dict((key, {})  for key in iter(feature_filter))
+        term_dict = dict((key, {})  for key in iter(feature_filter))
     else : # feature_filter is None
         gene_dict = dict((key, {})  for key in iter(viewkeys(_FEAT_QUAL_DICT)))
+        term_dict = dict((key, {})  for key in iter(viewkeys(_FEAT_QUAL_DICT)))
     # Get the reference sequence's SeqRecord object or create an unprocessable
     # list for those sequences without gene information
     if ( ref_seq in _REF_SEQ_DICT ) :
@@ -215,8 +234,10 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
         refseq_record = SeqIO.read(ref_seq, 'gb')
     else : # ref_seq is None
         unprocessable = []
+    num_seqs = 0
     # Iterate over all the records to get their gene division
     for record in iter(record_list) :
+        num_seqs += 1
         if ( len(record.features) == 1 ) :
             # GenBank's "source" feature key is mandatory
             if ( ref_seq ) :
@@ -242,10 +263,19 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                 record_qualifiers.add(feature.type)
             # Generate a string of the qualifiers' set to store it as a
             # description of the gene SeqRecord object
-            qualifier_id = ':'.join(record_qualifiers)
+            qualifier_id = ':'.join(sorted(record_qualifiers,
+                                           key=lambda item: (len(item), item)))
             feature_record = SeqRecord(feature.extract(record).seq,
                                        id=record.id, name=record.id,
                                        description=qualifier_id)
+            # Add new terms to the corresponding entry of the dictionary for
+            # the given feature, or add the sequence record id to the existing
+            # entry
+            for pair in itertools.combinations(qualifier_id.split(':'), 2) :
+                if ( pair not in term_dict[feature.type] ) :
+                    term_dict[feature.type][pair] = set([record.id])
+                else : # pair in term_dict[feature.type]
+                    term_dict[feature.type][pair].add(record.id)
             # Merge possible matching qualifiers for the same type of feature
             qualifiers_to_merge = []
             for key in iter(viewkeys(gene_dict[feature.type])) :
@@ -260,9 +290,9 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                         # intersection is not empty
                         record_qualifiers.update(key_set)
                         qualifiers_to_merge.append(key)
-            # Generate new qualifier string (ordered to force it to be always
-            # the same for different sets containing the same elements)
-            qualifier_id = ':'.join(sorted(record_qualifiers, key=len))
+            # Generate new qualifier string
+            qualifier_id = ':'.join(sorted(record_qualifiers,
+                                           key=lambda item: (len(item), item)))
             # Add the new gene SeqRecord object to the dictionary
             if ( qualifier_id not in gene_dict[feature.type] ) :
                 gene_dict[feature.type][qualifier_id] = [feature_record]
@@ -273,14 +303,52 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                 gene_dict[feature.type][qualifier_id].extend(
                                          gene_dict[feature.type][qualifier_key])
                 del gene_dict[feature.type][qualifier_key]
-    # Cleanup empty features and merge qualifiers dict keys with features dict
+    # The error calculation has been extracted from the following sampling
+    # statistics equation:
+    #
+    #                   N * Z^2 * p * (1-p)
+    #         n = -------------------------------
+    #              (N-1) * e^2 + Z^2 * p * (1-p)
+    #
+    # where N is the number of sequences, n is the sampling size, e is the
+    # error, Z is fixed to get a 0,95 confidence interval and p is assumed
+    # to be 0,5. The pre-calculable part has been saved at 'coef' variable.
+    z_value = 1.96
+    p_value = 0.5
+    coef = math.sqrt((math.pow(z_value, 2) * p_value * (1.0 - p_value)) / \
+                     (num_seqs - 1.0))
+    # If no log file path is provided, save log content in a named temporary
+    # file that won't be deleted after the function ends
+    if ( not log_file ) :
+        log_file = (tempfile.NamedTemporaryFile(delete=False)).name
+    # Clean-up empty features and merge qualifiers dict keys with features dict
     # keys to get a {str: list} dict for all the genes
     set_dict = {}
-    for feat_key, feat_value in iter(viewitems(gene_dict)) :
-        if ( feat_value ) :
-            for qual_key, qual_value in iter(viewitems(feat_value)) :
-                new_key = '{}.{}'.format(feat_key, qual_key.split(':')[0])
-                set_dict.setdefault(new_key, []).extend(qual_value)
+    with open(log_file, 'w') as log :
+        for feat_key, feat_value in iter(viewitems(gene_dict)) :
+            if ( feat_value ) :
+                log.write('> {}\n'.format(feat_key))
+                for qual_key, qual_value in iter(viewitems(feat_value)) :
+                    # Generation of the content of the set dictionary that will
+                    # be returned
+                    new_key = '{}.{}'.format(feat_key, qual_key.split(':')[0])
+                    set_dict.setdefault(new_key, []).extend(qual_value)
+                    # Calculate the error from the established values for a
+                    # correct sampling statistics application on the dataset
+                    sampling_size = float(len(qual_value))
+                    error = math.sqrt((num_seqs - sampling_size) / \
+                                      sampling_size) * coef
+                    threshold = math.ceil(sampling_size * error)
+                    # For every existing pair of qualifiers, if the number of 
+                    # records that hold both is below the calculated threshold,
+                    # it might be the result of a typo in those records'
+                    # information (further review of the log file is advisable)
+                    for pair in itertools.combinations(qual_key.split(':'), 2) :
+                        if ( (pair in term_dict[feat_key]) and
+                             (len(term_dict[feat_key][pair]) <= threshold) ) :
+                            log.write('\t{}\n\t\t{}\n'.format(' || '.join(pair),
+                                          ', '.join(term_dict[feat_key][pair])))
+                log.write('\n')
     # If no reference sequence has been introduced, include in the gene dict
     # those sequences that couldn't be processed due to lack of information
     if ( not ref_seq ) :
