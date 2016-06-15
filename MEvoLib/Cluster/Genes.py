@@ -8,11 +8,19 @@
 #
 #-------------------------------------------------------------------------------
 # File :  Genes.py
-# Last version :  v1.1 ( 11/May/2016 )
+# Last version :  v1.2 ( 15/Jun/2016 )
 # Description :  Clustering where each resulting set is composed by a gene of
 #       all the input sequences (from GenBank data or reference sequence).
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  15/Jun/2016
+#   VERSION :  v1.2
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Fixed two bugs in map_seqs() method: i) an empty dictionary was
+#                  returned if the input file was not in GENBANK format;
+#                  ii) the error calculation was raising an exception if the
+#                  number of sequences was lower than the sampling size.
 #
 #   DATE :  11/May/2016
 #   VERSION :  v1.1
@@ -35,6 +43,7 @@ from __future__ import absolute_import
 import tempfile
 import itertools
 import math
+import warnings
 
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -114,7 +123,6 @@ def _normalization ( record, refseq_record, alignment_bin ) :
     where a gap has been introduced in the reference sequence, making the
     features of the reference sequence applicable to the new sequence. It
     returns the new sequence and the reference sequence's features.
-
     Arguments :
         record  ( Bio.SeqRecord )
             Sequence to normalize.
@@ -123,13 +131,11 @@ def _normalization ( record, refseq_record, alignment_bin ) :
         alignment_bin  ( string )
             Binary path to the alignment tool that will be used in the
             normalization process.
-
     Returns :
         Bio.Seq
             Normalized sequence of 'record'.
         list
             List of SeqFeature objects (from Biopython) from reference sequence.
-
     Raises :
         RuntimeError
             If the call to the alignment tool command raises an exception.
@@ -141,7 +147,7 @@ def _normalization ( record, refseq_record, alignment_bin ) :
     # introduced in the reference sequence during the alignment process
     record_seq = ''.join((x  for i, x in enumerate(alignment[1])
                                  if alignment[0][i] != '-'))
-    return ( Seq(record_seq, alignment[1].seq.alphabet),
+    return ( Seq(record_seq, refseq_record.seq.alphabet),
              refseq_record.features )
 
 
@@ -151,7 +157,6 @@ def _string_filter ( input_str ) :
     Arguments :
         input_str  ( string )
             Input string to filter.
-
     Returns :
         string
             Lower case of 'input_str' with known GenBank's misspellings
@@ -188,7 +193,6 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
     features are returned unless a list of feature keywords are passed through
     'feature_filter' parameter. If a log file path is given and any file exists
     with that name, the file will be overwritten without any warning.
-
     Arguments :
         record_list  ( list )
             List of SeqRecord objects (from Biopython).
@@ -203,18 +207,15 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
             sequence is passed).
         log_file  ( Optional[string] )
             Absolute path for the log file.
-
     Returns :
         dict
             Dictionary with the set identifiers as keys and the corresponding
             sequence fragments as values in lists of SeqRecord objects.
-
     Raises :
         IOError
             If the reference sequence's file path doesn't exist.
         RuntimeError
             If the call to the alignment tool command raises an exception.
-
     * Reference sequence's file must be in GENBANK format.
     """
     # Load the desired feature keywords as keys of the gene dictionary and a
@@ -238,7 +239,7 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
     # Iterate over all the records to get their gene division
     for record in iter(record_list) :
         num_seqs += 1
-        if ( len(record.features) == 1 ) :
+        if ( len(record.features) <= 1 ) :
             # GenBank's "source" feature key is mandatory
             if ( ref_seq ) :
                 record.seq, record.features = _normalization(record,
@@ -336,6 +337,15 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                     # Calculate the error from the established values for a
                     # correct sampling statistics application on the dataset
                     sampling_size = float(len(qual_value))
+                    # If the number of sequences is lower than the sampling
+                    # size, we cannot calculate the square root of a negative
+                    # number so we skip these qualifier with a warning
+                    if ( num_seqs < sampling_size ) :
+                        message = 'The number of sequencess is lower than the' \
+                                  ' sampling size for the feature ' \
+                                  '"{}"'.format(feat_key)
+                        warnings.warn(message, RuntimeWarning, stacklevel=2)
+                        continue
                     error = math.sqrt((num_seqs - sampling_size) / \
                                       sampling_size) * coef
                     threshold = math.ceil(sampling_size * error)
