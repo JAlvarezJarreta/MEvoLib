@@ -8,12 +8,18 @@
 #
 #-------------------------------------------------------------------------------
 # File :  setup.py
-# Last version :  v1.0 ( 12/Feb/2016 )
+# Last version :  v1.10 ( 16/Jul/2016 )
+# Description :  Distutils based setup script for MEvoLib.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.10
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Test suite included.
+#
 #   DATE :  12/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -26,6 +32,7 @@ from __future__ import print_function
 import sys
 import os
 from distutils.core import setup
+from distutils.core import Command
 from distutils.command.install import install
 from distutils.command.build_py import build_py
 
@@ -103,6 +110,18 @@ def check_dependencies_once ( ) :
 
 
 
+class install_mevolib ( install ) :
+    """
+    Override the standard install to check for dependencies.
+    """
+
+    def run(self):
+        if ( check_dependencies_once() ) :
+            # Run the normal install
+            install.run(self)
+
+
+
 class build_py_mevolib ( build_py ) :
     """
     Override the standard build to check for dependencies.
@@ -115,15 +134,36 @@ class build_py_mevolib ( build_py ) :
 
 
 
-class install_mevolib ( install ) :
+class test_mevolib ( Command ):
     """
-    Override the standard install to check for dependencies.
+    Run all of the tests for MEvoLib. This is a automatic test run class to make
+    distutils kind of act like perl. With this you can do:
+
+        python setup.py build
+        python setup.py test
+        python setup.py install
+
     """
+    description = "Automatically run the test suite for MEvoLib."
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+
+    def finalize_options(self):
+        pass
+
 
     def run(self):
-        if ( check_dependencies_once() ) :
-            # Run the normal install
-            install.run(self)
+        this_dir = os.getcwd()
+        # Change to the test dir and run the tests
+        os.chdir('Tests')
+        sys.path.insert(0, '')
+        import run_tests
+        run_tests.main([])
+        # Change back to the current directory
+        os.chdir(this_dir)
 
 
 #-------------------------------------------------------------------------------
@@ -165,7 +205,8 @@ setup_args = { 'name': 'MEvoLib',
                'download_url': 'http://zaramit.org/downloads/' \
                                'MEvoLib_v1.0.tar.gz',
                'cmdclass': { 'install': install_mevolib,
-                             'build_py': build_py_mevolib },
+                             'build_py': build_py_mevolib,
+                             'test': test_mevolib, },
                'packages': [ 'MEvoLib',
                              'MEvoLib.Align',
                              'MEvoLib.Cluster',
@@ -181,3 +222,4 @@ try:
 finally:
     del sys.path[0]
     os.chdir(old_path)
+

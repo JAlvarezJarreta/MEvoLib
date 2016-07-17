@@ -8,14 +8,20 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 26/Jan/2016 )
+# Last version :  v1.10 ( 16/Jul/2016 )
 # Description :  Functions aimed to provide an easy interface to handle
 #       different alignment tools.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.10
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Added get_tools() method to have an easy access to all the
+#                  available alignment tools.
+#
 #   DATE :  26/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -33,7 +39,7 @@ from . import _Mafft
 from . import _Muscle
 
 from MEvoLib._utils import get_abspath
-from MEvoLib._py3k import viewitems, DEVNULL, StringIO
+from MEvoLib._py3k import viewkeys, viewitems, DEVNULL, StringIO
 
 
 #-------------------------------------------------------------------------------
@@ -44,6 +50,17 @@ _TOOL_TO_LIB = { 'clustalo': _ClustalOmega,
 
 
 #-------------------------------------------------------------------------------
+
+def get_tools ( ) :
+    """
+    Returns :
+        list
+            List of alignment software tools included in the current version of
+            MEvoLib.
+    """
+    return ( list(viewkeys(_TOOL_TO_LIB)) )
+
+
 
 def get_keywords ( tool ) :
     """
@@ -73,13 +90,12 @@ def get_keywords ( tool ) :
         
 
 
-
 def get_alignment ( binary, infile, infile_format, args = 'default',
                     outfile = None, outfile_format = 'fasta', **kwargs ) :
     """
     Align the sequences of the input file using the alignment tool and arguments
     given. The resultant alignment is returned as a Bio.Align.MultipleSeqAlign
-    object and saved in the output file (if provided). If 'infile' or 'outfile'
+    object and saved in the ouput file (if provided). If 'infile' or 'outfile'
     contain a relative path, the current working directory will be used to get
     the absolute path. If the output file already exists, the old file will be
     overwritten without any warning.
@@ -96,7 +112,7 @@ def get_alignment ( binary, infile, infile_format, args = 'default',
         infile_format  ( string )
             Input file format.
         args  ( Optional[string] )
-            Keyword or arguments to use in the call of the alignment tool,
+            Keyword or arguments to use in the call of the aligment tool,
             excluding infile and outfile arguments.  By default, 'default'
             arguments are used.
         outfile  ( Optional[string] )
@@ -105,7 +121,7 @@ def get_alignment ( binary, infile, infile_format, args = 'default',
             Output file format. By default, FASTA format.
         **kwargs  ( Optional[dict] )
             Keyworded arguments required to execute alignment tools not included
-            in the current version of MEvoLib. It is necessary to pass a list
+            in the current version of MEvoLib. It is neccesary to pass a list
             of supported infile formats under "informats" key, and the infile
             argument (e.g. "-in") with "incmd" key.
 

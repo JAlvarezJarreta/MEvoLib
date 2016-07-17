@@ -8,15 +8,21 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 12/Feb/2016 )
+# Last version :  v1.10 ( 16/Jul/2016 )
 # Description :  Functions aimed to provide an easy interface to handle
 #       different phylogenetic assembly tools (supertrees, consensus trees,
 #       ...).
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.10
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Added get_tools() method to have an easy access to all the
+#                  available supertee and consensus tree tools.
+#
 #   DATE :  12/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -36,11 +42,24 @@ from MEvoLib._py3k import viewkeys, viewitems, DEVNULL, StringIO
 #-------------------------------------------------------------------------------
 
 #_STREE_TOOL_TO_LIB = { 'superfine': _SuperFine }
+_STREE_TOOL_TO_LIB = { }
 
 _CONS_TOOL_TO_LIB = { 'consense': _Consense }
 
 
 #-------------------------------------------------------------------------------
+
+def get_tools ( ) :
+    """
+    Returns :
+        dict
+            Dictionary of supertree and consensus tree tools included in the
+            current version of MEvoLib.
+    """
+    return ( dict([('supertree', list(viewkeys(_STREE_TOOL_TO_LIB))),
+                   ('consensus', list(viewkeys(_CONS_TOOL_TO_LIB)))]) )
+
+
 
 def get_keywords ( tool ) :
     """
@@ -83,7 +102,7 @@ def get_consensus_tree ( binary, infile, infile_format, args = 'default',
     """
     Calculate the consensus tree of the input trees file with the given
     arguments. The resultant consensus tree is returned as a Bio.Phylo.BaseTree
-    object and saved in the output file (if provided). If 'infile' or 'outfile'
+    object and saved in the ouput file (if provided). If 'infile' or 'outfile'
     contain a relative path, the current working directory will be used to get
     the absolute path. If the output file already exists, the old file will be
     overwritten without any warning.

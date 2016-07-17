@@ -2,7 +2,8 @@
 # File :  LocalTempDir.py
 # Last version :  v0.1 ( 10/Oct/2013 )
 # Description :  Definition and implementation of the class 'TemporaryDirectory'
-#       needed when using Python 2.7 (included in Python 3.3). Extracted from:
+#       needed when using Python 2.7 (included in Python 3.3 or newer).
+#       Extracted from:
 #  http://stackoverflow.com/questions/19296146/with-tempfile-temporarydirectory
 #-------------------------------------------------------------------------------
 # Historical report :
@@ -20,7 +21,7 @@ import os as _os
 
 from tempfile import mkdtemp
 
-# ---------------------------------------------------------------------------- #
+#-------------------------------------------------------------------------------
 
 class TemporaryDirectory (object) :
     """Create and return a temporary directory.  This has the same
@@ -103,4 +104,4 @@ class TemporaryDirectory (object) :
             pass
 
 
-# ---------------------------------------------------------------------------- #
+#-------------------------------------------------------------------------------

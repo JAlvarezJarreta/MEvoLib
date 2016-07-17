@@ -8,22 +8,29 @@
 #
 #-------------------------------------------------------------------------------
 # File :  Genes.py
-# Last version :  v1.2 ( 15/Jun/2016 )
+# Last version :  v1.20 ( 08/Jul/2016 )
 # Description :  Clustering where each resulting set is composed by a gene of
 #       all the input sequences (from GenBank data or reference sequence).
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  08/Jul/2016
+#   VERSION :  v1.20
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Fixed an important error in the interpretation and
+#                 implementation of the statistical sampling equation in
+#                 map_seqs() method.
+#
 #   DATE :  15/Jun/2016
-#   VERSION :  v1.2
+#   VERSION :  v1.11
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #   CHANGES :  * Fixed two bugs in map_seqs() method: i) an empty dictionary was
-#                  returned if the input file was not in GENBANK format;
+#                  returned if the input file was not in 'genbank' format;
 #                  ii) the error calculation was raising an exception if the
 #                  number of sequences was lower than the sampling size.
 #
 #   DATE :  11/May/2016
-#   VERSION :  v1.1
+#   VERSION :  v1.10
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #   CHANGES :  * The map_seqs() method now generates a report of possible wrong
 #                  pairs of terms (maybe a typo in GenBank information?) based
@@ -33,7 +40,7 @@
 #                  the generation of the qualifier id.
 #
 #   DATE :  07/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -43,7 +50,6 @@ from __future__ import absolute_import
 import tempfile
 import itertools
 import math
-import warnings
 
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -123,6 +129,7 @@ def _normalization ( record, refseq_record, alignment_bin ) :
     where a gap has been introduced in the reference sequence, making the
     features of the reference sequence applicable to the new sequence. It
     returns the new sequence and the reference sequence's features.
+
     Arguments :
         record  ( Bio.SeqRecord )
             Sequence to normalize.
@@ -131,11 +138,13 @@ def _normalization ( record, refseq_record, alignment_bin ) :
         alignment_bin  ( string )
             Binary path to the alignment tool that will be used in the
             normalization process.
+
     Returns :
         Bio.Seq
             Normalized sequence of 'record'.
         list
             List of SeqFeature objects (from Biopython) from reference sequence.
+
     Raises :
         RuntimeError
             If the call to the alignment tool command raises an exception.
@@ -157,6 +166,7 @@ def _string_filter ( input_str ) :
     Arguments :
         input_str  ( string )
             Input string to filter.
+
     Returns :
         string
             Lower case of 'input_str' with known GenBank's misspellings
@@ -193,6 +203,7 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
     features are returned unless a list of feature keywords are passed through
     'feature_filter' parameter. If a log file path is given and any file exists
     with that name, the file will be overwritten without any warning.
+
     Arguments :
         record_list  ( list )
             List of SeqRecord objects (from Biopython).
@@ -207,15 +218,18 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
             sequence is passed).
         log_file  ( Optional[string] )
             Absolute path for the log file.
+
     Returns :
         dict
             Dictionary with the set identifiers as keys and the corresponding
             sequence fragments as values in lists of SeqRecord objects.
+
     Raises :
         IOError
             If the reference sequence's file path doesn't exist.
         RuntimeError
             If the call to the alignment tool command raises an exception.
+
     * Reference sequence's file must be in GENBANK format.
     """
     # Load the desired feature keywords as keys of the gene dictionary and a
@@ -311,13 +325,15 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
     #         n = -------------------------------
     #              (N-1) * e^2 + Z^2 * p * (1-p)
     #
-    # where N is the number of sequences, n is the sampling size, e is the
-    # error, Z is fixed to get a 0,95 confidence interval and p is assumed
-    # to be 0,5. The pre-calculable part has been saved at 'coef' variable.
-    z_value = 1.96
+    # where N is the number of sequences, n is the minimum sampling size
+    # (threshold), e is the error fixed to 0,01, Z is fixed to get a 0,99
+    # confidence interval and p is assumed to be 0,5.
+    e_value = 0.01
+    z_value = 2.58
     p_value = 0.5
-    coef = math.sqrt((math.pow(z_value, 2) * p_value * (1.0 - p_value)) / \
-                     (num_seqs - 1.0))
+    coef = math.pow(z_value, 2) * p_value * (1.0 - p_value)
+    threshold = math.ceil((num_seqs * coef) / \
+                          ((num_seqs - 1.0) * math.pow(e_value, 2) + coef))
     # If no log file path is provided, save log content in a named temporary
     # file that won't be deleted after the function ends
     if ( not log_file ) :
@@ -334,30 +350,22 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                     # be returned
                     new_key = '{}.{}'.format(feat_key, qual_key.split(':')[0])
                     set_dict.setdefault(new_key, []).extend(qual_value)
-                    # Calculate the error from the established values for a
-                    # correct sampling statistics application on the dataset
-                    sampling_size = float(len(qual_value))
-                    # If the number of sequences is lower than the sampling
-                    # size, we cannot calculate the square root of a negative
-                    # number so we skip these qualifier with a warning
-                    if ( num_seqs < sampling_size ) :
-                        message = 'The number of sequencess is lower than the' \
-                                  ' sampling size for the feature ' \
-                                  '"{}"'.format(feat_key)
-                        warnings.warn(message, RuntimeWarning, stacklevel=2)
-                        continue
-                    error = math.sqrt((num_seqs - sampling_size) / \
-                                      sampling_size) * coef
-                    threshold = math.ceil(sampling_size * error)
                     # For every existing pair of qualifiers, if the number of 
                     # records that hold both is below the calculated threshold,
                     # it might be the result of a typo in those records'
                     # information (further review of the log file is advisable)
                     for pair in itertools.combinations(qual_key.split(':'), 2) :
-                        if ( (pair in term_dict[feat_key]) and
-                             (len(term_dict[feat_key][pair]) <= threshold) ) :
-                            log.write('\t{}\n\t\t{}\n'.format(' || '.join(pair),
-                                          ', '.join(term_dict[feat_key][pair])))
+                        if ( pair in term_dict[feat_key] ) :
+                            sampling_size = len(term_dict[feat_key][pair])
+                            if ( sampling_size < threshold ) :
+                                seq_list = list(term_dict[feat_key][pair])
+                                text = '\t{}\n'.format(' || '.join(pair))
+                                for i in range(0, sampling_size // 6 + 1):
+                                    text += '\t\t{}\n'.format(
+                                                ' '.join(seq_list[i*6:(i+1)*6]))
+                                if ( (sampling_size % 6) != 0 ) :
+                                    text += '\n'
+                                log.write(text)
                 log.write('\n')
     # If no reference sequence has been introduced, include in the gene dict
     # those sequences that couldn't be processed due to lack of information

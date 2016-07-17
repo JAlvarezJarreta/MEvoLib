@@ -8,14 +8,23 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 02/Feb/2016 )
+# Last version :  v1.10 ( 16/Jul/2016 )
 # Description :  Functions aimed to provide an easy interface to handle
 #       different clustering methods.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.10
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Added get_tools() method to have an easy access to all the
+#                  available clustering methods and tools.
+#              * Fixed a problem with get_subsets() method that forced to pass
+#                  all the arguments (including None values) to every method.
+#                  Now it accepts keyworded arguments.
+#
 #   DATE :  02/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -32,7 +41,7 @@ from . import NaiveRows
 from . import NaiveCols
 from . import PRD
 
-from MEvoLib._utils import get_abspath, NUMCORES
+from MEvoLib._utils import viewkeys, get_abspath, NUMCORES
 
 
 #-------------------------------------------------------------------------------
@@ -45,7 +54,18 @@ _METHOD_TO_FUNC = { 'genes': Genes.map_seqs,
 
 #-------------------------------------------------------------------------------
 
-def get_subsets ( method, seqfile, fileformat = 'genbank', *extra_args ) :
+def get_tools ( ) :
+    """
+    Returns :
+        list
+            List of clustering methods and software tools included in the
+            current version of MEvoLib.
+    """
+    return ( list(viewkeys(_METHOD_TO_FUNC)) )
+
+
+
+def get_subsets ( method, seqfile, fileformat = 'genbank', *args, **kwargs ) :
     """
     Division of all the sequences stored in the sequence input file into subsets
     applying the 'method' function. If 'seqfile' contains a relative path, the
@@ -59,8 +79,9 @@ def get_subsets ( method, seqfile, fileformat = 'genbank', *extra_args ) :
             Input sequences file.
         fileformat  ( string ) 
             Input file format.
-        extra_args  ( string/integer )
-            Extra arguments required for the specified method.
+        args & kwargs
+            Non-keyworded and keyworded arguments passed to the selected method.
+            
 
     Returns :
         dict
@@ -90,11 +111,11 @@ def get_subsets ( method, seqfile, fileformat = 'genbank', *extra_args ) :
     mapseqs_func = _METHOD_TO_FUNC[method_key]
     filepath = get_abspath(seqfile)
     if ( method_key in ['prd', 'genes'] ) :
-        # Non data-driven (through input slicing) parallelizable methods
+        # Non data-driven (throught input slicing) parallelizable methods
         seq_list = (x  for x in SeqIO.parse(filepath, fileformat))
-        set_dict = mapseqs_func(seq_list, *extra_args)
+        set_dict = mapseqs_func(seq_list, *args, **kwargs)
     else :
-        # Data-driven (through input slicing) parallelizable methods
+        # Data-driven (throught input slicing) parallelizable methods
         manager = multiprocessing.Manager()
         seq_list = manager.list([x  for x in SeqIO.parse(filepath, fileformat)])
         num_seqs = len(seq_list)

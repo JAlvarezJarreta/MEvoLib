@@ -8,14 +8,23 @@
 #
 #-------------------------------------------------------------------------------
 # File :  _FastTree.py
-# Last version :  v1.0 ( 26/Jan/2016 )
+# Last version :  v1.01 ( 16/Jul/2016 )
 # Description :  MEvoLib's variables and library functions to ease the usage of
 #       FastTree.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  26/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.01
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Fixed a bug in gen_args() method that produced a modification
+#                  of the KEYWORDS dictionary after the first usage of the
+#                  function that lasted until the reload of the module.
+#              * Fixed a bug in cleanup() method that raised an error if the
+#                  temporal log file was already deleted.
+#
+#   DATE :  26/Jan/2016
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -66,9 +75,8 @@ def gen_args ( args, infile_path, bootstraps ) :
         list
             List of arguments (excluding binary file) to call FastTree.
     """
-    argument_list = []
     if ( args in KEYWORDS ) :
-        argument_list = KEYWORDS[args]
+        argument_list = list(KEYWORDS[args])
     else : # args not in KEYWORDS
         argument_list = [arg  for arg in args.split(' ')]
     # Add the log file generation to get the log-likelihood score of the
@@ -76,7 +84,7 @@ def gen_args ( args, infile_path, bootstraps ) :
     if ( '-log' not in argument_list ) :
         log_tmpfile = tempfile.NamedTemporaryFile(delete=False)
         argument_list += ['-log', log_tmpfile.name]
-    # Add the bootstrapping generation option if 'bootstraps' is greater than 0
+    # Add the bootstrapping generation option if 'boostraps' is greater than 0
     if ( bootstraps > 0 ) :
         argument_list += ['-boot', str(bootstraps)]
     # Add the input file option
@@ -126,7 +134,8 @@ def cleanup ( command ) :
     """
     index = command.index('-log') + 1
     logfile_path = get_abspath(command[index])
-    if ( os.path.dirname(logfile_path) == tempfile.gettempdir() ) :
+    if ( (os.path.dirname(logfile_path) == tempfile.gettempdir()) and
+         os.path.lexists(logfile_path) ) :
         os.remove(logfile_path)
 
 

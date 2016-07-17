@@ -8,14 +8,14 @@
 #
 #-------------------------------------------------------------------------------
 # File :  NaiveCols.py
-# Last version :  v1.0 ( 01/Dec/2015 )
+# Last version :  v1.00 ( 01/Dec/2015 )
 # Description :  Clustering where each resulting set is composed by a specific
 #       range slice of all the input sequences (column/fragment division).
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  01/Dec/2015
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------

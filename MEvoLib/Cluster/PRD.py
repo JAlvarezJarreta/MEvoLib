@@ -8,14 +8,14 @@
 #
 #-------------------------------------------------------------------------------
 # File :  PRD.py
-# Last version :  v1.0 ( 20/Jan/2016 )
+# Last version :  v1.00 ( 20/Jan/2016 )
 # Description :  Clustering with padded-Recursive-DMC3 decomposition (PRD) from
 #       DACTAL system (<http://www.cs.utexas.edu/~phylo/software/dactal/>).
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  20/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ def map_seqs ( record_list, tree_file, file_format, subset_size, overlapping,
             further_decomp += output[1]
         start = end
         to_process = len(further_decomp[start:])
-    # Remove all the temporal files created for the multiprocessing stage
+    # Remove all the temporal files created for the multirpocessing stage
     for file_path in further_decomp :
         os.remove(file_path)
     record_dict = {record.id: record  for record in record_list}

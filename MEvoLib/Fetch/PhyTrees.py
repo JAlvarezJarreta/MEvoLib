@@ -8,13 +8,18 @@
 #
 #-------------------------------------------------------------------------------
 # File :  PhyTrees.py
-# Last version :  v1.0 ( 26/Nov/2015 )
+# Last version :  v1.01 ( 16/Jul/2016 )
 # Description :  Definition and implementation of the class 'PhyTrees'.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.01
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Fixed several documentation errors.
+#
 #   DATE :  26/Nov/2015
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -65,12 +70,12 @@ class PhyTrees :
         2015/11/26 10:27:42    /home/usr1/old_trees.newick    newick
         
         The user can also get several statistics (number of trees, and mean,
-        maximum and minimum number of leaves) about the stored data:
+        minimum and maximum number of leaves) about the stored data:
         
         >>> len(phytreesdb)
         2
         >>> phytreesdb.statistics()
-        (2, 15.0, 20, 10)
+        (2, 15.0, 10, 20)
         
         The database can be updated by joining two PhyTrees objects:
         
@@ -245,7 +250,7 @@ class PhyTrees :
     def write ( self, phytrees_file ) :
         """
         Save all trees stored at the PhyTrees object in the 'phytrees_file' (in
-        NEWICK format). A file with a detailed report of the trees will be
+        newick format). A file with a detailed report of the trees will be
         created replacing the extension of 'phytrees_file' by ".rep". If
         'phytrees_file' contains a relative path, the current working directory
         will be used to get the absolute path. If any file already exists, it
@@ -287,8 +292,8 @@ class PhyTrees :
 
     def statistics ( self ) :
         """
-        Calculate the total number of trees stored and the mean, maximum and
-        minimum values of their leaves.
+        Calculate the total number of trees stored and the mean, minimum and
+        maximum values of their leaves.
         
         Returns :
             int

@@ -8,18 +8,27 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 13/Jan/2016 )
+# Last version :  v1.01 ( 16/Jul/2016 )
 # Description :  Molecular Evolution Library for Python.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.01
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Several bugs fixed.
+#              * Minor functionalities added: Align.__init__.py,
+#                  Cluster.__init__.py, Data.__init__.py, Inference.__init__.py,
+#                  PhyloAssembly.__init__.py
+#              * Documentation errors corrected.
+#
 #   DATE :  13/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
 
-__version__ = '1.0'
+__version__ = '1.01'
 
 
 #-------------------------------------------------------------------------------

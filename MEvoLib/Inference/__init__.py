@@ -8,14 +8,20 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 27/Jan/2016 )
+# Last version :  v1.10 ( 16/Jul/2016 )
 # Description :  Functions aimed to provide an easy interface to handle
-#       different phylogenetic inference tools.
+#       different phylogenetic inference and bootstrapping tools.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  16/Jul/2016
+#   VERSION :  v1.10
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Added get_tools() method to have an easy access to all the
+#                  available phylogenetic inference and bootstrapping tools.
+#
 #   DATE :  27/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -44,6 +50,18 @@ _BOOTS_TOOL_TO_LIB = { }
 
 
 #-------------------------------------------------------------------------------
+
+def get_tools ( ) :
+    """
+    Returns :
+        dict
+            Dictionary of phylogenetic inference and bootstrapping software
+            tools included in the current version of MEvoLib.
+    """
+    return ( dict([('inference', list(viewkeys(_PHYLO_TOOL_TO_LIB))),
+                   ('bootstrap', list(viewkeys(_BOOTS_TOOL_TO_LIB)))]) )
+
+
 
 def get_keywords ( tool ) :
     """
@@ -83,7 +101,7 @@ def get_phylogeny ( binary, infile, infile_format, args = 'default',
     """
     Infer the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
-    Bio.Phylo.BaseTree object and saved in the output file (if provided). If
+    Bio.Phylo.BaseTree object and saved in the ouput file (if provided). If
     'infile' or 'outfile' contain a relative path, the current working directory
     will be used to get the absolute path. If the output file already exists,
     the old file will be overwritten without any warning.

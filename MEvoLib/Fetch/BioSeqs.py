@@ -8,13 +8,27 @@
 #
 #-------------------------------------------------------------------------------
 # File :  BioSeqs.py
-# Last version :  v1.0 ( 25/Nov/2015 )
+# Last version :  v1.10 ( 15/Jul/2016 )
 # Description :  Definition and implementation of the class 'BioSeqs'.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  15/Jul/2016
+#   VERSION :  v1.10
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Fixed an important bug in the BioSeqs.from_seqfile() method:
+#                  the default alphabet assigned from Bio.SeqIO.read() and
+#                  Bio.SeqIO.parse() methods when reading certain file formats
+#                  (e.g. FASTA) raises an exception when writing those sequences
+#                  with the Bio.SeqIO.write() method in a GENBANK file. Now a
+#                  more specific alphabet is assigned to the Bio.Seq objects
+#                  created.
+#              * Fixed a bug in the BioSeqs.write() method: the unexpected
+#                  exceptions were not raising after handling them.
+#              * Fixed some documentation errors.
+#
 #   DATE :  25/Nov/2015
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -28,10 +42,10 @@ import sys
 import itertools
 from operator import itemgetter
 import errno
-import numpy
 import copy
 
-from Bio import SeqIO, Entrez
+import numpy
+from Bio import SeqIO, Entrez, Alphabet
 
 from MEvoLib._utils import get_abspath
 from MEvoLib._py3k import StringIO, viewkeys, viewvalues, viewitems
@@ -83,13 +97,13 @@ def _estimate_batch_size ( record ) :
             Advisable batch size given the recommendations of Entrez and
             the record size.
 
-    * It is calculated considering a 4Mbps download speed and a desirable
+    * It is calculated considering a 1Mbps download speed and a desirable
     maximum fetch time of 5 minutes per batch.
     """
     record_size = sys.getsizeof(record)
     # Entrez advises a ceiling of 200 identifiers per request, and return at
     # least 1 if the record is very big
-    return ( int(max(min(200, numpy.floor(1.5e8/record_size)), 1)) )
+    return ( int(max(min(200, numpy.floor(3.75e7/record_size)), 1)) )
 
 
 #-------------------------------------------------------------------------------
@@ -127,9 +141,9 @@ class BioSeqs :
         History:
         2015/11/25 19:26:03    local    /home/usr1/old_seqs.fasta    fasta
 
-        >>> hmtDNA = BioSeqs.from_entrez('nuccore', 'test@show.com',
-        ... '"Homo sapiens"[Organism] AND mitochondrion[All Fields]',
-        ... max_fetch=10)
+        >>> hmtDNA = BioSeqs.from_entrez(entrez_db='nuccore',
+        ... email='eg@test.com', query='"Homo sapiens"[Organism] AND ' \
+        ... 'mitochondrion[All Fields]', max_fetch=10)
         >>> print(hmtDNA)
         DB: {KR902533.1, KT002469.1, KR026958.1, KP300793.1, KR902534.1,...}
         Num. sequences: 10
@@ -138,13 +152,13 @@ class BioSeqs :
         mitochondrion[All Fields]
         
         The user can also get several statistics (number of sequences, length
-        mean, standard deviation of the length, maximum length, minimum length)
+        mean, standard deviation of the length, minimum length, maximum length)
         about the stored data:
         
         >>> len(hmtDNA)
         10
         >>> hmtDNA.statistics()
-        (10, 14926.0, 4924.3348992528927, 16571, 153)
+        (10, 14926.0, 4924.3348992528927, 153, 16571)
         
         The database can be updated by joining two BioSeqs objects:
         
@@ -169,7 +183,7 @@ class BioSeqs :
         36633
         
         Finally, all the information can be saved in two files, one with the
-        SeqRecord objects (in genbank format) and the other one with the
+        SeqRecord objects (in GENBANK format) and the other one with the
         information in the '_report' list:
         
         >>> seqsdb.write('new_seqs.gb')
@@ -253,7 +267,20 @@ class BioSeqs :
         filepath = get_abspath(seqfile)
         # Read the sequence file and create a new BioSeqs object, generating a
         # new report list
-        seq_dict = SeqIO.to_dict(SeqIO.parse(filepath, fileformat))
+        seq_dict = {}
+        for record in SeqIO.parse(filepath, fileformat) :
+            # When reading or parsing from certain sequence file format
+            # (e.g. FASTA), Bio.SeqIO gives a default alphabet to the Seq object
+            # created that will raise an error when writing it in a GENBANK
+            # file. Thus, we change that alphabet to a more specific one,
+            # checking if it is a DNA or a protein sequence
+            if ( isinstance(record.seq.alphabet,
+                            Alphabet.SingleLetterAlphabet) ) :
+                record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACDNA()
+                if ( not Alphabet._verify_alphabet(record.seq) ) :
+                    record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACProtein()
+            print(record.seq.alphabet)
+            seq_dict[record.id] = record
         date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         report = [(date_time, 'local', filepath, fileformat)]
         return ( cls(seq_dict, report) )
@@ -549,6 +576,7 @@ class BioSeqs :
             except NameError :
                 # Report file was not created before the exception raised
                 pass
+            raise
 
 
 

@@ -8,14 +8,14 @@
 #
 #-------------------------------------------------------------------------------
 # File :  _RAxML.py
-# Last version :  v1.0 ( 26/Jan/2016 )
+# Last version :  v1.00 ( 26/Jan/2016 )
 # Description :  MEvoLib's variables and library functions to ease the usage of
 #       RAxML.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  26/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ def gen_args ( args, infile_path, bootstraps ) :
                          '-w', tmpdir_path] + KEYWORDS[args]
     else : # args not in KEYWORDS
         argument_list = [arg  for arg in args.split(' ')]
-    # Add the bootstrapping generation option if 'bootstraps' is greater than 0
+    # Add the bootstrapping generation option if 'boostraps' is greater than 0
     if ( bootstraps > 0 ) :
         argument_list += ['-N', str(bootstraps)]
     # Add the input file option

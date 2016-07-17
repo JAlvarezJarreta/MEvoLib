@@ -8,19 +8,19 @@
 #
 #-------------------------------------------------------------------------------
 # File :  _Mafft.py
-# Last version :  v1.1 ( 01/Feb/2016 )
+# Last version :  v1.01 ( 01/Feb/2016 )
 # Description :  MEvoLib's variables to ease the usage of Mafft.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  01/Feb/2016
-#   VERSION :  v1.1
+#   VERSION :  v1.01
 #   AUTHOR(s) :  J. Alvarez-Jarreta
-#   DETAILS :  The "-1" option for "--thread" argument doesn't work as expected,
-#              so we now include explicitly the number of cores.
+#   CHANGES :  * The "-1" option for "--thread" argument doesn't work as
+#                  expected, so we now include explicitly the number of cores.
 #
 #   DATE :  13/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------

@@ -7,8 +7,8 @@
 #   conditions; type `show c' for details.
 #
 #-------------------------------------------------------------------------------
-# File :  _FastTree.py
-# Last version :  v1.0 ( 02/Feb/2016 )
+# File :  _Consense.py
+# Last version :  v1.00 ( 02/Feb/2016 )
 # Description :  MEvoLib's variables library functions to ease the usage of
 #       Consense from PHYLIP
 #       (<http://evolution.genetics.washington.edu/phylip.html>).
@@ -16,7 +16,7 @@
 # Historical report :
 #
 #   DATE :  02/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ from MEvoLib._utils import get_abspath
 
 SPRT_INFILE_FORMATS = ['newick']
 
-KEYWORDS = {'default': ['R', '2', 'Y']}
+KEYWORDS = {'default': ['R', '2', 'Y']} # majority rule consensus
 
 
 #-------------------------------------------------------------------------------

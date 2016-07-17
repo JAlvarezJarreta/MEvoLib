@@ -8,14 +8,20 @@
 #
 #-------------------------------------------------------------------------------
 # File :  _utils.py
-# Last version :  v1.0 ( 02/Feb/2016 )
+# Last version :  v1.01 ( 20/Apr/2016 )
 # Description :  Set of functions aimed to provide support for different needs
 #       on the configuration and execution processes of MEvoLib.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
+#   DATE :  20/Apr/2016
+#   VERSION :  v1.01
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Added get_tempfile_path() method to generate a complete path
+#                  for a temporary file without actually creating it.
+#
 #   DATE :  02/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -24,6 +30,7 @@ from __future__ import absolute_import
 
 import os
 import multiprocessing
+import tempfile
 
 
 #-------------------------------------------------------------------------------
@@ -51,6 +58,17 @@ def get_abspath ( filename ) :
         return ( os.path.join(os.getcwd(), filename) )
     else :
         return ( filename )
+
+
+
+def get_tempfile_path () :
+    """
+    Returns :
+        string
+            Path of a new temporary file name (without creating it).
+    """
+    return ( os.path.join(tempfile.gettempdir(), tempfile.gettempprefix() +\
+                              next(tempfile._get_candidate_names())) )
 
 
 #-------------------------------------------------------------------------------

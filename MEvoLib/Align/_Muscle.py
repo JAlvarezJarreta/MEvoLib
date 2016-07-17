@@ -8,13 +8,13 @@
 #
 #-------------------------------------------------------------------------------
 # File :  _Muscle.py
-# Last version :  v1.0 ( 13/Jan/2016 )
+# Last version :  v1.00 ( 13/Jan/2016 )
 # Description :  MEvoLib's variables to ease the usage of Muscle.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  13/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------

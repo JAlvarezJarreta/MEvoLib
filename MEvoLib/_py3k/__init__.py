@@ -8,15 +8,15 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.0 ( 13/Jan/2016 )
+# Last version :  v1.00 ( 13/Jan/2016 )
 # Description :  Python 3 compatibility tools. The inclusion of this module
-#       provides full support for this tools in Python 2.7 and Python 3.3, 3.4.
-#       (Base idea taken from Bio._py3k module of biopython)
+#       provides full support for this tools in Python 2.7 and Python 3.3, 3.4,
+#       3.5. (Base idea taken from Bio._py3k module of biopython)
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  13/Jan/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ else: # sys.version_info[0] < 3
 
         Returns :
             bool
-                True if value is instance of integer or long, False otherwise.
+                True if value is instance of interger or long, False otherwise.
         """
         return ( isinstance(value, (int, long)) )
 

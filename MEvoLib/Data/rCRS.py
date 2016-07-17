@@ -8,14 +8,14 @@
 #
 #-------------------------------------------------------------------------------
 # File :  rCRS.py
-# Last version :  v1.0 ( 05/Feb/2016 )
+# Last version :  v1.00 ( 05/Feb/2016 )
 # Description :  Human mitochondrial DNA revised Cambridge Reference Sequence
-#       (rCRS)'s file path and Bio.SeqRecord object.
+#       (rCRS)'s filepath and Bio.SeqRecord object.
 #-------------------------------------------------------------------------------
 # Historical report :
 #
 #   DATE :  05/Feb/2016
-#   VERSION :  v1.0
+#   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
 #-------------------------------------------------------------------------------
