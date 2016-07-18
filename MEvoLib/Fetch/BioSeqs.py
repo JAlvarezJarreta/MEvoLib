@@ -8,10 +8,15 @@
 #
 #-------------------------------------------------------------------------------
 # File :  BioSeqs.py
-# Last version :  v1.10 ( 15/Jul/2016 )
+# Last version :  v1.11 ( 17/Jul/2016 )
 # Description :  Definition and implementation of the class 'BioSeqs'.
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  17/Jul/2016
+#   VERSION :  v1.11
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Minor bugs fixed.
 #
 #   DATE :  15/Jul/2016
 #   VERSION :  v1.10
@@ -237,8 +242,8 @@ class BioSeqs :
             # Ignore "History:" line
             report_file.readline()
             for line in report_file.readlines() :
-                date_time, src_type, source, details = line.split('    ')
-                report.append((date_time, src_type, source, details))
+                date_time, src_type, src, details = line.strip().split('    ')
+                report.append((date_time, src_type, src, details))
         return ( cls(seq_dict, report) )
 
 
@@ -565,16 +570,10 @@ class BioSeqs :
         except IOError :
             raise
         except :
-            try :
+            if ( os.path.lexists(data_filepath) ) :
                 os.remove(data_filepath)
+            if ( os.path.lexists(report_filepath) ) :
                 os.remove(report_filepath)
-            except OSError as e :
-                # Raise exception if different from "no such file or directory"
-                if ( e.errno != errno.ENOENT ) :
-                    raise
-            except NameError :
-                # Report file was not created before the exception raised
-                pass
             raise
 
 

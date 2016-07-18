@@ -90,7 +90,7 @@ if ( sys.version_info[0] >= 3 ) :
     # On Python 3 urllib, urllib2, and urlparse were merged
     from urllib.request import urlopen, Request, urlretrieve, urlparse
     from urllib.parse import urlencode, quote
-    from urllib.error import HTTPError
+    from urllib.error import HTTPError, URLError
     # On Python 3 subprocess.DEVNULL exists
     from subprocess import DEVNULL
     #On Python 3, this will be a unicode StringIO
@@ -159,7 +159,7 @@ else: # sys.version_info[0] < 3
     # Under urllib.parse on Python 3:
     from urllib import urlencode, quote
     # Under urllib.error on Python 3:
-    from urllib2 import HTTPError
+    from urllib2 import HTTPError, URLError
     # On Python 2 subprocess.DEVNULL doesn't exist
     DEVNULL = open(os.path.devnull, 'w')
     # On Python 2 this will be a (bytes) string based handle.

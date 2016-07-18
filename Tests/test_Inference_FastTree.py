@@ -9,7 +9,8 @@
 #-------------------------------------------------------------------------------
 # File :  test_Inference_FastTree.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.Inference module: FastTree software tool.
+# Description :  Test suite for MEvoLib.Inference module: FastTree software
+#       tool.
 #-------------------------------------------------------------------------------
 # Historical report :
 #

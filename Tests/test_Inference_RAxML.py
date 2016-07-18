@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 # File :  test_Inference_RAxML.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.Inference module: RAxML software tool.
+# Description :  Test suite for MEvoLib.Inference module: RAxML software tool.
 #-------------------------------------------------------------------------------
 # Historical report :
 #

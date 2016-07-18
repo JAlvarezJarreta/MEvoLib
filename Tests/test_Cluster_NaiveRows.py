@@ -9,7 +9,8 @@
 #-------------------------------------------------------------------------------
 # File :  test_Cluster_NaiveRows.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.Cluster module: Naive Rows software tool.
+# Description :  Test suite for MEvoLib.Cluster module: Naive Rows software
+#       tool.
 #-------------------------------------------------------------------------------
 # Historical report :
 #

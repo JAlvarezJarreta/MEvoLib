@@ -8,10 +8,15 @@
 #
 #-------------------------------------------------------------------------------
 # File :  PhyTrees.py
-# Last version :  v1.01 ( 16/Jul/2016 )
+# Last version :  v1.02 ( 17/Jul/2016 )
 # Description :  Definition and implementation of the class 'PhyTrees'.
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  17/Jul/2016
+#   VERSION :  v1.02
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Minor bugs fixed.
 #
 #   DATE :  16/Jul/2016
 #   VERSION :  v1.01
@@ -27,13 +32,14 @@
 from __future__ import absolute_import
 
 import os
+import sys
 from datetime import datetime
 import errno
+import operator
 
 from Bio import Phylo
 
 from MEvoLib._utils import get_abspath
-from MEvoLib._py3k import viewvalues
 
 
 #-------------------------------------------------------------------------------
@@ -148,7 +154,7 @@ class PhyTrees :
             # Ignore "History:" line
             report_file.readline()
             for line in report_file.readlines() :
-                date_time, filepath, fileformat = line.split('    ')
+                date_time, filepath, fileformat = line.strip().split('    ')
                 report.append((date_time, filepath, fileformat))
         return ( cls(tree_list, report) )
 
@@ -178,7 +184,7 @@ class PhyTrees :
         filepath = get_abspath(treefile)
         # Read the tree file and create a new PhyTrees object, generating a new
         # report list
-        tree_list = list(Phylo.parse(filepath, 'newick'))
+        tree_list = list(Phylo.parse(filepath, fileformat))
         date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         report = [(date_time, filepath, fileformat)]
         return ( cls(tree_list, report) )
@@ -243,7 +249,7 @@ class PhyTrees :
         """
         self.data.extend(new_phytrees.data)
         self._report.extend(new_phytrees._report)
-        self._report.sort(key=itemgetter(0))
+        self._report.sort(key=operator.itemgetter(0))
 
 
 
@@ -270,23 +276,18 @@ class PhyTrees :
         str_report = '\n'.join(['    '.join(x)  for x in self._report])
         # Write all the information in the PhyTrees files
         try :
-            Phylo.write(viewvalues(self.data), data_filepath, 'newick')
+            Phylo.write(self.data, data_filepath, 'newick')
             with open(report_filepath, 'w') as report_file :
                 report_file.write('Num. trees: {:d}\nHistory:\n' \
                                   '{:s}'.format(len(self), str_report))
         except IOError :
             raise
         except :
-            try :
+            if ( os.path.isfile(data_filepath) ) :
                 os.remove(data_filepath)
+            if ( os.path.isfile(report_filepath) ) :
                 os.remove(report_filepath)
-            except OSError as e :
-                # Raise exception if different from "no such file or directory"
-                if ( e.errno != errno.ENOENT ) :
-                    raise
-            except NameError :
-                # Report file was not created before the exception raised
-                pass
+            raise
 
 
 
@@ -307,8 +308,8 @@ class PhyTrees :
 
         """
         mean = 0.0
-        minmax = [0, 0]        
-        for tree in viewvalues(self.data) :
+        minmax = [sys.maxint, 0]        
+        for tree in self.data :
             leaves = tree.count_terminals()
             mean += leaves
             if ( minmax[0] > leaves ) :

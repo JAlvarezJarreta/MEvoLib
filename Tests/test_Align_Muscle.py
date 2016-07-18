@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 # File :  test_Align_Muscle.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.Align module: Muscle software tool.
+# Description :  Test suite for MEvoLib.Align module: Muscle software tool.
 #-------------------------------------------------------------------------------
 # Historical report :
 #

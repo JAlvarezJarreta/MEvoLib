@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 # File :  test_Align_ClustalOmega.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.Align module: Clustal Omega software
+# Description :  Test suite for MEvoLib.Align module: Clustal Omega software
 #       tool.
 #-------------------------------------------------------------------------------
 # Historical report :

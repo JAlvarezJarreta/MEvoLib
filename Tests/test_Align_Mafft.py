@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 # File :  test_Align_Mafft.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.Align module: Mafft software tool.
+# Description :  Test suite for MEvoLib.Align module: Mafft software tool.
 #-------------------------------------------------------------------------------
 # Historical report :
 #

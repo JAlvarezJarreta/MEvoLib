@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 # File :  test_PhyloAssemble_Consense.py
 # Last version :  v1.00 ( 16/Jul/2016 )
-# Description :  Test suite of MEvoLib.PhyloAssemble module: Consense software
+# Description :  Test suite for MEvoLib.PhyloAssemble module: Consense software
 #       tool.
 #-------------------------------------------------------------------------------
 # Historical report :

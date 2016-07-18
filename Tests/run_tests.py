@@ -8,7 +8,7 @@
 #
 #-------------------------------------------------------------------------------
 # File :  run_tests.py
-# Last version :  v1.00 ( 16/Jul/2016 )
+# Last version :  v1.00 ( 17/Jul/2016 )
 # Description :  Run a set of PyUnit-based regression tests.
 #       This will find all modules whose name is "test_*.py" in the test
 #       directory, and run them. Various command line options provide additional
@@ -16,7 +16,6 @@
 #
 #       Command line options:
 #       --help        -- show usage info
-#       --offline     -- skip tests which require internet access
 #       -v;--verbose  -- run tests with higher verbosity (does not affect our
 #                        print-and-compare style unit tests).
 #       <test_name>   -- supply the name of one (or more) tests to be run.
@@ -24,7 +23,7 @@
 #-------------------------------------------------------------------------------
 # Historical report :
 #
-#   DATE :  16/Jul/2016
+#   DATE :  17/Jul/2016
 #   VERSION :  v1.00
 #   AUTHOR(s) :  J. Alvarez-Jarreta
 #
@@ -33,9 +32,10 @@
 #   Biopython (http://www.biopython.org) as template.
 #-------------------------------------------------------------------------------
 """
+Run a set of PyUnit-based regression tests.
+
 Command line options:
 --help        -- show usage information
---offline     -- skip tests which require internet access
 -v;--verbose  -- run tests with higher verbosity (does not affect our
                  print-and-compare style unit tests).
 <test_name>   -- supply the name of one (or more) tests to be run. The .py file
@@ -106,12 +106,9 @@ def main ( argv ) :
         if ( option == '--help' ) :
             print(__doc__)
             return ( 0 )
-        if ( option == '--offline' ) :
-            print("Skipping any tests requiring internet access")
-#            # This is a bit of a hack...
-#            import requires_internet
-#            requires_internet.check.available = False
-#            # The check() function should now report internet not available
+#        if ( option == '--offline' ) :
+#            print("Skipping any test requiring internet access")
+#            OFFLINE_MODE = True
         if ( option in ['-v', '--verbose'] ) :
             verbosity = 2
     # The 'args' variable should contain the names of the tests to run
