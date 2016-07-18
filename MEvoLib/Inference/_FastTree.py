@@ -46,10 +46,10 @@ SPRT_INFILE_FORMATS = ['fasta', 'phylip']
 
 KEYWORDS = {'default': ['-gtr', '-nt', '-nopr', '-quiet'],
             # Nucleotide evolution models
-            'JC+CAT':  ['-nt', '-nopr', '-quiet'],
-            'JC+G':    ['-nt', '-nocat', '-gamma', '-nopr', '-quiet'],
             'GTR+CAT': ['-gtr', '-nt', '-nopr', '-quiet'],
             'GTR+G':   ['-gtr', '-nt', '-nocat', '-gamma', '-nopr', '-quiet'],
+            'JC+CAT':  ['-nt', '-nopr', '-quiet'],
+            'JC+G':    ['-nt', '-nocat', '-gamma', '-nopr', '-quiet'],
             # Protein evolution models
             'JTT+CAT': ['-nopr', '-quiet'],
             'WAG+CAT': ['-wag', '-nopr', '-quiet']}

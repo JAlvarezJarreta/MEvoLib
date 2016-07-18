@@ -35,6 +35,8 @@ import subprocess
 
 from . import _Consense
 
+from Bio import Phylo
+
 from MEvoLib._utils import get_abspath
 from MEvoLib._py3k import viewkeys, viewitems, DEVNULL, StringIO
 

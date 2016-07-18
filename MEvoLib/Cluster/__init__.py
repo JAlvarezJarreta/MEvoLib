@@ -41,7 +41,8 @@ from . import NaiveRows
 from . import NaiveCols
 from . import PRD
 
-from MEvoLib._utils import viewkeys, get_abspath, NUMCORES
+from MEvoLib._utils import get_abspath, NUMCORES
+from MEvoLib._py3k import viewkeys
 
 
 #-------------------------------------------------------------------------------
@@ -124,7 +125,7 @@ def get_subsets ( method, seqfile, fileformat = 'genbank', *args, **kwargs ) :
         pool = multiprocessing.Pool(processes=NUMCORES)
         results = [pool.apply_async(mapseqs_func,
                                     args=(seq_list[start:start+slice_size],) + \
-                                          extra_args)
+                                          args)
                        for start in range(0, num_seqs, slice_size)]
         # Build the final sets dictionary merging the results of all executed
         # processes

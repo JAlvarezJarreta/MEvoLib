@@ -24,7 +24,7 @@ To build, test and install MEvoLib, download and decompress the source code, go
 to the source directory, and type:
 
     python setup.py build
-	python setup.py test
+    python setup.py test
     sudo python setup.py install
 
 If you need to do an additional configuration, e.g. changing the base directory,

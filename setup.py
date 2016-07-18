@@ -140,8 +140,8 @@ class test_mevolib ( Command ):
     distutils kind of act like perl. With this you can do:
 
         python setup.py build
-        python setup.py test
         python setup.py install
+        python setup.py test
 
     """
     description = "Automatically run the test suite for MEvoLib."

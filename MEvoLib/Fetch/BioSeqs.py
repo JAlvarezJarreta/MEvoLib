@@ -142,8 +142,8 @@ class BioSeqs :
         2015/11/25 19:26:03    local    /home/usr1/old_seqs.fasta    fasta
 
         >>> hmtDNA = BioSeqs.from_entrez(entrez_db='nuccore',
-        ... email='eg@test.com', query='"Homo sapiens"[Organism] AND ' \
-        ... 'mitochondrion[All Fields]', max_fetch=10)
+        ... email='eg@test.com', max_fetch=10,
+        ... query='"Homo sapiens"[Organism] AND mitochondrion[All Fields]')
         >>> print(hmtDNA)
         DB: {KR902533.1, KT002469.1, KR026958.1, KP300793.1, KR902534.1,...}
         Num. sequences: 10
@@ -279,7 +279,6 @@ class BioSeqs :
                 record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACDNA()
                 if ( not Alphabet._verify_alphabet(record.seq) ) :
                     record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACProtein()
-            print(record.seq.alphabet)
             seq_dict[record.id] = record
         date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         report = [(date_time, 'local', filepath, fileformat)]
