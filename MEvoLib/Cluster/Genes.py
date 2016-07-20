@@ -8,16 +8,11 @@
 #
 #-------------------------------------------------------------------------------
 # File :  Genes.py
-# Last version :  v1.21 ( 19/Jul/2016 )
+# Last version :  v1.20 ( 08/Jul/2016 )
 # Description :  Clustering where each resulting set is composed by a gene of
 #       all the input sequences (from GenBank data or reference sequence).
 #-------------------------------------------------------------------------------
 # Historical report :
-#
-#   DATE :  19/Jul/2016
-#   VERSION :  v1.21
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#   CHANGES :  * Minor bug fixed.
 #
 #   DATE :  08/Jul/2016
 #   VERSION :  v1.20
@@ -241,11 +236,11 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
     # term dictionary with a list of sequences for each qualifier of any
     # selected feature
     if ( feature_filter ) :
-        gene_dict = dict((key, {})  for key in feature_filter)
-        term_dict = dict((key, {})  for key in feature_filter)
+        gene_dict = dict((key, {})  for key in iter(feature_filter))
+        term_dict = dict((key, {})  for key in iter(feature_filter))
     else : # feature_filter is None
-        gene_dict = dict((key, {})  for key in viewkeys(_FEAT_QUAL_DICT))
-        term_dict = dict((key, {})  for key in viewkeys(_FEAT_QUAL_DICT))
+        gene_dict = dict((key, {})  for key in iter(viewkeys(_FEAT_QUAL_DICT)))
+        term_dict = dict((key, {})  for key in iter(viewkeys(_FEAT_QUAL_DICT)))
     # Get the reference sequence's SeqRecord object or create an unprocessable
     # list for those sequences without gene information
     if ( ref_seq in _REF_SEQ_DICT ) :
@@ -256,7 +251,7 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
         unprocessable = []
     num_seqs = 0
     # Iterate over all the records to get their gene division
-    for record in record_list :
+    for record in iter(record_list) :
         num_seqs += 1
         if ( len(record.features) <= 1 ) :
             # GenBank's "source" feature key is mandatory
@@ -298,7 +293,7 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
                     term_dict[feature.type][pair].add(record.id)
             # Merge possible matching qualifiers for the same type of feature
             qualifiers_to_merge = []
-            for key in viewkeys(gene_dict[feature.type]) :
+            for key in iter(viewkeys(gene_dict[feature.type])) :
                 key_set = set(key.split(':'))
                 if ( not record_qualifiers.isdisjoint(key_set) ) :
                     if ( record_qualifiers <= key_set ) :
@@ -319,11 +314,10 @@ def map_seqs ( record_list, feature_filter = None, ref_seq = None,
             else : # qualifier_id in gene_dict[feature.type]
                 gene_dict[feature.type][qualifier_id].append(feature_record)
             # Merge those qualifiers that belong to the same gene
-            for qualifier_key in qualifiers_to_merge :
-                if ( qualifier_key != qualifier_id ) :
-                    gene_dict[feature.type][qualifier_id].extend(
-                        gene_dict[feature.type][qualifier_key])
-                    del gene_dict[feature.type][qualifier_key]
+            for qualifier_key in iter(qualifiers_to_merge) :
+                gene_dict[feature.type][qualifier_id].extend(
+                                         gene_dict[feature.type][qualifier_key])
+                del gene_dict[feature.type][qualifier_key]
     # The error calculation has been extracted from the following sampling
     # statistics equation:
     #
