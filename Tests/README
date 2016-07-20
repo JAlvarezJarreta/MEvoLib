@@ -1,0 +1,32 @@
+
+    README file of the Test suite for MEvoLib
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+The following file contains information about every data file used in the test
+suite of MEvoLib:
+
+    - f001.* >  clpA allel of Borrelia burgdorferi s.l. (downloaded from PubMLST
+                    http://pubmlst.org/borrelia).
+
+    - f002.* >  9 trees given as an example of the usage of Consese tool (copied
+                    from PHYLIP website http://evolution.genetics.washington.edu/phylip/doc/consense.html).
+
+    - f003.* >  10 first sequences of the 100M1R0 dataset provided by SATé
+                    software tool (downloaded from http://www.cs.utexas.edu/~phylo/sate/public/sate_journal.html).
+
+    - f004.* >  10 mRNA sequences of human mitochondrial DNA (downloaded from
+                    GenBank with the query: "homo sapines"[porgn] AND
+                    mitochondrion[Filter] AND mRNA[Filter]).
+
+    - f005.* >  3 trees given as example of the Newick format at PHYLIP website
+                    (http://evolution.genetics.washington.edu/phylip/newicktree.html).
+
+    - f006.* >  5 complete human mitochondrial DNA sequences (downloaded from
+                    GenBank with the query: "homo sapines"[porgn] AND
+                    mitochondrion[Filter] NOT mRNA[Filter] AND "complete
+                    genome"[All Fields]).
+
+    - f007.* >  complete 100M1R0 dataset provided by SATé software tool
+                    (downloaded from http://www.cs.utexas.edu/~phylo/sate/public/sate_journal.html).
+
+

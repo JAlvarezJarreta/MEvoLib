@@ -8,11 +8,16 @@
 #
 #-------------------------------------------------------------------------------
 # File :  PRD.py
-# Last version :  v1.00 ( 20/Jan/2016 )
+# Last version :  v1.01 ( 19/Jul/2016 )
 # Description :  Clustering with padded-Recursive-DMC3 decomposition (PRD) from
 #       DACTAL system (<http://www.cs.utexas.edu/~phylo/software/dactal/>).
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  19/Jul/2016
+#   VERSION :  v1.01
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  * Minor error in one exception output corrected.
 #
 #   DATE :  20/Jan/2016
 #   VERSION :  v1.00
@@ -80,7 +85,7 @@ def _prd_decomposition ( tree_file, subset_size, overlapping, binary = 'dcm' ) :
         # not part of the solution
         sets_decomp = output.split('\n')[1:-1]
         if ( len(sets_decomp) == 1 ) :
-            raise IOError('DCM can\'t obtain a decomposition with the given' \
+            raise IOError('DCM can\'t obtain a decomposition with the given ' \
                           '"subset_size" and "overlapping" values')
         # else : # len(output_subsets) > 1
         set_list = []
