@@ -21,6 +21,7 @@
 #-------------------------------------------------------------------------------
 
 import os
+import sys
 import unittest
 
 from Bio import Phylo
