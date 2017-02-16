@@ -8,11 +8,18 @@
 #
 #-------------------------------------------------------------------------------
 # File :  NaiveRows.py
-# Last version :  v1.00 ( 01/Dec/2015 )
+# Last version :  v1.01 ( 16/Feb/2017 )
 # Description :  Clustering where each resulting set is composed by a specific
 #       range of input sequences (row/sequence division).
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  16/Feb/2017
+#   VERSION :  v1.01
+#   AUTHOR(s) :  J. Alvarez-Jarreta
+#   CHANGES :  - Fixed a bug on Python2.7 were the division operation ("/")
+#                 outputs an integer unless the dividend and/or the divisor are
+#                 floats.
 #
 #   DATE :  01/Dec/2015
 #   VERSION :  v1.00
@@ -48,7 +55,7 @@ def map_seqs ( record_list, num_sets ) :
     """
     num_seqs = len(record_list)
     # Determine the minimum and maximum number of sequences per set
-    min_seqs_set = int(math.floor(num_seqs / num_sets))
+    min_seqs_set = int(math.floor(float(num_seqs) / num_sets))
     max_seqs_set = min_seqs_set + 1
     # Get the number of sets that will have the maximum number of sequences to
     # balance the distribution of sequences per set
