@@ -57,7 +57,7 @@ from MEvoLib._py3k import StringIO, viewkeys, viewvalues, viewitems
 
 # Dictionary with the corresponding retrieval type of each Entrez
 # database supported by BioSeqs class
-entrez_db_dict = {'nuccore': 'gbwithparts', 'nucest': 'gb', 'nucgss': 'gb',
+ENTREZ_DB_DICT = {'nuccore': 'gbwithparts', 'nucest': 'gb', 'nucgss': 'gb',
                   'popset': 'gb', 'protein': 'gp'}
 # Constant that limits the maximum number of sequences that can be
 # fetched
@@ -67,7 +67,7 @@ MAX_NUM_SEQS = 100000
 def _get_entrez_db_rettype (entrez_db):
     """
     Check if the given entrez database is supported by the BioSeqs class.
-    Supported entrez databases are stored in 'entrez_db_dict'.
+    Supported entrez databases are stored in 'ENTREZ_DB_DICT'.
 
     Arguments:
         entrez_db  (string)
@@ -81,8 +81,8 @@ def _get_entrez_db_rettype (entrez_db):
         ValueError
             If the introduced database is not supported.
     """
-    if (entrez_db in entrez_db_dict):
-        return (entrez_db_dict[entrez_db])
+    if (entrez_db in ENTREZ_DB_DICT):
+        return (ENTREZ_DB_DICT[entrez_db])
     else:
         message = '"{}" isn\'t a supported NCBI\'s Entrez DB'.format(entrez_db)
         raise ValueError(message)
@@ -348,9 +348,9 @@ class BioSeqs:
                     # If it is the first time for this batch, wait for a
                     # minute to see if we can recover from the exception
                     if (not exceptRaised):
+                        exceptRaised = True
                         warnings.warn(("Exception raised durig fetching. Trying"
                                        "to recover..."))
-                        exceptRaised = True
                         sleep(60)
                     else:
                         warnings.warn(("Exception raised for second time. "
