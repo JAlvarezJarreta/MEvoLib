@@ -1,64 +1,49 @@
-#-------------------------------------------------------------------------------
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
 #
-#   MEvoLib  Copyright (C) 2016  J. Alvarez-Jarreta
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-#   This is free software, and you are welcome to redistribute it under certain
-#   conditions; type `show c' for details.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#-------------------------------------------------------------------------------
-# File :  NaiveRows.py
-# Last version :  v1.01 ( 16/Feb/2017 )
-# Description :  Clustering where each resulting set is composed by a specific
-#       range of input sequences (row/sequence division).
-#-------------------------------------------------------------------------------
-# Historical report :
-#
-#   DATE :  16/Feb/2017
-#   VERSION :  v1.01
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#   CHANGES :  - Fixed a bug on Python2.7 were the division operation ("/")
-#                 outputs an integer unless the dividend and/or the divisor are
-#                 floats.
-#
-#   DATE :  01/Dec/2015
-#   VERSION :  v1.00
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#
-#-------------------------------------------------------------------------------
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""Clustering where each resulting set is composed by a specific range of input sequences 
+(row/sequence division)."""
+
 
 from __future__ import absolute_import, division
 
 import math
 import random
 
+from typing import List
 
-#-------------------------------------------------------------------------------
 
-def map_seqs ( record_list, num_sets ) :
-    """
-    Naive distribution in 'num_sets' sets of the sequences at 'record_list'. The
-    maximum number of sequences per set is calculated as follows:
+def map_seqs (record_list: List, num_sets: int) -> dict:
+    """Naive distribution in 'num_sets' sets of the sequences at 'record_list'. The maximum number of 
+    sequences per set is calculated as follows:
 
         sequences_per_set = ceiling( total_number_of_sequences / 'num_sets' )
 
-    Arguments :
-        record_list  ( list )
-            List of SeqRecord objects (from Biopython).
-        num_sets  ( int )
-            Number of sets.
+    Args:
+        record_list: List of SeqRecord objects (from Biopython).
+        num_sets: Number of sets.
 
-    Returns :
-        dict
-            Dictionary with the set identifiers as keys and the corresponding
-            sequences as values in lists of SeqRecord objects.
+    Returns:
+        dict: Dictionary with the set identifiers as keys and the corresponding sequences as values in lists 
+        of SeqRecord objects.
     """
     num_seqs = len(record_list)
     # Determine the minimum and maximum number of sequences per set
     min_seqs_set = int(math.floor(float(num_seqs) / num_sets))
     max_seqs_set = min_seqs_set + 1
-    # Get the number of sets that will have the maximum number of sequences to
-    # balance the distribution of sequences per set
+    # Get the number of sets that will have the maximum number of sequences to balance the distribution of 
+    # sequences per set
     big_sets = num_seqs % num_sets
     small_sets = num_sets - big_sets
     # Get a random distribution of the set size list
@@ -68,12 +53,9 @@ def map_seqs ( record_list, num_sets ) :
     num_zeros = len(str(num_sets))
     set_dict = {}
     start = 0
-    for index, set_size in enumerate(set_size_list, 1) :
+    for index, set_size in enumerate(set_size_list, 1):
         set_id = 'rset{}'.format(str(index).zfill(num_zeros))
         end = start + set_size
         set_dict[set_id] = record_list[start:end]
         start = end
-    return ( set_dict )
-    
-
-#-------------------------------------------------------------------------------
+    return set_dict
