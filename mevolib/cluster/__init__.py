@@ -14,9 +14,6 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle"""
 
-#       different clustering methods.
-from __future__ import absolute_import, division
-
 import multiprocessing
 import math
 from typing import List

@@ -15,7 +15,6 @@
 """Clustering where each resulting set is composed by a gene of all the input sequences 
 (from GenBank data or reference sequence)."""
 
-
 import tempfile
 import itertools
 import math

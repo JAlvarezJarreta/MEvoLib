@@ -14,8 +14,6 @@
 # limitations under the License.
 """Clustering where each resulting set is composed by a specific range slice of all the input sequences 
 (column/fragment division)."""
- 
-from __future__ import absolute_import, division
 
 import math
 

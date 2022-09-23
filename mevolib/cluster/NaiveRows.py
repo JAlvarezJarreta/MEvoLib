@@ -15,9 +15,6 @@
 """Clustering where each resulting set is composed by a specific range of input sequences 
 (row/sequence division)."""
 
-
-from __future__ import absolute_import, division
-
 import math
 import random
 
