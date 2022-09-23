@@ -39,7 +39,7 @@ def get_tools() -> List:
     return list(_METHOD_TO_FUNC.keys)
 
 
-def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args, **kwargs) -> dict:
+def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: tuple, **kwargs: dict) -> dict:
     """Division of all the sequences stored in the sequence input file into subsets applying the 'method' 
     function. If 'seqfile' contains a relative path, the current working directory will be used to get the 
     absolute path.
