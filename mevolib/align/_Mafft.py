@@ -1,46 +1,26 @@
-#-------------------------------------------------------------------------------
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
 #
-#   MEvoLib  Copyright (C) 2016  J. Alvarez-Jarreta
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-#   This is free software, and you are welcome to redistribute it under certain
-#   conditions; type `show c' for details.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#-------------------------------------------------------------------------------
-# File :  _Mafft.py
-# Last version :  v1.01 ( 01/Feb/2016 )
-# Description :  MEvoLib's variables to ease the usage of Mafft.
-#-------------------------------------------------------------------------------
-# Historical report :
-#
-#   DATE :  01/Feb/2016
-#   VERSION :  v1.01
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#   CHANGES :  * The "-1" option for "--thread" argument doesn't work as
-#                  expected, so we now include explicitly the number of cores.
-#
-#   DATE :  13/Jan/2016
-#   VERSION :  v1.00
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#
-#-------------------------------------------------------------------------------
-
-from __future__ import absolute_import
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""MEvoLib's variables to ease the usage of Mafft."""
 
 from mevolib._utils import NUMCORES
 
 
-#-------------------------------------------------------------------------------
-
 SPRT_INFILE_FORMATS = ['fasta']
-
 INFILE_CMD = ''
-
-KEYWORDS = { 'default':  ['--auto', '--quiet', '--thread', str(NUMCORES)],
-             'linsi':    ['--localpair', '--maxiterate', '1000', '--quiet',
-                          '--thread', str(NUMCORES)],
-             'parttree': ['--parttree', '--retree', '2', '--partsize', '1000',
-                          '--quiet', '--thread', str(NUMCORES)] }
-
-
-#-------------------------------------------------------------------------------
+KEYWORDS = {
+    'default': ['--auto', '--quiet', '--thread', str(NUMCORES)],
+    'linsi': ['--localpair', '--maxiterate', '1000', '--quiet', '--thread', str(NUMCORES)],
+    'parttree': ['--parttree', '--retree', '2', '--partsize', '1000', '--quiet', '--thread', str(NUMCORES)],
+}
