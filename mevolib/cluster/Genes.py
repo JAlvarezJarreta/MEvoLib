@@ -269,7 +269,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
     # dict for all the genes
     set_dict = {}
     with open(log_file, 'w') as log:
-        for feat_key, feat_value in iter(gene_dict.items()):
+        for feat_key, feat_value in gene_dict.items():
             if feat_value:
                 log.write('> {}\n'.format(feat_key))
                 for qual_key, qual_value in iter(feat_value.items()):
