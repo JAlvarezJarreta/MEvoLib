@@ -238,7 +238,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
             # Add the new gene SeqRecord object to the dictionary
             if qualifier_id not in gene_dict[feature.type]:
                 gene_dict[feature.type][qualifier_id] = [feature_record]
-            else: # qualifier_id in gene_dict[feature.type]
+            else:
                 gene_dict[feature.type][qualifier_id].append(feature_record)
             # Merge those qualifiers that belong to the same gene
             for qualifier_key in qualifiers_to_merge:
