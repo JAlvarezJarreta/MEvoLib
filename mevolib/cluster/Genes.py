@@ -192,7 +192,6 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
             else:
                 unprocessable.append(record)
                 continue
-        # else: # len(record.features) > 1
         record_features = (feat  for feat in record.features[1:]
                                      if feat.type in gene_dict)
         for feature in record_features:
