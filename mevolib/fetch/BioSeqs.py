@@ -148,7 +148,7 @@ class BioSeqs:
 
 
     def __init__ (self, seq_dict: dict, report: list) -> BioSeqs:
-        """Create a BioSeqs object with 'seq_dict' and 'report' information.
+        """Creates a BioSeqs object with `seq_dict` and `report` information.
 
         Args:
             seq_dict: Dictionary of sequences.
