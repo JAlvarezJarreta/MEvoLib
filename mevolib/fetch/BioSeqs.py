@@ -183,8 +183,8 @@ class BioSeqs:
             str_num_seqs = report_file.readline()
             num_seqs = int(str_num_seqs.split(':')[-1])
             if len(seq_dict) != num_seqs:
-                raise ValueError('The number of sequences at report file doesn\'t ' \
-                                'match the number of sequences loaded')
+                raise ValueError('The number of sequences at report file does not match the number' \
+                                 ' of sequences loaded')
             # Ignore "History:" line
             report_file.readline()
             for line in report_file.readlines():
