@@ -99,7 +99,7 @@ def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord,
         alignment_bin: Binary path to the alignment tool that will be used in the normalization process.
 
     Returns:
-        Bio.Seq: Normalized sequence of 'record'.
+        Bio.Seq: Normalized sequence of `record`.
         list: List of SeqFeature objects (from Biopython) from reference sequence.
 
     Raises:
