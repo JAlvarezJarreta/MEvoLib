@@ -17,7 +17,6 @@
 
 import math
 
-from typing import List
 
 from Bio.SeqRecord import SeqRecord
 
