@@ -160,7 +160,7 @@ class BioSeqs:
 
 
     @classmethod
-    def from_bioseqs (cls, bioseqs_file: str):
+    def from_bioseqs (cls, bioseqs_file: str) -> BioSeqs:
         """Creates a BioSeqs object retrieving all the information from previously saved BioSeqs sequence and
         report files.
         
