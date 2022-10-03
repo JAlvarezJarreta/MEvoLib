@@ -221,8 +221,7 @@ class BioSeqs:
             # created that will raise an error when writing it in a GENBANK
             # file. Thus, we change that alphabet to a more specific one,
             # checking if it is a DNA or a protein sequence
-            if isinstance(record.seq.alphabet,
-                            Alphabet.SingleLetterAlphabet):
+            if isinstance(record.seq.alphabet, Alphabet.SingleLetterAlphabet):
                 record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACDNA()
                 if not Alphabet._verify_alphabet(record.seq):
                     record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACProtein()
