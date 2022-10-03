@@ -240,7 +240,7 @@ class BioSeqs:
             email: E-mail required by Bio.Entrez.
             entrez_db: NCBI's Entrez database.
             query: Query to fetch the desired information.
-            max_fetch  (): Maximum number of sequences to fetch.
+            max_fetch: Maximum number of sequences to fetch.
 
         * The e-mail information is considered sensible information and it won't be saved in any public or 
         private variable of the object.
