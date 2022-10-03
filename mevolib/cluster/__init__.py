@@ -47,7 +47,7 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
         args & kwargs: Non-keyworded and keyworded arguments passed to the selected method.
           
     Raises:
-        ValueError: If there is no corresponding method to 'method' value.
+        ValueError: If there is no corresponding method to `method` value.
         IOError: If the path or the file provided doesn't exist.
         IOError: If the file format provided doesn't correspond to the actual one.
 
