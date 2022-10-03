@@ -153,6 +153,7 @@ class BioSeqs:
         Args:
             seq_dict: Dictionary of sequences.
             report: Historical report of the sequence information.
+
         """
         self.data = seq_dict
         self._report = report
