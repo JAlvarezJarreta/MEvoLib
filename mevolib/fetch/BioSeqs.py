@@ -504,7 +504,7 @@ class BioSeqs:
 
 
     def statistics (self):
-        """Calculate the total number of sequences stored and the mean, standard deviation, minimum and 
+        """Returns the total number of sequences stored and the mean, standard deviation, minimum and 
         maximum values of their length.
 
         Returns:
