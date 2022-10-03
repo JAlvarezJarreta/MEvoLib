@@ -168,7 +168,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
     if feature_filter:
         gene_dict = dict((key, {}) for key in feature_filter)
         term_dict = dict((key, {}) for key in feature_filter)
-    else: # feature_filter is None
+    else:
         gene_dict = dict((key, {}) for key in _FEAT_QUAL_DICT.keys())
         term_dict = dict((key, {}) for key in _FEAT_QUAL_DICT.keys())
     # Get the reference sequence's SeqRecord object or create an unprocessable list for those sequences 
