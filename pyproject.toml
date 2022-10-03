@@ -65,7 +65,6 @@ dev = [
     "pylint",
     "pytest",
     "Sphinx",
-    "toml-validator",
 ]
 
 

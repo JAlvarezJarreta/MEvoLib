@@ -17,18 +17,16 @@ refer to the latest paper:
 
 MEvoLib is currently supported and tested for Python 3.8+.
 
-To build, test and install MEvoLib, download and decompress the source code, go
-to the source directory, and type:
+Installing MEvoLib is really easy and straightforward:
+```bash
+git clone --branch version/2.0 https://github.com/JAlvarezJarreta/MEvoLib
+pip install MEvoLib/.
+```
 
-    python setup.py build
-    python setup.py test
-    sudo python setup.py install
-
-If you need to do an additional configuration, e.g. changing the base directory,
-type:
-
-    python setup.py
-
+If you want to install in development mode, you will need to include the `dev` tag:
+```bash
+pip install -e MEvoLib/.[dev]
+```
 
 ## Additional requirements
 
