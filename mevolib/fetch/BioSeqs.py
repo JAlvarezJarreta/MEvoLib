@@ -14,7 +14,7 @@
 # limitations under the License.
 """Definition and implementation of the class 'BioSeqs'."""
 
-from typing import List, Optional
+from typing import Optional
 import copy
 from datetime import datetime
 import errno
