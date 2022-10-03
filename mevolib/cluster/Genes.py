@@ -112,8 +112,7 @@ def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord,
     # sequence during the alignment process
     record_seq = ''.join((x  for i, x in enumerate(alignment[1])
                                  if alignment[0][i] != '-'))
-    return (Seq(record_seq, refseq_record.seq.alphabet),
-             refseq_record.features)
+    return (Seq(record_seq, refseq_record.seq.alphabet), refseq_record.features)
 
 
 def _string_filter(input_str: str) -> str:
