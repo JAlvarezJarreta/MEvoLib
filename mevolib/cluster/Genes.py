@@ -217,7 +217,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
             for pair in itertools.combinations(qualifier_id.split(':'), 2):
                 if pair not in term_dict[feature.type]:
                     term_dict[feature.type][pair] = set([record.id])
-                else: # pair in term_dict[feature.type]
+                else:
                     term_dict[feature.type][pair].add(record.id)
             # Merge possible matching qualifiers for the same type of feature
             qualifiers_to_merge = []
