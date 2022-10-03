@@ -482,6 +482,7 @@ class BioSeqs:
 
         Raises:
             IOError: If the path provided doesn't exist.
+
         """
         data_filepath = get_abspath(bioseqs_file)
         report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
