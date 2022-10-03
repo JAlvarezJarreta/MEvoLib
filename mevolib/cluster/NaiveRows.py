@@ -18,7 +18,6 @@
 import math
 import random
 
-from typing import List
 
 
 def map_seqs (record_list: list, num_sets: int) -> dict:
