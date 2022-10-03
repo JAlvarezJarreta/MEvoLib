@@ -37,9 +37,9 @@ MAX_NUM_SEQS = 100000
 
 
 def _get_entrez_db_rettype (entrez_db: str) -> str:
-    """Checks if the given entrez database is supported by the BioSeqs class. Supported entrez databases 
-    are stored in 'ENTREZ_DB_DICT'.
-    Returns corresponding retrieval type for the given entrez database.
+    """Checks if the given entrez database is supported by the BioSeqs class.
+    
+    Supported Entrez databases are stored in `ENTREZ_DB_DICT`.
 
     Args: 
         entrez_db: Entrez database name
