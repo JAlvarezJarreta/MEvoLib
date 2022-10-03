@@ -175,7 +175,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
     # without gene information
     if ref_seq in _REF_SEQ_DICT:
         refseq_record = _REF_SEQ_DICT[ref_seq].RECORD
-    elif ref_seq: # ref_seq != None
+    elif ref_seq:
         refseq_record = SeqIO.read(ref_seq, 'gb')
     else: # ref_seq is None
         unprocessable = []
