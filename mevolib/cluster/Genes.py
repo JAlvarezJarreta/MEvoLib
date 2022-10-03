@@ -177,7 +177,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
         refseq_record = _REF_SEQ_DICT[ref_seq].RECORD
     elif ref_seq:
         refseq_record = SeqIO.read(ref_seq, 'gb')
-    else: # ref_seq is None
+    else:
         unprocessable = []
     num_seqs = 0
     # Iterate over all the records to get their gene division
