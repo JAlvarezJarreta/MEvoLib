@@ -19,10 +19,7 @@ import math
 
 from Bio import SeqIO
 
-from mevolib.cluster import Genes
-from mevolib.cluster import NaiveRows
-from mevolib.cluster import NaiveCols
-from mevolib.cluster import PRD
+from mevolib.cluster import Genes, NaiveRows, NaiveCols, PRD
 
 from mevolib._utils import get_abspath, NUMCORES
 
