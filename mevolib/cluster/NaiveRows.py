@@ -33,7 +33,7 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
 
     Returns:
         dict: Dictionary with the set identifiers as keys and the corresponding sequences as values in lists 
-        of SeqRecord objects.
+            of SeqRecord objects.
     """
     num_seqs = len(record_list)
     # Determine the minimum and maximum number of sequences per set
