@@ -195,9 +195,10 @@ class BioSeqs:
 
     @classmethod
     def from_seqfile (cls, seqfile: str, fileformat: str) -> BioSeqs:
-        """Create a BioSeqs object retrieving all the information stored at the sequence file provided. If 
-        'seqfile' contains a relative path, the current working directory will be used to get the absolute 
-        path.
+        """Creates a BioSeqs object retrieving all the information stored at the sequence file provided.
+        
+        If `seqfile` contains a relative path, the current working directory will be used to get the
+        absolute path.
 
         Args:
             seqfile: Input sequences file.
