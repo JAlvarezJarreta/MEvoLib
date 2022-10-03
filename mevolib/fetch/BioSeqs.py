@@ -330,7 +330,7 @@ class BioSeqs:
         return output
 
 
-    def include (self, seqfile: str, fileformat: str):
+    def include (self, seqfile: str, fileformat: str) -> None:
         """Add the information of the sequence file to the BioSeqs object. For any matching sequence, the 
         new information (from the external sequence file) will replace the existing one.
 
