@@ -472,10 +472,12 @@ class BioSeqs:
 
 
     def write (self, bioseqs_file: str) -> None:
-        """Save all sequences stored at the BioSeqs object in the 'bioseqs_file' (in GENBANK format). A file 
-        with a detailed report of the sequences will be created replacing the extension of 'bioseqs_file' 
-        by ".rep". If 'bioseqs_file' contains a relative path, the current working directory will be used to 
-        get the absolute path. If any file already exists, it will be overwritten without warning.
+        """Saves all sequences stored at the BioSeqs object in the `bioseqs_file` (in GENBANK format).
+        
+        A file with a detailed report of the sequences will be created replacing the extension of
+        `bioseqs_file` by ".rep". If `bioseqs_file` contains a relative path, the current working
+        directory will be used to get the absolute path. If any file already exists, it will be
+        overwritten without a warning.
 
         Args:
             bioseqs_file: New BioSeqs sequence file.
