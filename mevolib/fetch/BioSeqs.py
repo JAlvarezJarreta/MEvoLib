@@ -283,8 +283,8 @@ class BioSeqs:
                 end = start + batch_size
                 try:
                     fetch_handle = Entrez.efetch(
-                                                 db=entrez_db, id=sequence_ids[start:end],
-                                                retmode='text', rettype=db_rettype)
+                    fetch_handle = Entrez.efetch(db=entrez_db, id=sequence_ids[start:end], retmode='text',
+                                                 rettype=db_rettype)
                 except:
                     # If it is the first time for this batch, wait for a
                     # minute to see if we can recover from the exception
