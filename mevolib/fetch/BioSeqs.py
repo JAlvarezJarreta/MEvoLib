@@ -172,7 +172,7 @@ class BioSeqs:
 
         Raises:
             ValueError: If the number of sequences read doesn't match the number stored
-            in the report document.
+                in the report document.
         """
         data_filepath = get_abspath(bioseqs_file)
         report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
