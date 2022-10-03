@@ -36,11 +36,9 @@ def get_tools() -> List:
 
 
 def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: tuple, **kwargs: dict) -> dict:
-    """Division of all the sequences stored in the sequence input file into subsets applying the 'method' 
-    function. If 'seqfile' contains a relative path, the current working directory will be used to get the 
-    absolute path.
-    Returns a dict with the set identifiers as keys and the corresponding sequences as values in lists of 
-    SeqRecord objects.
+    """Division of all the sequences stored in the input file into subsets applying the `method` function.
+    
+    If `seqfile` contains a relative path, the current working directory will be used to get the absolute path.
 
     Args:
         method: Desired partition method (case-insensitive): genes, naive rows or cols, padded-Recursive-DCM3.
