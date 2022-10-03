@@ -382,7 +382,7 @@ class BioSeqs:
                 date_time, src_type, entrez_db, query = record
                 break
         else:
-            raise ValueError('No entrez entry found in object\'s report')
+            raise ValueError("No Entrez entry found in object's report")
         # Perform the update process in a copy of the dictionary to avoid incomplete updates due to unexpected
         # HTTP exceptions
         seq_dict = copy.copy(self.data)
