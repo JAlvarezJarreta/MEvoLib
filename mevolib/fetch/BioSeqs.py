@@ -367,7 +367,7 @@ class BioSeqs:
         self._report.sort(key=itemgetter(0))
 
 
-    def update (self, email: str):
+    def update (self, email: str) -> None:
         """Update the BioSeqs object from the last NCBI's Entrez database and query values stored in the 
         report list. All the sequences stored must have their genbank identifier information in the 
         annotations property. The deleted sequences from the database will be deleted in the object and the 
