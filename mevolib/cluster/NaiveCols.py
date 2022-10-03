@@ -60,7 +60,7 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
             if len(record) < start:
                 # The current sequence can't be divided into more sets
                 break
-            else: # len(record) >= start
+            else:
                 end = start + max_frag_len
                 frag_record = SeqRecord(record.seq[start:end], id=record.id,
                                         name=record.name, description=set_id)
