@@ -57,8 +57,7 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
     """
     method_key = method.lower()
     if method_key not in _METHOD_TO_FUNC:
-        raise ValueError('The method "{}" isn\'t included in ' \
-                  'MEvoLib.Cluster'.format(method))
+        raise ValueError(f'The method "{method}" is not included in mevolib.cluster')
     # else: # method_key in _METHOD_TO_FUNC
     # Get the mapping function and the sequence file path
     mapseqs_func = _METHOD_TO_FUNC[method_key]
