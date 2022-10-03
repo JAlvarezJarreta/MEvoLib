@@ -136,11 +136,14 @@ def get_features() -> List:
 
 def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq: Optional[str] = None, 
               alignment_bin: Optional[str] = None, log_file: Optional[str] = None) -> dict:
-    """Gene splicing of the sequences at 'record_list'. By default, the gene location is extracted from the 
-    feature list of each sequence. If there is no list, that sequence is classified as "unprocessable" or, if 
-    a reference sequence is given, the reference features are used to extract the different genes (through a 
-    normalization process using an alignment tool). All the features are returned unless a list of feature 
-    keywords are passed through 'feature_filter' parameter. If a log file path is given and any file exists
+    """Gene splicing of the sequences at `record_list`.
+
+    By default, the gene location is extracted from the feature list of each sequence. If there is
+    no list, that sequence is classified as "unprocessable" or, if a reference sequence is given,
+    the reference features are used to extract the different genes (through a normalization process
+    using an alignment tool). All the features are returned unless a list of feature keywords are
+    passed through `feature_filter`. If a log file path is given and any file exists with that name,
+    the file will be overwritten without any warning.
     with that name, the file will be overwritten without any warning.
 
     Args:
