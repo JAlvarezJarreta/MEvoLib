@@ -155,7 +155,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
 
     Returns:
         dict: Dictionary with the set identifiers as keys and the corresponding sequence fragments as values 
-        in lists of SeqRecord objects.
+            in lists of SeqRecord objects.
 
     Raises:
         IOError: If the reference sequence's file path doesn't exist.
