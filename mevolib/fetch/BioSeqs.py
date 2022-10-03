@@ -360,6 +360,7 @@ class BioSeqs:
 
         Args:
             new_bioseqs: The external BioSeqs object.
+
         """
         self.data.update(new_bioseqs.data)
         self._report.extend(new_bioseqs._report)
