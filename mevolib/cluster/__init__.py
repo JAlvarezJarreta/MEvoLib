@@ -16,7 +16,6 @@
 
 import multiprocessing
 import math
-from typing import List
 
 from Bio import SeqIO
 
