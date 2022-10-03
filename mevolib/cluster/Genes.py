@@ -87,10 +87,11 @@ _FEAT_QUAL_DICT = { 'assembly_gap': ['gap_type'],
 
 def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord, 
                    alignment_bin: str) -> tuple(Bio.Seq, List):
-    """Normalization of the input sequence with the reference sequence. The normalization consists on aligning 
-    both sequences and removing those sites where a gap has been introduced in the reference sequence, making 
-    the features of the reference sequence applicable to the new sequence. It returns the new sequence and the 
-    reference sequence's features.
+    """Normalizes the input sequence with the reference sequence.
+    
+    The normalization consists on aligning both sequences and removing those sites where a gap has
+    been introduced in the reference sequence, making the features of the reference sequence
+    applicable to the new sequence. It returns the new sequence and the reference sequence's features.
 
     Args:
         record: Sequence to normalize.
