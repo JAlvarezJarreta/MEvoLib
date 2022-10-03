@@ -271,7 +271,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
         for feat_key, feat_value in gene_dict.items():
             if feat_value:
                 log.write('> {}\n'.format(feat_key))
-                for qual_key, qual_value in iter(feat_value.items()):
+                for qual_key, qual_value in feat_value.items():
                     # Generation of the content of the set dictionary that will
                     # be returned
                     new_key = '{}.{}'.format(feat_key, qual_key.split(':')[0])
