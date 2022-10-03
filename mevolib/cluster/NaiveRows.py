@@ -21,7 +21,7 @@ import random
 from typing import List
 
 
-def map_seqs (record_list: List, num_sets: int) -> dict:
+def map_seqs (record_list: list, num_sets: int) -> dict:
     """Naive distribution in 'num_sets' sets of the sequences at 'record_list'. The maximum number of 
     sequences per set is calculated as follows:
 
