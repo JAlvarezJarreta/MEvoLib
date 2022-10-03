@@ -189,7 +189,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
                 record.seq, record.features = _normalization(record,
                                                              refseq_record,
                                                              alignment_bin)
-            else: # ref_seq is None
+            else:
                 unprocessable.append(record)
                 continue
         # else: # len(record.features) > 1
