@@ -32,7 +32,7 @@ _METHOD_TO_FUNC = { 'genes': Genes.map_seqs,
 
 def get_tools() -> List:
     """Returns a list of clustering methods and software tools included in the current version of MEvoLib."""
-    return list(_METHOD_TO_FUNC.keys)
+    return list(_METHOD_TO_FUNC.keys())
 
 
 def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: tuple, **kwargs: dict) -> dict:
