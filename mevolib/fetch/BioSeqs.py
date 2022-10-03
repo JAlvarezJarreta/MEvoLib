@@ -351,7 +351,8 @@ class BioSeqs:
 
 
     def join (self, new_bioseqs: BioSeqs):
-        """Join the information of the BioSeqs object with another BioSeqs object.
+        """Joins the information of the BioSeqs object with another BioSeqs object.
+
         For any matching sequence, the new information (from the external BioSeqs object) will replace the 
         existing one.
 
