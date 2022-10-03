@@ -95,7 +95,7 @@ def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord,
 
     Args:
         record: Sequence to normalize.
-        refseq_record: Reference sequence of the same type as 'record'.
+        refseq_record: Reference sequence of the same type as `record`.
         alignment_bin: Binary path to the alignment tool that will be used in the normalization process.
 
     Returns:
