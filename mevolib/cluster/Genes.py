@@ -131,7 +131,7 @@ def _string_filter(input_str: str) -> str:
 
 def get_features() -> List:
     """Returns a list of all possible feature keywords that can be found in any GenBank's sequence record."""
-    return [x for x in iter(_FEAT_QUAL_DICT.keys())]
+    return list(_FEAT_QUAL_DICT.keys())
 
 
 def map_seqs (record_list: list, feature_filter: Optional[List] = None, ref_seq: Optional[str] = None, 
