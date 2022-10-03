@@ -233,7 +233,7 @@ class BioSeqs:
 
 
     @classmethod
-    def from_entrez (cls, email: str, entrez_db: str, query: str, max_fetch: Optional[int] = sys.maxsize):
+    def from_entrez (cls, email: str, entrez_db: str, query: str, max_fetch: int = sys.maxsize) -> BioSeqs:
         """Create a BioSeqs object fetching the sequences that matches the query at the provided database from 
         NCBI's Entrez.
 
