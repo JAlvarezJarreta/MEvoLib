@@ -34,7 +34,8 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
 
     Returns:
         dict: Dictionary with the set identifiers as keys and the corresponding sequence fragments as values 
-        in lists of SeqRecord objects.
+            in lists of SeqRecord objects.
+
     """
     # Get maximum and minimum length to determine fragment size for the given number of sets
     max_len = len(max(record_list, key = lambda x: len(x.seq)))
