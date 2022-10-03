@@ -18,7 +18,7 @@
 import tempfile
 import itertools
 import math
-from typing import List, Optional
+from typing import Optional
 
 from Bio import SeqIO
 from Bio.Seq import Seq
