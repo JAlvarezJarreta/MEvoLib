@@ -309,7 +309,7 @@ class BioSeqs:
 
 
     def __len__ (self) -> int:
-        """Total number of sequences.
+        """Returns the total number of sequences."""
         """
         return (len(self.data))
 
