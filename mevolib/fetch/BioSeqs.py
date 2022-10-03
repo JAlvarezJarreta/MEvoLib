@@ -315,7 +315,7 @@ class BioSeqs:
 
 
     def __str__ (self) -> str:
-        """Fancy print of the data stored in the BioSeqs object.
+        """Fancy print of the data stored in the BioSeqs object."""
         """
         output = 'DB: {'
         end = min(5, len(self))
