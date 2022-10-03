@@ -50,7 +50,7 @@ def _get_entrez_db_rettype (entrez_db: str) -> str:
     if entrez_db in ENTREZ_DB_DICT:
         return ENTREZ_DB_DICT[entrez_db]
     else:
-        raise ValueError('"{}" isn\'t a supported NCBI\'s Entrez DB'.format(entrez_db))
+        raise ValueError(f"'{entrez_db}' is not a supported NCBI's Entrez DB")
 
 
 def _estimate_batch_size (record: str) -> int:
