@@ -116,9 +116,11 @@ def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord,
 
 
 def _string_filter(input_str: str) -> str:
-    """Returns a string lower case of 'input_str' with known GenBank's misspellings corrected.
+    """Returns a lower case string of `input_str` with known GenBank's misspellings corrected.
+
     Args:
         input_str: Input string to filter.
+
     """
     # Ignore case
     final_str = input_str.lower()
