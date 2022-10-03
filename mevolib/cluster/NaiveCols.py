@@ -22,8 +22,9 @@ from Bio.SeqRecord import SeqRecord
 
 
 def map_seqs (record_list: list, num_sets: int) -> dict:
-    """Naive splicing in 'num_sets' sets of the sequences at 'record_list'. The maximum fragment length per 
-    set is calculated as follows:
+    """Naive splicing in `num_sets` sets of the sequences at `record_list`.
+    
+    The maximum fragment length per set is calculated as follows:
 
         frag_length_per_set = ceiling( maximum_sequence_length / 'num_sets' )
 
