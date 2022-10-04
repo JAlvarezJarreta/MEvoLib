@@ -17,7 +17,6 @@
 
 import math
 
-
 from Bio.SeqRecord import SeqRecord
 
 

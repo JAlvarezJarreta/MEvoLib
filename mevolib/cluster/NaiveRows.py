@@ -19,7 +19,6 @@ import math
 import random
 
 
-
 def map_seqs (record_list: list, num_sets: int) -> dict:
     """Naive distribution in `num_sets` sets of the sequences at `record_list`.
     

@@ -14,10 +14,10 @@
 # limitations under the License.
 """Definition and implementation of the class 'BioSeqs'."""
 
-from typing import Optional
 import copy
 from datetime import datetime
 import errno
+from typing import Optional
 import itertools
 from operator import itemgetter
 import os
@@ -46,6 +46,10 @@ def _get_entrez_db_rettype (entrez_db: str) -> str:
 
     Raises:
         ValueError: If the introduced database is not supported.
+    
+    Returns:
+        The corresponding retrieval type for the given entrez database.
+
     """
     if entrez_db in ENTREZ_DB_DICT:
         return ENTREZ_DB_DICT[entrez_db]
@@ -72,10 +76,8 @@ class BioSeqs:
     source.
 
     Attributes:
-        data  (dict)
-            Dictionary where the SeqRecord objects are stored.
-        _report  (Private[list])
-            List of tuples with the information of the source or sources of the SeqRecord objects stored at 
+        data  (dict): Dictionary where the SeqRecord objects are stored.
+        _report  (Private[list]): List of tuples with the information of the source or sources of the SeqRecord objects stored at 
             'data'. This information is handled internally and shouldn't be modified externally in any way.
 
     Examples:
@@ -282,7 +284,6 @@ class BioSeqs:
             while start < num_seqs:
                 end = start + batch_size
                 try:
-                    fetch_handle = Entrez.efetch(
                     fetch_handle = Entrez.efetch(db=entrez_db, id=sequence_ids[start:end], retmode='text',
                                                  rettype=db_rettype)
                 except:
@@ -310,13 +311,13 @@ class BioSeqs:
 
     def __len__ (self) -> int:
         """Returns the total number of sequences."""
-        """
+        
         return (len(self.data))
 
 
     def __str__ (self) -> str:
         """Fancy print of the data stored in the BioSeqs object."""
-        """
+        
         output = 'DB: {'
         end = min(5, len(self))
         for index, key in enumerate(itertools.islice(self.data.keys(), end)):

@@ -30,7 +30,7 @@ _METHOD_TO_FUNC = { 'genes': Genes.map_seqs,
                     'prd': PRD.map_seqs }
 
 
-def get_tools() -> List:
+def get_tools() -> list:
     """Returns a list of clustering methods and software tools included in the current version of MEvoLib."""
     return list(_METHOD_TO_FUNC.keys())
 
@@ -50,6 +50,11 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
         ValueError: If there is no corresponding method to `method` value.
         IOError: If the path or the file provided doesn't exist.
         IOError: If the file format provided doesn't correspond to the actual one.
+    
+    Returns: 
+        A dict with the set identifiers as keys and the corresponding sequences as values in lists of 
+            SeqRecord objects.
+
 
     * The file format must be supported by Bio.SeqIO.
     * For "rows" method, if the number of input sequences is lower than the number of sets multiplied by the 

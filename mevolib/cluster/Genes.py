@@ -117,10 +117,9 @@ def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord,
 
 def _string_filter(input_str: str) -> str:
     """Returns a lower case string of `input_str` with known GenBank's misspellings corrected.
-
+    
     Args:
         input_str: Input string to filter.
-
     """
     # Ignore case
     final_str = input_str.lower()
@@ -129,7 +128,7 @@ def _string_filter(input_str: str) -> str:
     return final_str
 
 
-def get_features() -> List:
+def get_features() -> list:
     """Returns a list of all possible feature keywords that can be found in any GenBank's sequence record."""
     return list(_FEAT_QUAL_DICT.keys())
 
@@ -137,14 +136,13 @@ def get_features() -> List:
 def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq: Optional[str] = None, 
               alignment_bin: Optional[str] = None, log_file: Optional[str] = None) -> dict:
     """Gene splicing of the sequences at `record_list`.
-
+    
     By default, the gene location is extracted from the feature list of each sequence. If there is
     no list, that sequence is classified as "unprocessable" or, if a reference sequence is given,
     the reference features are used to extract the different genes (through a normalization process
     using an alignment tool). All the features are returned unless a list of feature keywords are
     passed through `feature_filter`. If a log file path is given and any file exists with that name,
     the file will be overwritten without any warning.
-    with that name, the file will be overwritten without any warning.
 
     Args:
         record_list: List of SeqRecord objects (from Biopython).
@@ -168,7 +166,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
     if feature_filter:
         gene_dict = dict((key, {}) for key in feature_filter)
         term_dict = dict((key, {}) for key in feature_filter)
-    else:
+    else: 
         gene_dict = dict((key, {}) for key in _FEAT_QUAL_DICT.keys())
         term_dict = dict((key, {}) for key in _FEAT_QUAL_DICT.keys())
     # Get the reference sequence's SeqRecord object or create an unprocessable list for those sequences 
@@ -177,7 +175,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
         refseq_record = _REF_SEQ_DICT[ref_seq].RECORD
     elif ref_seq:
         refseq_record = SeqIO.read(ref_seq, 'gb')
-    else:
+    else: 
         unprocessable = []
     num_seqs = 0
     # Iterate over all the records to get their gene division
@@ -189,7 +187,7 @@ def map_seqs (record_list: list, feature_filter: Optional[list] = None, ref_seq:
                 record.seq, record.features = _normalization(record,
                                                              refseq_record,
                                                              alignment_bin)
-            else:
+            else: 
                 unprocessable.append(record)
                 continue
         record_features = (feat  for feat in record.features[1:]
