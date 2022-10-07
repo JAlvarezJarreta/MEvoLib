@@ -77,9 +77,7 @@ class BioSeqs:
 
     Attributes:
         data  (dict): Dictionary where the SeqRecord objects are stored.
-        _report  (Private[list]): List of tuples with the information of the source or sources of the SeqRecord objects stored at 
-            'data'. This information is handled internally and shouldn't be modified externally in any way.
-
+       
     Examples:
 
         Even though the user can create a BioSeqs object by hand, there are three main methods provided to 
