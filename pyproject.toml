@@ -22,7 +22,6 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-
 ## Generic configuration
 [project]
 name = "MEvoLib"
@@ -58,7 +57,6 @@ dependencies = [
     "numpy >= 1.23.2",
 ]
 
-
 [project.optional-dependencies]
 dev = [
     "mypy",
@@ -67,11 +65,9 @@ dev = [
     "Sphinx",
 ]
 
-
 [project.urls]
 repository = "https://github.com/JAlvarezJarreta/mevolib"
 paper = "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-016-1303-3"
-
 
 ## `setuptools` related section
 [tool.setuptools]
@@ -79,3 +75,22 @@ package-dir = {"" = "mevolib"}
 
 [tool.setuptools.packages.find]
 where = ["mevolib"]
+
+## `pylint` related section
+[tool.pylint.messages_control]
+max-line-length = 110
+disable = [
+    "invalid-name",
+    "similarities",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-statements",
+    "unspecified-encoding",
+    "wildcard-import"
+]
+
+## `mypy` related section
+[tool.mypy]
+ignore_missing_imports = true
+warn_unused_configs = true
