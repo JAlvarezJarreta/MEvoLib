@@ -14,20 +14,19 @@
 # limitations under the License.
 """Definition and implementation of the class 'BioSeqs'."""
 
+from __future__ import annotations
+
 import copy
 from datetime import datetime
-import errno
-from typing import Optional
 import itertools
 from operator import itemgetter
 import os
+from pathlib import Path
 import sys
 import warnings
 
 import numpy
 from Bio import SeqIO, Entrez, Alphabet
-
-from mevolib._utils import get_abspath
 
 
 # Dictionary with the corresponding retrieval type of each Entrez database supported by BioSeqs class
@@ -147,7 +146,7 @@ class BioSeqs:
     """
 
 
-    def __init__ (self, seq_dict: dict, report: list) -> BioSeqs:
+    def __init__ (self, seq_dict: dict, report: list) -> None:
         """Creates a BioSeqs object with `seq_dict` and `report` information.
 
         Args:
@@ -174,7 +173,7 @@ class BioSeqs:
             ValueError: If the number of sequences read doesn't match the number stored
                 in the report document.
         """
-        data_filepath = get_abspath(bioseqs_file)
+        data_filepath = Path(bioseqs_file).resolve()
         report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
         # Load all the contents into a new BioSeqs object
         seq_dict = SeqIO.to_dict(SeqIO.parse(data_filepath, 'genbank'))
@@ -211,7 +210,7 @@ class BioSeqs:
         * If the file format provided doesn't correspond to the actual file format, an empty sequence 
         dictionary will be created.
         """
-        filepath = get_abspath(seqfile)
+        filepath = Path(seqfile).resolve()
         # Read the sequence file and create a new BioSeqs object, generating a
         # new report list
         seq_dict = {}
@@ -304,7 +303,7 @@ class BioSeqs:
         # Generate the corresponding report tuple
         date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         report = [(date_time, 'entrez', entrez_db, query)]
-        return (cls(seq_dict, report))
+        return cls(seq_dict, report)
 
 
     def __len__ (self) -> int:
@@ -494,7 +493,7 @@ class BioSeqs:
             IOError: If the path provided doesn't exist.
 
         """
-        data_filepath = get_abspath(bioseqs_file)
+        data_filepath = Path(bioseqs_file).resolve()
         report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
         # Generate a single string with all the report content
         str_report = '\n'.join(['    '.join(x)  for x in self._report])
