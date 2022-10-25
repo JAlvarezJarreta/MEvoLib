@@ -30,16 +30,16 @@
 #-------------------------------------------------------------------------------
 
 from __future__ import absolute_import
+from __future__ import annotations
 
 import os
 import sys
 from datetime import datetime
 import errno
 import operator
+from pathlib import Path
 
 from Bio import Phylo
-
-from mevolib._utils import get_abspath
 
 
 #-------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ class PhyTrees :
                 If the number of trees read doesn't match the number stored in
                 the report document.
         """
-        data_filepath = get_abspath(phytrees_file)
+        data_filepath = Path(phytrees_file).resolve()
         report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
         # Load all the contents into a new PhyTrees object
         tree_list = list(Phylo.parse(data_filepath, 'newick'))
@@ -181,7 +181,7 @@ class PhyTrees :
         * If the file format provided doesn't correspond to the actual file
         format, an empty tree list will be created.
         """
-        filepath = get_abspath(treefile)
+        filepath = Path(treefile).resolve()
         # Read the tree file and create a new PhyTrees object, generating a new
         # report list
         tree_list = list(Phylo.parse(filepath, fileformat))
@@ -270,7 +270,7 @@ class PhyTrees :
             IOError
                 If the path provided doesn't exist.
         """
-        data_filepath = get_abspath(phytrees_file)
+        data_filepath = Path(phytrees_file).resolve()
         report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
         # Generate a single string with all the report content
         str_report = '\n'.join(['    '.join(x)  for x in self._report])

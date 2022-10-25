@@ -6,7 +6,7 @@
 # You may obtain a copy of the License at
 
 #     http://www.apache.org/licenses/LICENSE-2.0
-
+ 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import sys
 import warnings
 
 import numpy
-from Bio import SeqIO, Entrez, Alphabet
+from Bio import SeqIO, Entrez
 
 
 # Dictionary with the corresponding retrieval type of each Entrez database supported by BioSeqs class
@@ -214,17 +214,9 @@ class BioSeqs:
         # Read the sequence file and create a new BioSeqs object, generating a
         # new report list
         seq_dict = {}
-        for record in SeqIO.parse(filepath, fileformat):
-            # When reading or parsing from certain sequence file format
-            # (e.g. FASTA), Bio.SeqIO gives a default alphabet to the Seq object
-            # created that will raise an error when writing it in a GENBANK
-            # file. Thus, we change that alphabet to a more specific one,
-            # checking if it is a DNA or a protein sequence
-            if isinstance(record.seq.alphabet, Alphabet.SingleLetterAlphabet):
-                record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACDNA()
-                if not Alphabet._verify_alphabet(record.seq):
-                    record.seq.alphabet = Alphabet.IUPAC.ExtendedIUPACProtein()
-            seq_dict[record.id] = record
+        for record in SeqIO.parse(filepath, fileformat):         
+            seq_dict[record.id] = record 
+            
         date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
         report = [(date_time, 'local', filepath, fileformat)]
         return cls(seq_dict, report)

@@ -26,16 +26,18 @@
 #-------------------------------------------------------------------------------
 
 from __future__ import absolute_import
+from __future__ import annotations
 
 import os
 import tempfile
 import multiprocessing
 import subprocess
 import dendropy
-
+ 
 from Bio import Phylo
+from pathlib import Path
 
-from mevolib._utils import get_abspath, NUMCORES
+from mevolib._utils import NUMCORES
 from mevolib._py3k import DEVNULL
 
 
@@ -154,7 +156,7 @@ def map_seqs ( record_list, tree_file, file_format, subset_size, overlapping,
     # else : # subset_size >= (4 * overlapping)
     # If the input file format is not supported by the PRD process, convert it
     # to a temporary supported file
-    infile_path = get_abspath(tree_file)
+    infile_path = Path(tree_file).resolve()
     if ( file_format.lower() != 'newick' ) :
         tmpfile = tempfile.NamedTemporaryFile()
         Phylo.convert(infile_path, file_format, tmpfile.name, 'newick')
