@@ -14,6 +14,8 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle"""
 
+from __future__ import annotations
+
 import multiprocessing
 import math
 
@@ -21,7 +23,9 @@ from Bio import SeqIO
 
 from mevolib.cluster import Genes, NaiveRows, NaiveCols, PRD
 
-from mevolib._utils import get_abspath, NUMCORES
+from mevolib._utils import NUMCORES
+
+from pathlib import Path
 
 
 _METHOD_TO_FUNC = { 'genes': Genes.map_seqs,
@@ -66,7 +70,7 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
     # else: # method_key in _METHOD_TO_FUNC
     # Get the mapping function and the sequence file path
     mapseqs_func = _METHOD_TO_FUNC[method_key]
-    filepath = get_abspath(seqfile)
+    filepath = Path(seqfile).resolve()
     if method_key in ['prd', 'genes']:
         # Non data-driven (throught input slicing) parallelizable methods
         seq_list = (x  for x in SeqIO.parse(filepath, fileformat))
