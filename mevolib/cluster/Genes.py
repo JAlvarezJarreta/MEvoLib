@@ -20,6 +20,8 @@ import itertools
 import math
 from typing import Optional
 
+import Bio
+import Bio.SeqRecord
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -86,7 +88,7 @@ _FEAT_QUAL_DICT = { 'assembly_gap': ['gap_type'],
 
 
 def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord, 
-                   alignment_bin: str) -> tuple(Bio.Seq, list):
+                   alignment_bin: str) -> tuple[Bio.Seq, list]:
     """Normalizes the input sequence with the reference sequence.
     
     The normalization consists on aligning both sequences and removing those sites where a gap has
@@ -112,7 +114,7 @@ def _normalization(record: Bio.SeqRecord, refseq_record: Bio.SeqRecord,
     # sequence during the alignment process
     record_seq = ''.join((x  for i, x in enumerate(alignment[1])
                                  if alignment[0][i] != '-'))
-    return (Seq(record_seq, refseq_record.seq.alphabet), refseq_record.features)
+    return (Seq(record_seq, refseq_record.seq), refseq_record.features)
 
 
 def _string_filter(input_str: str) -> str:
