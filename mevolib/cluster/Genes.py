@@ -20,7 +20,6 @@ import itertools
 import math
 from typing import Optional
 
-import Bio
 import Bio.SeqRecord
 from Bio import SeqIO
 from Bio.Seq import Seq
