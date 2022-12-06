@@ -76,7 +76,7 @@ def _prd_decomposition ( tree_file, subset_size, overlapping, binary = 'dcm' ) :
     # Build the command line and launch it handling any Runtime exception
     command = [binary, '3', tree_file, overlapping]
     try :
-        output = subprocess.check_output(command, stderr=os.devnull,
+        output = subprocess.check_output(command, stderr=subprocess.DEVNULL,
                                          universal_newlines=True)
     except subprocess.CalledProcessError as e :
         message = 'Running "{}" raised an exception'.format(' '.join(e.cmd))
