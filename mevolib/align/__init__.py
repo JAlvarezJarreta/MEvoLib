@@ -123,7 +123,7 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
         output = subprocess.run(command, stderr=subprocess.DEVNULL, universal_newlines=True, check=True,
                                 stdout=subprocess.PIPE).stdout
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f'Running "{" ".join(e.cmd)}" raised an exception')        
+        raise RuntimeError(f'Running "{" ".join(e.cmd)}" raised an exception')
     else:
         alignment = AlignIO.read(StringIO(output), 'fasta')
         if outfile:
