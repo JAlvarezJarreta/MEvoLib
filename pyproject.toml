@@ -14,32 +14,24 @@
 
 # pyproject.toml -- MEvoLib project configuration
 
-[build-system]
-requires = [
-    "setuptools",
-    "setuptools-scm",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
-
 ## Generic configuration
 [project]
 name = "MEvoLib"
-version = "2.0"
+dynamic = [
+    "version",
+]
 requires-python = ">= 3.8"
-
 description = "Molecular Evolution Library for Python"
 readme = "README.md"
-
-authors = [ { name = "Jorge Alvarez-Jarreta", email = "jalvarez@ebi.ac.uk" } ]
-license = { text = "Apache License 2.0" }
-
+authors = [
+    {name = "Jorge Alvarez-Jarreta", email = "jalvarez@ebi.ac.uk"}
+]
+license = {text = "Apache License 2.0"}
 keywords = [
     "bioinformatics",
     "phylogenetics",
     "molecular evolution",
 ]
-
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -50,7 +42,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-
 dependencies = [
     "biopython >= 1.79",
     "dendropy >= 4.5.2",
@@ -69,14 +60,17 @@ dev = [
 repository = "https://github.com/JAlvarezJarreta/mevolib"
 paper = "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-016-1303-3"
 
-## `setuptools` related section
-[tool.setuptools]
-package-dir = {"" = "mevolib"}
+[build-system]
+requires = [
+    "setuptools",
+    "setuptools-scm",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
 
-[tool.setuptools.packages.find]
-where = ["mevolib"]
+[tool.setuptools.dynamic]
+version = {attr = "mevolib.__version__"}
 
-## `pylint` related section
 [tool.pylint.messages_control]
 max-line-length = 110
 disable = [
@@ -90,7 +84,9 @@ disable = [
     "wildcard-import"
 ]
 
-## `mypy` related section
 [tool.mypy]
 ignore_missing_imports = true
 warn_unused_configs = true
+
+[tool.black]
+line-length = 110
