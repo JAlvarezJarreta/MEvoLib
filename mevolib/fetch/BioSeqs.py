@@ -28,6 +28,9 @@ import warnings
 import numpy
 from Bio import SeqIO, Entrez
 
+import io
+from typing import Optional
+
 
 # Dictionary with the corresponding retrieval type of each Entrez database supported by BioSeqs class
 ENTREZ_DB_DICT = {'nuccore': 'gbwithparts', 'nucest': 'gb', 'nucgss': 'gb', 'popset': 'gb', 'protein': 'gp'}
@@ -223,7 +226,7 @@ class BioSeqs:
 
 
     @classmethod
-    def from_entrez (cls, email: str, entrez_db: str, query: str, max_fetch: int = sys.maxsize) -> BioSeqs:
+    def from_entrez (cls, email: str, entrez_db: str, query: str, max_fetch: Optional[int] = sys.maxsize) -> BioSeqs:
         """Create a BioSeqs object fetching the sequences that matches the query at the provided database from 
         NCBI's Entrez.
 
@@ -263,7 +266,7 @@ class BioSeqs:
             fetch_handle = Entrez.efetch(db=entrez_db, id=sequence_ids[0], retmode='text', rettype=db_rettype)
             record_str = fetch_handle.read()
             fetch_handle.close()
-            record = SeqIO.read((record_str), 'genbank')
+            record = SeqIO.read(io.StringIO(record_str), 'genbank')
             seq_dict[record.id] = record
             batch_size = _estimate_batch_size(record_str)
             # In batches of 'batch_size', fetch the Entrez database information of each sequence in text 
