@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import argparse
 import multiprocessing
 import math
 
@@ -94,3 +95,12 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
             for result in output[1:]:
                 set_dict[key].extend(result[key])
     return set_dict
+
+
+def main():
+    """Default call for Genes module."""     
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", required = True, help = "No info for you...")
+    parser.add_argument("-n", "--name", required = True, help = "File name needed")
+    args = parser.parse_args()
+    gene_dict = get_subsets('genes', args.input, 'gb', None, None, None, args.name + '.log')

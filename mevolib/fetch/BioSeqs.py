@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import argparse
 import copy
 from datetime import datetime
 import itertools
@@ -530,3 +531,22 @@ class BioSeqs:
         min_value = numpy.amin(seqs_length)
         max_value = numpy.amax(seqs_length)
         return (len(self), mean_value, std_value, min_value, max_value)
+
+
+def call_fetch_gb_seqs(query: str, name: str):
+    """docstring"""
+    seq_db = BioSeqs.from_entrez(
+        email="ex@ucm.es", entrez_db="nuccore",
+        query = query, max_fetch=10
+    )
+    print(seq_db.statistics())
+    seq_db.write(name + '.gb')    
+
+
+def main ():
+    """Default call for BioSeqs module."""    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-q", "--query", required = True, help = "Query sentence needed")
+    parser.add_argument("-n", "--name", required = True, help = "File name needed")
+    args = parser.parse_args()
+    call_fetch_gb_seqs(args.query, args.name)  
