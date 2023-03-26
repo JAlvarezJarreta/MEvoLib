@@ -63,6 +63,7 @@ paper = "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-016
 [project.scripts]
 fetch_genbank_seqs = "mevolib.fetch.BioSeqs:main"
 get_genes = "mevolib.cluster:main"
+get_align = "mevolib.align:main"
 
 [build-system]
 requires = [
