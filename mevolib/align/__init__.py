@@ -14,6 +14,7 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle different alignment tools."""
 
+import argparse
 from io import StringIO
 import os
 import tempfile
@@ -132,3 +133,15 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
             AlignIO.write(alignment, outfile_path, outfile_format)
         # Return the resultant alignment as a Bio.Align.MultipleSeqAligment object
         return alignment
+
+def main():
+    """Default call for Align module."""     
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--tool", required = True, help = "Align Tool needed")
+    parser.add_argument("-i", "--input", required = True, help = "Unaligned file needed")
+    parser.add_argument("-f", "--fileformat", required = True, help = "File format needed")
+        
+    args = parser.parse_args()
+        
+    alignment = get_alignment(args.tool, args.input, args.fileformat)  
+    
