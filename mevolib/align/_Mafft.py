@@ -20,7 +20,7 @@ from mevolib._utils import NUMCORES
 SPRT_INFILE_FORMATS = ['fasta']
 INFILE_CMD = ''
 KEYWORDS = {
-    'default': ['--auto', '--quiet', '--thread', str(NUMCORES)],
+    'default': ['--anysymbol', '--auto', '--quiet', '--thread', str(NUMCORES)],
     'linsi': ['--localpair', '--maxiterate', '1000', '--quiet', '--thread', str(NUMCORES)],
     'parttree': ['--parttree', '--retree', '2', '--partsize', '1000', '--quiet', '--thread', str(NUMCORES)],
 }

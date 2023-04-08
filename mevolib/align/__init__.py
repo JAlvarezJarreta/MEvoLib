@@ -139,9 +139,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--tool", required = True, help = "Align Tool needed")
     parser.add_argument("-i", "--input", required = True, help = "Unaligned file needed")
-    parser.add_argument("-f", "--fileformat", required = True, help = "File format needed")
-        
+    parser.add_argument("-n", "--name", required = True, help = "Output file name needed")
     args = parser.parse_args()
-        
-    alignment = get_alignment(args.tool, args.input, args.fileformat)  
-    
+    alignment = get_alignment(args.tool, args.input, 'fasta', 'default', args.name)  
