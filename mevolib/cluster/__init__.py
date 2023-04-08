@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import argparse
 import multiprocessing
 import math
 
@@ -27,6 +28,7 @@ from mevolib._utils import NUMCORES
 
 from pathlib import Path
 
+from mevolib._utils import get_abspath
 
 _METHOD_TO_FUNC = { 'genes': Genes.map_seqs,
                     'rows': NaiveRows.map_seqs,
@@ -94,3 +96,18 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
             for result in output[1:]:
                 set_dict[key].extend(result[key])
     return set_dict
+
+def main():
+    """Default call for Genes module."""     
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", required = True, help = "BioSeqs object file needed")
+    parser.add_argument("-n", "--name", required = True, help = "File name needed")
+    args = parser.parse_args()
+    gene_dict = get_subsets('genes', args.input, 'gb', None, None, None, args.name + '.log')  
+    
+    #  We dump the split sequences stored in the dictionary into a fasta file.
+    with open(args.name + '.fasta', 'w') as handle:
+        sequence = gene_dict.values()
+        for seq in sequence:
+            SeqIO.write(seq, handle, 'fasta')
+    
