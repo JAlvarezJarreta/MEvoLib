@@ -99,11 +99,13 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
 
 def main():
     """Default call for Genes module."""     
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input", required = True, help = "BioSeqs object file needed")
-    parser.add_argument("-n", "--name", required = True, help = "File name needed")
-    args = parser.parse_args()
-    gene_dict = get_subsets('genes', args.input, 'gb', None, None, None, args.name + '.log')  
+    parser = argparse.ArgumentParser(
+        description="Performs the division of every sequence stored in the input file into subsets by genes"
+    )
+    parser.add_argument("-i", "--input", required=True, help="Input sequences file")
+    parser.add_argument("-f", "--format", default="genbank", help="Input file format")
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    gene_dict = get_subsets('genes', args.input, args.format, log_file=args.output + '.log') 
     
     #  We dump the split sequences stored in the dictionary into a fasta file.
     with open(args.name + '.fasta', 'w') as handle:
