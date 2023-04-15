@@ -533,7 +533,7 @@ class BioSeqs:
         return (len(self), mean_value, std_value, min_value, max_value)
 
 
-def call_fetch_gb_seqs(query: str, name: str):
+def call_fetch_gb_seqs(query: str, name: str) -> None:
     """docstring"""
     seq_db = BioSeqs.from_entrez(
         email="ex@ejemplo.com", entrez_db="nuccore",
