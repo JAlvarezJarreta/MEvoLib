@@ -108,7 +108,7 @@ def main():
     gene_dict = get_subsets('genes', args.input, args.format, log_file=args.output + '.log') 
     
     #  We dump the split sequences stored in the dictionary into a fasta file.
-    with open(args.name + '.fasta', 'w') as handle:
+    with open(f"{args.output}.fasta", "w") as handle:
         sequence = gene_dict.values()
         for seq in sequence:
             SeqIO.write(seq, handle, 'fasta')
