@@ -137,7 +137,7 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
 def main():
     """Default call for Align module."""     
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--tool", required = True, help = "Align Tool needed")
+    parser.add_argument("-t", "--tool", required=True, help="Alignment tool")
     parser.add_argument("-i", "--input", required = True, help = "Unaligned file needed")
     parser.add_argument("-n", "--name", required = True, help = "Output file name needed")
     args = parser.parse_args()
