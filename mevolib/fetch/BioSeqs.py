@@ -546,7 +546,7 @@ def call_fetch_gb_seqs(query: str, name: str) -> None:
 def main ():
     """Default call for BioSeqs module."""    
     parser = argparse.ArgumentParser()
-    parser.add_argument("-q", "--query", required = True, help = "Query sentence needed")
-    parser.add_argument("-n", "--name", required = True, help = "File name needed")
+    parser.add_argument("-q", "--query", required=True, help = "Query sentence (Entrez format)")
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
     args = parser.parse_args()
-    call_fetch_gb_seqs(args.query, args.name)  
+    call_fetch_gb_seqs(args.query, args.output)
