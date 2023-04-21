@@ -141,4 +141,7 @@ def main():
     parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
     parser.add_argument("-o", "--output", required=True, help="Output file name")
     args = parser.parse_args()
-    alignment = get_alignment(args.tool, args.input, 'fasta', 'default', args.output)  
+    print(args.input)
+    # for index, seq in enumerate(args.input):
+    #     alignment = get_alignment(args.tool, seq, 'fasta', 'default', f"{index}")  
+    

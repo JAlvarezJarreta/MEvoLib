@@ -105,11 +105,12 @@ def main():
     parser.add_argument("-i", "--input", required=True, help="Input sequences file")
     parser.add_argument("-f", "--format", default="genbank", help="Input file format")
     parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    args = parser.parse_args()
     gene_dict = get_subsets('genes', args.input, args.format, log_file=args.output + '.log') 
     
     #  We dump the split sequences stored in the dictionary into a fasta file.
-    with open(f"{args.output}.fasta", "w") as handle:
-        sequence = gene_dict.values()
-        for seq in sequence:
-            SeqIO.write(seq, handle, 'fasta')
+    sequence = gene_dict.values()
+    for index, seq in enumerate(sequence):
+        SeqIO.write(seq, f"{args.output}_{index}.fasta", 'fasta')
     
+
