@@ -28,6 +28,8 @@ from mevolib._utils import get_abspath
 
 import Bio.Align
 
+import ast
+
 _TOOL_TO_LIB = {
     'clustalo': _ClustalOmega,
     'mafft': _Mafft,
@@ -141,7 +143,12 @@ def main():
     parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
     parser.add_argument("-o", "--output", required=True, help="Output file name")
     args = parser.parse_args()
-    print(args.input)
-    # for index, seq in enumerate(args.input):
-    #     alignment = get_alignment(args.tool, seq, 'fasta', 'default', f"{index}")  
+
+    # aux = args.input.lstrip('[')
+    # aux = aux.rstrip(']')
+    # lista = aux.split(", ")
+    # for index, seq in enumerate(lista):
+    #     get_alignment(binary=args.tool, infile=seq, infile_format='fasta', args='default', outfile= f"{args.output}_{index}_align.fasta" , outile_format= 'fasta')  
+    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{args.output}_align.fasta" , outile_format= 'fasta')  
+
     
