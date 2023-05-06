@@ -118,20 +118,10 @@ def main():
     args = parser.parse_args()
     gene_dict = get_subsets('genes', args.input, args.format, log_file=args.output + '.log') 
     
-    for key, value in gene_dict.items():
-        if key.startswith("CDS"):
-            SeqIO.write(value, f"{key}.fasta", 'fasta')
-
-    
-    # sequence = gene_dict.values()
-    # for index, seq in enumerate(sequence):
-    #     SeqIO.write(seq, f"{args.output}_{index}.fasta", 'fasta')
-    
     #  We dump the split sequences stored in the dictionary into a fasta file.
-    # sequence = gene_dict.values()
-    # args_iterator = ((seq, f"{args.output}_{index}.fasta") for index, seq in enumerate(sequence) if len(seq)>0)
+    args_iterator = ((value, f"{key}.fasta") for key, value in gene_dict.items() if len(value)>0)
+    pool = multiprocessing.Pool(processes=NUMCORES)
+    pool.imap_unordered(parallel_seqio_write, args_iterator)
+    sleep(5)
 
-    # pool = multiprocessing.Pool(processes=NUMCORES)
-    # pool.imap_unordered(parallel_seqio_write, args_iterator)
-    # sleep(5)
 

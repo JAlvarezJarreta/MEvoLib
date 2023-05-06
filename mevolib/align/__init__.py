@@ -138,17 +138,15 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
 
 def main():
     """Default call for Align module."""     
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Performs the sequences alignment using the given alignment tool and arguments"
+    )
     parser.add_argument("-t", "--tool", required=True, help="Alignment tool")
     parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
-    parser.add_argument("-o", "--output", required=True, help="Output file name")
     args = parser.parse_args()
 
-    # aux = args.input.lstrip('[')
-    # aux = aux.rstrip(']')
-    # lista = aux.split(", ")
-    # for index, seq in enumerate(lista):
-    #     get_alignment(binary=args.tool, infile=seq, infile_format='fasta', args='default', outfile= f"{args.output}_{index}_align.fasta" , outile_format= 'fasta')  
-    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{args.output}_align.fasta" , outile_format= 'fasta')  
-
+    # We split the input file to obtain its name
+    aux = args.input.split(".fasta")[0]    
+    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{aux}_align.fasta", outfile_format='fasta')  
+  
     
