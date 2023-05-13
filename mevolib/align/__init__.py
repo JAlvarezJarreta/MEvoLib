@@ -146,7 +146,7 @@ def main():
     args = parser.parse_args()
 
     # We split the input file to obtain its name
-    aux = args.input.split(".fasta")[0]    
+    filename = Path(args.input).stem
     get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{aux}_align.fasta", outfile_format='fasta')  
   
     
