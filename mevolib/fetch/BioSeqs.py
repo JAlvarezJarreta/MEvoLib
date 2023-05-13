@@ -536,8 +536,7 @@ class BioSeqs:
 def call_fetch_gb_seqs(query: str, name: str) -> None:
     """Default call for from_entrez function"""
     seq_db = BioSeqs.from_entrez(
-        email="user@example.com", entrez_db="nuccore", query=query, max_fetch=10
-    )
+        email="user@example.com", entrez_db="nuccore")
     print(seq_db.statistics())
     seq_db.write(name + '.gb')    
 
