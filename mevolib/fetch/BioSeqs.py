@@ -32,7 +32,6 @@ from Bio import SeqIO, Entrez
 import io
 from typing import Optional
 
-# from time import sleep
 
 # Dictionary with the corresponding retrieval type of each Entrez database supported by BioSeqs class
 ENTREZ_DB_DICT = {'nuccore': 'gbwithparts', 'nucest': 'gb', 'nucgss': 'gb', 'popset': 'gb', 'protein': 'gp'}
