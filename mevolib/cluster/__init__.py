@@ -102,7 +102,7 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
     return set_dict
 
 def parallel_seqio_write(args: Tuple) -> None:
-    # Unpack DNA sequence and destination FASTA filename
+    """Unpack DNA sequence and destination FASTA filename"""
     seq, filename = args
     SeqIO.write(seq, filename, 'fasta')
 
