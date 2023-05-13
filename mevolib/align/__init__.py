@@ -28,7 +28,7 @@ from mevolib._utils import get_abspath
 
 import Bio.Align
 
-import ast
+from pathlib import Path
 
 _TOOL_TO_LIB = {
     'clustalo': _ClustalOmega,
@@ -143,10 +143,11 @@ def main():
     )
     parser.add_argument("-t", "--tool", required=True, help="Alignment tool")
     parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
     args = parser.parse_args()
 
     # We split the input file to obtain its name
     filename = Path(args.input).stem
-    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{aux}_align.fasta", outfile_format='fasta')  
+    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{filename}_align.fasta", outfile_format='fasta')  
   
     

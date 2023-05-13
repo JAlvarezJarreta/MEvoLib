@@ -534,7 +534,7 @@ class BioSeqs:
 
 
 def call_fetch_gb_seqs(query: str, name: str) -> None:
-    """docstring"""
+    """Default call for from_entrez function"""
     seq_db = BioSeqs.from_entrez(
         email="user@example.com", entrez_db="nuccore", query=query, max_fetch=10
     )
