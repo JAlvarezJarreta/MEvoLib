@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import argparse
 import multiprocessing
 import math
 
@@ -26,6 +27,10 @@ from mevolib.cluster import Genes, NaiveRows, NaiveCols, PRD
 from mevolib._utils import NUMCORES
 
 from pathlib import Path
+
+from typing import Tuple
+
+from time import sleep
 
 
 _METHOD_TO_FUNC = { 'genes': Genes.map_seqs,
@@ -94,3 +99,28 @@ def get_subsets(method: str, seqfile: str, fileformat: str = 'genbank', *args: t
             for result in output[1:]:
                 set_dict[key].extend(result[key])
     return set_dict
+
+def parallel_seqio_write(args: Tuple) -> None:
+    """Unpack DNA sequence and destination FASTA filename"""
+    seq, filename = args
+    SeqIO.write(seq, filename, 'fasta')
+
+
+def main():
+    """Default call for Genes module."""     
+    parser = argparse.ArgumentParser(
+        description="Performs the division of every sequence stored in the input file into subsets by genes"
+    )
+    parser.add_argument("-i", "--input", required=True, help="Input sequences file")
+    parser.add_argument("-f", "--format", default="genbank", help="Input file format")
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    args = parser.parse_args()
+    gene_dict = get_subsets('genes', args.input, args.format, log_file=args.output + '.log') 
+    
+    #  We dump the split sequences stored in the dictionary into a fasta file.
+    args_iterator = ((value, f"{key}.fasta") for key, value in gene_dict.items() if len(value)>0)
+    pool = multiprocessing.Pool(processes=NUMCORES)
+    pool.imap_unordered(parallel_seqio_write, args_iterator)
+    sleep(5)
+
+

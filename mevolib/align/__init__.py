@@ -14,6 +14,7 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle different alignment tools."""
 
+import argparse
 from io import StringIO
 import os
 import tempfile
@@ -26,6 +27,8 @@ from mevolib.align import _ClustalOmega, _Mafft, _Muscle
 from mevolib._utils import get_abspath
 
 import Bio.Align
+
+from pathlib import Path
 
 _TOOL_TO_LIB = {
     'clustalo': _ClustalOmega,
@@ -132,3 +135,19 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
             AlignIO.write(alignment, outfile_path, outfile_format)
         # Return the resultant alignment as a Bio.Align.MultipleSeqAligment object
         return alignment
+
+def main():
+    """Default call for Align module."""     
+    parser = argparse.ArgumentParser(
+        description="Performs the sequences alignment using the given alignment tool and arguments"
+    )
+    parser.add_argument("-t", "--tool", required=True, help="Alignment tool")
+    parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    args = parser.parse_args()
+
+    # We split the input file to obtain its name
+    filename = Path(args.input).stem
+    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{filename}_align.fasta", outfile_format='fasta')  
+  
+    
