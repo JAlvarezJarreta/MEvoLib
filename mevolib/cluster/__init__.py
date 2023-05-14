@@ -28,7 +28,6 @@ from mevolib._utils import NUMCORES
 
 from pathlib import Path
 
-from mevolib._utils import get_abspath
 from typing import Tuple
 
 from time import sleep
