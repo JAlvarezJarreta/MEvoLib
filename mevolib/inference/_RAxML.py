@@ -8,11 +8,20 @@
 #
 #-------------------------------------------------------------------------------
 # File :  _RAxML.py
-# Last version :  v1.00 ( 26/Jan/2016 )
+# Last version :  v2.0 ( 25/Sep/2023 )
 # Description :  MEvoLib's variables and library functions to ease the usage of
 #       RAxML.
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  25/Sep/2023
+#   VERSION :  v2.0
+#   AUTHOR(s) :  S. Moragon Jimenez
+#   CHANGES :  * Added StringIO and Bio.Phylo.BaseTree imports as part of the 
+#                   module version update to Python 3.10.6.
+#              * Added input variables and return type in methods, so that
+#                   it is easier to visualize the whole IO parameters of the
+#                   functions.
 #
 #   DATE :  26/Jan/2016
 #   VERSION :  v1.00
@@ -26,11 +35,12 @@ import os
 import random
 import tempfile
 import shutil
+import Bio.Phylo.BaseTree
 
 from Bio import Phylo
 
 from mevolib._utils import NUMCORES
-from mevolib._py3k import StringIO
+from io import StringIO
 
 
 #-------------------------------------------------------------------------------
@@ -56,7 +66,7 @@ KEYWORDS = {'default': ['-m', 'GTRCAT', '--silent'],
 
 #-------------------------------------------------------------------------------
 
-def gen_args ( args, infile_path, bootstraps ) :
+def gen_args ( args: str, infile_path: str, bootstraps: int ) -> list :
     """
     Return the argument list generated from 'args', the infile path and the
     bootstraps requested.
@@ -92,7 +102,7 @@ def gen_args ( args, infile_path, bootstraps ) :
 
 
 
-def get_results ( command, output ) :
+def get_results ( command: list, output: str ) -> (Bio.Phylo.BaseTree,float) :
     """
     Extract resultant phylogeny and its log-likelihood score from 'output' and
     files generated during the execution of 'command'.

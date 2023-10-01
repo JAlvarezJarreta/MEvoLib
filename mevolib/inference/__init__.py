@@ -8,11 +8,24 @@
 #
 #-------------------------------------------------------------------------------
 # File :  __init__.py
-# Last version :  v1.10 ( 16/Jul/2016 )
+# Last version :  v2.0 ( 25/Sep/2023 )
 # Description :  Functions aimed to provide an easy interface to handle
 #       different phylogenetic inference and bootstrapping tools.
 #-------------------------------------------------------------------------------
 # Historical report :
+#
+#   DATE :  25/Sep/2023
+#   VERSION :  v2.0
+#   AUTHOR(s) :  S. Moragon Jimenez
+#   CHANGES :  * Added some new imports (Bio.Phylo.BaseTree, StringIO) and
+#                   removed some old ones (viewkeys, viewitems) in order to
+#                   update the whole module to Pyhton's 3.10.6 version.
+#
+#              * Added input variables and return type in methods, so that
+#                   it is easier to visualize the whole IO parameters of the
+#                   functions.
+#
+#              * Updated how to access to dictionaries to Pyhton's 3.10.6 way.
 #
 #   DATE :  16/Jul/2016
 #   VERSION :  v1.10
@@ -32,14 +45,18 @@ import os
 import tempfile
 import subprocess
 
-from Bio import AlignIO, Phylo
+import Bio.Phylo.BaseTree
+
+from typing import Optional
+
+from io import StringIO
+from Bio import AlignIO,Phylo
+
 
 from . import _FastTree
 from . import _RAxML
 
 from mevolib._utils import get_abspath
-from mevolib._py3k import viewkeys, viewitems, DEVNULL, StringIO
-
 
 #-------------------------------------------------------------------------------
 
@@ -51,19 +68,19 @@ _BOOTS_TOOL_TO_LIB = { }
 
 #-------------------------------------------------------------------------------
 
-def get_tools ( ) :
+def get_tools ( ) -> dict :
     """
     Returns :
         dict
             Dictionary of phylogenetic inference and bootstrapping software
             tools included in the current version of MEvoLib.
     """
-    return ( dict([('inference', list(viewkeys(_PHYLO_TOOL_TO_LIB))),
-                   ('bootstrap', list(viewkeys(_BOOTS_TOOL_TO_LIB)))]) )
+    return ( dict([('inference', list(_PHYLO_TOOL_TO_LIB.keys())),      
+                   ('bootstrap', list(_BOOTS_TOOL_TO_LIB.keys()))]))
 
 
 
-def get_keywords ( tool ) :
+def get_keywords (tool: str ) -> dict :
     """
     Arguments :
         tool  ( string )
@@ -79,7 +96,7 @@ def get_keywords ( tool ) :
             If the tool introduced isn't included in MEvoLib.Inference.
     """
     tool = tool.lower()
-    tool_lib_keys = viewkeys(_PHYLO_TOOL_TO_LIB) | viewkeys(_BOOTS_TOOL_TO_LIB)
+    tool_lib_keys = _PHYLO_TOOL_TO_LIB.keys() | _BOOTS_TOOL_TO_LIB.keys()
     if ( tool not in tool_lib_keys ) :
         raise ValueError('The tool "{}" isn\'t included in ' \
                          'MEvoLib.Inference'.format(tool))
@@ -89,15 +106,15 @@ def get_keywords ( tool ) :
         tool_lib_dict = _PHYLO_TOOL_TO_LIB
     else : # tool in _BOOTS_TOOL_TO_LIB
         tool_lib_dict = _BOOTS_TOOL_TO_LIB
-    for key, value in iter(viewitems(tool_lib_dict[tool].KEYWORDS)) :
+    for key,value in tool_lib_dict.items() :
         keyword_dict[key] = ' '.join(value)
-    return ( keyword_dict )
+    return ( keyword_dict ) 
 
 
 
-def get_phylogeny ( binary, infile, infile_format, args = 'default',
-                    outfile = None, outfile_format = 'newick',
-                    bootstraps = 0 ) :
+def get_phylogeny ( binary: str, infile : str, infile_format : str, args : Optional[str] = 'default' ,
+                    outfile : Optional[str] = None , outfile_format : Optional[str] = 'newick',
+                    bootstraps : Optional[int] = 0 ) -> (Bio.Phylo.BaseTree,float) :
     """
     Infer the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
@@ -144,7 +161,7 @@ def get_phylogeny ( binary, infile, infile_format, args = 'default',
     * The output file format must be supported by Bio.Phylo.
     """
     # Get the variables associated with the given phylogenetic inference tool
-    bin_path, bin_name = os.path.split(binary)
+    bin_name = os.path.split(binary)
     bin_name = bin_name.lower()
     if ( bin_name in _PHYLO_TOOL_TO_LIB ) :
         tool_lib = _PHYLO_TOOL_TO_LIB[bin_name]
@@ -169,14 +186,14 @@ def get_phylogeny ( binary, infile, infile_format, args = 'default',
     command = [binary] + gen_args(args, infile_path, bootstraps)
     # Run the phylogenetic inference process handling any Runtime exception
     try :
-        output = subprocess.check_output(command, stderr=DEVNULL,
+        output = subprocess.check_output(command, stderr=subprocess.DEVNULL,
                                          universal_newlines=True)
     except subprocess.CalledProcessError as e :
         cleanup(command)
         message = 'Running "{}" raised an exception'.format(' '.join(e.cmd))
         raise RuntimeError(message)
     else :
-        phylogeny, score = get_results(command, output)
+        phylogeny, score = tool_lib.get_results(command, output)
         if ( outfile ) :
             # Save the resultant phylogeny in the given outfile and format
             outfile_path = get_abspath(outfile)
