@@ -53,7 +53,7 @@ from io import StringIO
 from Bio import AlignIO,Phylo
 
 
-from . import _FastTree
+from mevolib.inference import _FastTree, _RAxML
 from . import _RAxML
 
 from mevolib._utils import get_abspath
