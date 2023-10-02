@@ -114,7 +114,7 @@ def get_keywords (tool: str) -> dict:
 
 def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[str] = 'default',
                     outfile : Optional[str] = None , outfile_format : Optional[str] = 'newick',
-                    bootstraps : Optional[int] = 0 ) -> (Bio.Phylo.BaseTree,float) :
+                    bootstraps: Optional[int] = 0) -> (Bio.Phylo.BaseTree, float):
     """
     Infer the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
