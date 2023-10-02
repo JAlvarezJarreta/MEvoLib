@@ -50,7 +50,7 @@ import Bio.Phylo.BaseTree
 from typing import Optional
 
 from io import StringIO
-from Bio import AlignIO,Phylo
+from Bio import AlignIO, Phylo
 
 
 from mevolib.inference import _FastTree, _RAxML
