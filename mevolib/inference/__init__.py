@@ -112,7 +112,7 @@ def get_keywords (tool: str ) -> dict :
 
 
 
-def get_phylogeny ( binary: str, infile : str, infile_format : str, args : Optional[str] = 'default' ,
+def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[str] = 'default',
                     outfile : Optional[str] = None , outfile_format : Optional[str] = 'newick',
                     bootstraps : Optional[int] = 0 ) -> (Bio.Phylo.BaseTree,float) :
     """
