@@ -75,7 +75,7 @@ def get_tools() -> dict:
             Dictionary of phylogenetic inference and bootstrapping software
             tools included in the current version of MEvoLib.
     """
-    return ( dict([('inference', list(_PHYLO_TOOL_TO_LIB.keys())),      
+    return ( dict([('inference', list(_PHYLO_TOOL_TO_LIB.keys())),
                    ('bootstrap', list(_BOOTS_TOOL_TO_LIB.keys()))]))
 
 
