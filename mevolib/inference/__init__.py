@@ -194,7 +194,7 @@ def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[s
         raise RuntimeError(message)
     else :
         phylogeny, score = tool_lib.get_results(command, output)
-        if ( outfile ) :
+        if outfile:
             # Save the resultant phylogeny in the given outfile and format
             outfile_path = get_abspath(outfile)
             Phylo.write(phylogeny, outfile_path, outfile_format)
