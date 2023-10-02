@@ -80,7 +80,7 @@ def get_tools() -> dict:
 
 
 
-def get_keywords (tool: str ) -> dict :
+def get_keywords (tool: str) -> dict:
     """
     Arguments :
         tool  ( string )
