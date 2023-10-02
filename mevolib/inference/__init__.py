@@ -68,7 +68,7 @@ _BOOTS_TOOL_TO_LIB = { }
 
 #-------------------------------------------------------------------------------
 
-def get_tools ( ) -> dict :
+def get_tools() -> dict:
     """
     Returns :
         dict
