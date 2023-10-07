@@ -68,7 +68,7 @@ _BOOTS_TOOL_TO_LIB = { }
 
 #-------------------------------------------------------------------------------
 
-def get_tools() -> dict:
+def get_tools() -> dict[str, list]:
     """
     Returns :
         dict
@@ -97,7 +97,7 @@ def get_keywords (tool: str) -> dict:
     """
     tool = tool.lower()
     tool_lib_keys = _PHYLO_TOOL_TO_LIB.keys() | _BOOTS_TOOL_TO_LIB.keys()
-    if ( tool not in tool_lib_keys ) :
+    if tool not in tool_lib_keys:
         raise ValueError('The tool "{}" isn\'t included in ' \
                          'MEvoLib.Inference'.format(tool))
     # else : # tool in tool_lib_keys
@@ -106,15 +106,15 @@ def get_keywords (tool: str) -> dict:
         tool_lib_dict = _PHYLO_TOOL_TO_LIB
     else : # tool in _BOOTS_TOOL_TO_LIB
         tool_lib_dict = _BOOTS_TOOL_TO_LIB
-    for key,value in tool_lib_dict.items() :
+    for key, value in tool_lib_dict.items():
         keyword_dict[key] = ' '.join(value)
-    return ( keyword_dict ) 
+    return keyword_dict
 
 
 
 def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[str] = 'default',
-                    outfile : Optional[str] = None , outfile_format : Optional[str] = 'newick',
-                    bootstraps: Optional[int] = 0) -> (Bio.Phylo.BaseTree, float):
+                    outfile: Optional[str] = None, outfile_format: Optional[str] = 'newick',
+                    bootstraps: Optional[int] = 0) -> tuple[Bio.Phylo.BaseTree, float]:
     """
     Infer the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
@@ -163,7 +163,7 @@ def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[s
     # Get the variables associated with the given phylogenetic inference tool
     bin_name = os.path.split(binary)
     bin_name = bin_name.lower()
-    if ( bin_name in _PHYLO_TOOL_TO_LIB ) :
+    if bin_name in _PHYLO_TOOL_TO_LIB:
         tool_lib = _PHYLO_TOOL_TO_LIB[bin_name]
         sprt_infile_formats = tool_lib.SPRT_INFILE_FORMATS
         gen_args = tool_lib.gen_args

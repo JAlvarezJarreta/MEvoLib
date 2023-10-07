@@ -134,7 +134,7 @@ def get_results (command: list, output: str) -> Bio.Phylo.BaseTree:
 
 
 
-def cleanup (command: list):
+def cleanup (command: list) -> None:
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.

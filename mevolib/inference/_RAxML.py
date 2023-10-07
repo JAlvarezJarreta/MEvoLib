@@ -102,7 +102,7 @@ def gen_args ( args: str, infile_path: str, bootstraps: int ) -> list :
 
 
 
-def get_results ( command: list, output: str ) -> (Bio.Phylo.BaseTree,float) :
+def get_results ( command: list, output: str ) -> tuple[Bio.Phylo.BaseTree, float] :
     """
     Extract resultant phylogeny and its log-likelihood score from 'output' and
     files generated during the execution of 'command'.
