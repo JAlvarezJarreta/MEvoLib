@@ -67,7 +67,7 @@ def get_keywords (tool: str) -> dict:
     tool = tool.lower()
     tool_lib_keys = _PHYLO_TOOL_TO_LIB.keys() | _BOOTS_TOOL_TO_LIB.keys()
     if ( tool not in tool_lib_keys ) :
-        raise ValueError('The tool "{}" isn\'t included in ' \
+        raise ValueError('The tool "{}" sisn\'t included in ' \
                          'MEvoLib.Inference'.format(tool))
     # else : # tool in tool_lib_keys
     keyword_dict = {}
@@ -76,8 +76,8 @@ def get_keywords (tool: str) -> dict:
     else : # tool in _BOOTS_TOOL_TO_LIB
         tool_lib_dict = _BOOTS_TOOL_TO_LIB
     for key,value in tool_lib_dict.items() :
-        keyword_dict[key] = ' '.join(value)
-    return ( keyword_dict ) 
+        keyword_dict[key] = value
+    return keyword_dict 
 
 
 
