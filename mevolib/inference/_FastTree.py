@@ -26,7 +26,6 @@ from Bio import Phylo
 
 from mevolib._utils import get_abspath
 
-# -------------------------------------------------------------------------------
 
 SPRT_INFILE_FORMATS = ["fasta", "phylip"]
 

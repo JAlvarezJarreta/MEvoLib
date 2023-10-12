@@ -170,5 +170,5 @@ def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[s
         cleanup(command)
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
         # log-likelihood score
-        return ( phylogeny, score )
+        return phylogeny, score
 
