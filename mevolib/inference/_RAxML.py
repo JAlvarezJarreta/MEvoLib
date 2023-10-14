@@ -20,6 +20,7 @@ import tempfile
 import shutil
 from io import StringIO
 from pathlib import Path
+from typing import Optional
 
 import Bio.Phylo.BaseTree
 from Bio import Phylo
@@ -47,19 +48,21 @@ KEYWORDS = {
 }
 
 
-def gen_args(args: str, infile_path: str, bootstraps: int) -> list:
+def gen_args(args: str, infile_path: str, bootstraps: int, tmpdir_path: Optional[str] = None, seed: Optional[int] = None) -> list:
     """
     Return the argument list generated from 'args', the infile path and the
     bootstraps requested.
 
     Arguments :
-        args  ( string )
-            Keyword or arguments to use in the call of RAxML, excluding infile
-            and outfile arguments ("-s" and "-n").
-        infile_path  ( string )
-            Input alignment file path.
-        bootstraps  ( int )
-            Number of bootstraps to generate.
+        args: Keyword or arguments to use in the call of RAxML, excluding infile and outfile arguments ("-s" and "-n").
+        infile_path: Input alignment file path.
+        bootstraps: Number of bootstraps to generate.
+        tmpdir_path: Path of the directory we want to save the RAxML output data into (Only required while testing for
+            reproductibility purposes or just if the user wants a specific folder to allocate the result of the execution
+            into. Otherwise, a random one will be provided).
+        seed: Specify a random number seed for the parsimony inferences (Only required for while testing for
+            reproductibility purposes. Otherwise, a random one will be provided).
+
 
     Returns :
         list
@@ -67,9 +70,11 @@ def gen_args(args: str, infile_path: str, bootstraps: int) -> list:
     """
     argument_list = []
     if args in KEYWORDS:
-        seed = random.randint(1, 999999)
+        if seed is None:
+            seed = random.randint(1, 999999)
         pid = os.getpid()
-        tmpdir_path = tempfile.mkdtemp()
+        if tmpdir_path is None:
+            tmpdir_path = tempfile.mkdtemp()
         argument_list = ["-p", str(seed), "-n", str(pid), "-T", str(NUMCORES), "-w", tmpdir_path] + KEYWORDS[
             args
         ]
@@ -136,4 +141,3 @@ def cleanup(command):
         print(Path.dirname(outdir_path))
         if Path.dirname(outdir_path) == tempfile.gettempdir():
             shutil.rmtree(outdir_path)
-

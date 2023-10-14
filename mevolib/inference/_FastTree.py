@@ -14,12 +14,11 @@
 # limitations under the License.
 """MEvoLib's variables and library functions to ease the usage of FastTree."""
 
-from __future__ import absolute_import
-
 import os
 import tempfile
 from io import StringIO
 from pathlib import Path
+from typing import Optional
 
 import Bio.Phylo.BaseTree
 from Bio import Phylo
@@ -42,19 +41,19 @@ KEYWORDS = {
 }
 
 
-def gen_args(args: str, infile_path: str, bootstraps: int) -> list:
+def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional[str] = None) -> list:
     """
     Return the argument list generated from 'args', the infile path and the
     bootstraps requested.
 
     Arguments :
-        args  ( string )
-            Keyword or arguments to use in the call of FastTree, excluding
+        args: Keyword or arguments to use in the call of FastTree, excluding
             infile and outfile arguments.
-        infile_path  ( string )
-            Input alignment file path.
-        bootstraps  ( int )
-            Number of bootstraps to generate.
+        infile_path: Input alignment file path.
+        bootstraps: Number of bootstraps to generate.
+        log_tmpfile: Path of the directory we want to save the FastTree output data into (Only required while testing for
+            reproductibility purposes or just if the user wants a specific folder to allocate the result of the execution
+            into. Otherwise, a random one will be provided).
 
     Returns :
         list
@@ -67,7 +66,8 @@ def gen_args(args: str, infile_path: str, bootstraps: int) -> list:
     # Add the log file generation to get the log-likelihood score of the
     # resultant phylogeny
     if "-log" not in argument_list:
-        log_tmpfile = tempfile.NamedTemporaryFile(delete=False)
+        if log_tmpfile is None:
+            log_tmpfile = tempfile.NamedTemporaryFile(delete=False)
         argument_list += ["-log", log_tmpfile.name]
     # Add the bootstrapping generation option if 'boostraps' is greater than 0
     if bootstraps > 0:
@@ -119,4 +119,3 @@ def cleanup(command: list) -> None:
     logfile_path = get_abspath(command[index])
     if (Path.dirname(logfile_path) == tempfile.gettempdir()) and Path.lexists(logfile_path):
         os.remove(logfile_path)
-

@@ -14,9 +14,6 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle different phylogenetic inference and bootstrapping tools."""
 
-
-from __future__ import absolute_import
-
 import os
 import tempfile
 import subprocess
@@ -31,10 +28,9 @@ from . import _RAxML
 from mevolib.inference import _FastTree, _RAxML
 from mevolib._utils import get_abspath
 
-_PHYLO_TOOL_TO_LIB = { 'fasttree': _FastTree,
-                       'raxml': _RAxML }
+_PHYLO_TOOL_TO_LIB = {"fasttree": _FastTree, "raxml": _RAxML}
 
-_BOOTS_TOOL_TO_LIB = { }
+_BOOTS_TOOL_TO_LIB = {}
 
 
 def get_tools() -> dict:
@@ -44,12 +40,12 @@ def get_tools() -> dict:
             Dictionary of phylogenetic inference and bootstrapping software
             tools included in the current version of MEvoLib.
     """
-    return ( dict([('inference', list(_PHYLO_TOOL_TO_LIB.keys())),
-                   ('bootstrap', list(_BOOTS_TOOL_TO_LIB.keys()))]))
+    return dict(
+        [("inference", list(_PHYLO_TOOL_TO_LIB.keys())), ("bootstrap", list(_BOOTS_TOOL_TO_LIB.keys()))]
+    )
 
 
-
-def get_keywords (tool: str) -> dict:
+def get_keywords(tool: str) -> dict:
     """
     Arguments :
         tool  ( string )
@@ -66,24 +62,28 @@ def get_keywords (tool: str) -> dict:
     """
     tool = tool.lower()
     tool_lib_keys = _PHYLO_TOOL_TO_LIB.keys() | _BOOTS_TOOL_TO_LIB.keys()
-    if ( tool not in tool_lib_keys ) :
-        raise ValueError('The tool "{}" sisn\'t included in ' \
-                         'MEvoLib.Inference'.format(tool))
+    if tool not in tool_lib_keys:
+        raise ValueError(f'The tool "{tool}" isn\'t included in ' "MEvoLib.Inference")
     # else : # tool in tool_lib_keys
     keyword_dict = {}
-    if ( tool in _PHYLO_TOOL_TO_LIB ) :
+    if tool in _PHYLO_TOOL_TO_LIB:
         tool_lib_dict = _PHYLO_TOOL_TO_LIB
-    else : # tool in _BOOTS_TOOL_TO_LIB
+    else:  # tool in _BOOTS_TOOL_TO_LIB
         tool_lib_dict = _BOOTS_TOOL_TO_LIB
-    for key,value in tool_lib_dict.items() :
+    for key, value in tool_lib_dict.items():
         keyword_dict[key] = value
-    return keyword_dict 
+    return keyword_dict
 
 
-
-def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[str] = 'default',
-                    outfile : Optional[str] = None , outfile_format : Optional[str] = 'newick',
-                    bootstraps: Optional[int] = 0) -> (Bio.Phylo.BaseTree, float):
+def get_phylogeny(
+    binary: str,
+    infile: str,
+    infile_format: str,
+    args: Optional[str] = "default",
+    outfile: Optional[str] = None,
+    outfile_format: Optional[str] = "newick",
+    bootstraps: Optional[int] = 0,
+) -> (Bio.Phylo.BaseTree, float):
     """
     Infer the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
@@ -132,36 +132,33 @@ def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[s
     # Get the variables associated with the given phylogenetic inference tool
     bin_name = Path.split(binary)
     bin_name = bin_name.lower()
-    if ( bin_name in _PHYLO_TOOL_TO_LIB ) :
+    if bin_name in _PHYLO_TOOL_TO_LIB:
         tool_lib = _PHYLO_TOOL_TO_LIB[bin_name]
         sprt_infile_formats = tool_lib.SPRT_INFILE_FORMATS
         gen_args = tool_lib.gen_args
         get_results = tool_lib.get_results
         cleanup = tool_lib.cleanup
-    else : # bin_name not in _PHYLO_TOOL_TO_LIB
-        message = 'The phylogenetic inference tool "{}" isn\'t included in ' \
-                  'MEvoLib.Inference'.format(bin_name)
-        raise ValueError(message)
+    else:  # bin_name not in _PHYLO_TOOL_TO_LIB
+        raise ValueError(
+            f'The phylogenetic inference tool "{bin_name}" isn\'t included in ' "MEvoLib.Inference"
+        )
     # Get the command line to run in order to get the resultant phylogeny
     infile_path = get_abspath(infile)
     # If the input file format is not supported by the phylogenetic inference
     # tool, convert it to a temporary supported file
-    if ( infile_format.lower() not in sprt_infile_formats ) :
+    if infile_format.lower() not in sprt_infile_formats:
         tmpfile = tempfile.NamedTemporaryFile()
-        AlignIO.convert(infile_path, infile_format, tmpfile.name,
-                        sprt_infile_formats[0])
+        AlignIO.convert(infile_path, infile_format, tmpfile.name, sprt_infile_formats[0])
         infile_path = tmpfile.name
     # Create full command line list
     command = [binary] + gen_args(args, infile_path, bootstraps)
     # Run the phylogenetic inference process handling any Runtime exception
-    try :
-        output = subprocess.run(command, stderr=subprocess.DEVNULL,
-                                         universal_newlines=True)
-    except subprocess.CalledProcessError as e :
+    try:
+        output = subprocess.run(command, stderr=subprocess.DEVNULL, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
         cleanup(command)
-        message = 'Running "{}" raised an exception'.format(' '.join(e.cmd))
-        raise RuntimeError(message)
-    else :
+        raise RuntimeError(f'Running "{e.cmd}" raised an exception')
+    else:
         phylogeny, score = tool_lib.get_results(command, output)
         if outfile:
             # Save the resultant phylogeny in the given outfile and format
@@ -171,4 +168,3 @@ def get_phylogeny(binary: str, infile: str, infile_format: str, args: Optional[s
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
         # log-likelihood score
         return phylogeny, score
-
