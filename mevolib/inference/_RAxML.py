@@ -94,16 +94,12 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, fl
     files generated during the execution of 'command'.
 
     Arguments :
-        command  ( list )
-            RAxML's command line executed.
-        output  ( string )
-            Output from 'command' execution.
+        command: RAxML's command line executed.
+        output: Output from 'command' execution.
 
     Returns :
-        Bio.Phylo.BaseTree.Tree
-            Resultant phylogenetic tree.
-        float
-            Log-likelihood score of the phylogeny.
+        Bio.Phylo.BaseTree.Tree: Resultant phylogenetic tree.
+        float: Log-likelihood score of the phylogeny.
     """
     index = command.index("-n") + 1
     outfiles_id = command[index]
@@ -132,8 +128,7 @@ def cleanup(command):
     function.
 
     Arguments :
-        command  ( list )
-            RAxML's command line executed.
+        command: RAxML's command line executed.
     """
     if "-w" in command:
         index = command.index("-w") + 1

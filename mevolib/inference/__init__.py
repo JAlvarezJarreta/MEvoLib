@@ -48,17 +48,14 @@ def get_tools() -> dict:
 def get_keywords(tool: str) -> dict:
     """
     Arguments :
-        tool  ( string )
-            Name of the phylogenetic inference or bootstrapping tool.
+        tool: Name of the phylogenetic inference or bootstrapping tool.
 
     Returns :
-        dict
-            Dictionary containing the keywords and their corresponding
+        dict: Dictionary containing the keywords and their corresponding
             arguments.
 
     Raises :
-        ValueError
-            If the tool introduced isn't included in MEvoLib.Inference.
+        ValueError: If the tool introduced isn't included in MEvoLib.Inference.
     """
     tool = tool.lower()
     tool_lib_keys = _PHYLO_TOOL_TO_LIB.keys() | _BOOTS_TOOL_TO_LIB.keys()
@@ -93,37 +90,25 @@ def get_phylogeny(
     the old file will be overwritten without any warning.
 
     Arguments :
-        binary  ( string )
-            Name or path of the phylogenetic inference tool.
-        infile  ( string )
-            Sequence alignment file.
-        infile_format  ( string )
-            Input file format.
-        args  ( Optional[string] )
-            Keyword or arguments to use in the call of the phylogenetic
+        binary: Name or path of the phylogenetic inference tool.
+        infile: Sequence alignment file.
+        infile_format: Input file format.
+        args: Keyword or arguments to use in the call of the phylogenetic
             inference tool, excluding infile and outfile arguments. By default,
             'default' arguments are used.
-        outfile  ( Optional[string] )
-            Phylogenetic tree output file.
-        outfile_format  ( Optional[string] )
-            Output file format. By default, NEWICK format.
-        bootstraps  ( Optional[int] )
-            Number of bootstraps to generate. By default, 0 (only use the input
-            alignment).
+        outfile: Phylogenetic tree output file.
+        outfile_format: Output file format. By default, NEWICK format.
+        bootstraps: Number of bootstraps to generate. By default, 0 (only use the
+          input alignment).
 
     Returns :
-        Bio.Phylo.BaseTree
-            Resultant phylogenetic tree.
-        float
-            Log-likelihood score of the phylogeny.
+        Bio.Phylo.BaseTree: Resultant phylogenetic tree.
+        float: Log-likelihood score of the phylogeny.
 
     Raises :
-        ValueError
-            If the tool introduced isn't included in MEvoLib.
-        IOError
-            If the input path or the input file provided doesn't exist.
-        RuntimeError
-            If the call to the phylogenetic inference tool command raises an
+        ValueError: If the tool introduced isn't included in MEvoLib.
+        IOError: If the input path or the input file provided doesn't exist.
+        RuntimeError:  If the call to the phylogenetic inference tool command raises an
             exception.
 
     * The input file format must be supported by Bio.AlignIO.

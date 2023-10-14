@@ -56,8 +56,7 @@ def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional
             into. Otherwise, a random one will be provided).
 
     Returns :
-        list
-            List of arguments (excluding binary file) to call FastTree.
+        list: List of arguments (excluding binary file) to call FastTree.
     """
     if args in KEYWORDS:
         argument_list = list(KEYWORDS[args])
@@ -83,16 +82,12 @@ def get_results(command: list, output: str) -> Bio.Phylo.BaseTree:
     files generated during the execution of 'command'.
 
     Arguments :
-        command  ( list )
-            FastTree's command line executed.
-        output  ( string )
-            Output from 'command' execution.
+        command: FastTree's command line executed.
+        output:  Output from 'command' execution.
 
     Returns :
-        Bio.Phylo.BaseTree
-            Resultant phylogenetic tree.
-        float
-            Log-likelihood score of the phylogeny.
+        Bio.Phylo.BaseTree: Resultant phylogenetic tree.
+        float: Log-likelihood score of the phylogeny.
     """
     phylogeny = Phylo.read(StringIO(output), "newick")
     # Read the log file to get the log-likelihood score of the final phylogeny
@@ -112,8 +107,7 @@ def cleanup(command: list) -> None:
     function.
 
     Arguments :
-        command  ( list )
-            FastTree's command line executed.
+        command: FastTree's command line executed.
     """
     index = command.index("-log") + 1
     logfile_path = get_abspath(command[index])
