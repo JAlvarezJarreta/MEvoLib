@@ -14,11 +14,9 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle different phylogenetic inference and bootstrapping tools."""
 
-import os
 import tempfile
 import subprocess
 from typing import Optional
-from io import StringIO
 from pathlib import Path
 
 import Bio.Phylo.BaseTree
@@ -26,7 +24,6 @@ from Bio import AlignIO, Phylo
 
 from . import _RAxML
 from mevolib.inference import _FastTree, _RAxML
-from mevolib._utils import get_abspath
 
 _PHYLO_TOOL_TO_LIB = {"fasttree": _FastTree, "raxml": _RAxML}
 
@@ -80,6 +77,8 @@ def get_phylogeny(
     outfile: Optional[str] = None,
     outfile_format: Optional[str] = "newick",
     bootstraps: Optional[int] = 0,
+    tmp_file: Optional[str] = None,
+    seed: Optional[int] = None,
 ) -> (Bio.Phylo.BaseTree, float):
     """
     Infer the phylogeny from the input alignment using the phylogenetic
@@ -100,6 +99,11 @@ def get_phylogeny(
         outfile_format: Output file format. By default, NEWICK format.
         bootstraps: Number of bootstraps to generate. By default, 0 (only use the
           input alignment).
+        tmp_file: Path of the directory we want to save the selected tool's output data into (Only required while testing for
+            reproducibility purposes or just if the user wants a specific folder to allocate the result of the execution
+            into. Otherwise, a random one will be provided).
+        seed: Specify a random number seed for the parsimony inferences (Only required for while testing for
+            reproducibility purposes. Otherwise, a random one will be provided).
 
     Returns :
         Bio.Phylo.BaseTree: Resultant phylogenetic tree.
@@ -115,7 +119,7 @@ def get_phylogeny(
     * The output file format must be supported by Bio.Phylo.
     """
     # Get the variables associated with the given phylogenetic inference tool
-    bin_name = Path.split(binary)
+    bin_name = Path(binary).name
     bin_name = bin_name.lower()
     if bin_name in _PHYLO_TOOL_TO_LIB:
         tool_lib = _PHYLO_TOOL_TO_LIB[bin_name]
@@ -128,28 +132,38 @@ def get_phylogeny(
             f'The phylogenetic inference tool "{bin_name}" isn\'t included in ' "MEvoLib.Inference"
         )
     # Get the command line to run in order to get the resultant phylogeny
-    infile_path = get_abspath(infile)
+    infile_path = Path(infile).absolute()
     # If the input file format is not supported by the phylogenetic inference
     # tool, convert it to a temporary supported file
     if infile_format.lower() not in sprt_infile_formats:
-        tmpfile = tempfile.NamedTemporaryFile()
-        AlignIO.convert(infile_path, infile_format, tmpfile.name, sprt_infile_formats[0])
-        infile_path = tmpfile.name
+        if tmp_file is None:
+            tmp_file = tempfile.NamedTemporaryFile()
+            infile_path = tmp_file.name
+            out_file = tmp_file.name
+        else:
+            out_file = tmp_file
+        AlignIO.convert(infile_path, infile_format, out_file, sprt_infile_formats[0])
+
     # Create full command line list
-    command = [binary] + gen_args(args, infile_path, bootstraps)
+    if bin_name == "raxml":
+        command = ["raxmlHPC"] + gen_args(args, infile_path, bootstraps, tmp_file, seed)
+    else:
+        command = [bin_name] + gen_args(args, infile_path, bootstraps, tmp_file)
     # Run the phylogenetic inference process handling any Runtime exception
     try:
-        output = subprocess.run(command, stderr=subprocess.DEVNULL, universal_newlines=True)
+        output = subprocess.run(
+            command, stderr=subprocess.DEVNULL, universal_newlines=True, check=True, stdout=subprocess.PIPE
+        ).stdout
     except subprocess.CalledProcessError as e:
-        cleanup(command)
+        cleanup(command, tmp_file)
         raise RuntimeError(f'Running "{e.cmd}" raised an exception')
     else:
-        phylogeny, score = tool_lib.get_results(command, output)
+        phylogeny, score = get_results(command, output)
         if outfile:
             # Save the resultant phylogeny in the given outfile and format
-            outfile_path = get_abspath(outfile)
+            outfile_path = Path(outfile).absolute()
             Phylo.write(phylogeny, outfile_path, outfile_format)
-        cleanup(command)
+        cleanup(command, tmp_file)
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
         # log-likelihood score
         return phylogeny, score

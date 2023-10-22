@@ -48,7 +48,13 @@ KEYWORDS = {
 }
 
 
-def gen_args(args: str, infile_path: str, bootstraps: int, tmpdir_path: Optional[str] = None, seed: Optional[int] = None) -> list:
+def gen_args(
+    args: str,
+    infile_path: str,
+    bootstraps: int,
+    tmpdir_path: Optional[str] = None,
+    seed: Optional[int] = None,
+) -> list:
     """
     Return the argument list generated from 'args', the infile path and the
     bootstraps requested.
@@ -58,11 +64,10 @@ def gen_args(args: str, infile_path: str, bootstraps: int, tmpdir_path: Optional
         infile_path: Input alignment file path.
         bootstraps: Number of bootstraps to generate.
         tmpdir_path: Path of the directory we want to save the RAxML output data into (Only required while testing for
-            reproductibility purposes or just if the user wants a specific folder to allocate the result of the execution
+            reproducibility purposes or just if the user wants a specific folder to allocate the result of the execution
             into. Otherwise, a random one will be provided).
         seed: Specify a random number seed for the parsimony inferences (Only required for while testing for
-            reproductibility purposes. Otherwise, a random one will be provided).
-
+            reproducibility purposes. Otherwise, a random one will be provided).
 
     Returns :
         list
@@ -110,10 +115,10 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, fl
     else:  # '-w' not in command
         outdir_path = os.getcwd()
     # Read the final phylogeny from bestTree file
-    treefile_path = Path.join(outdir_path, "RAxML_bestTree." + outfiles_id)
+    treefile_path = Path.joinpath(outdir_path, "RAxML_bestTree." + outfiles_id)
     phylogeny = Phylo.read(treefile_path, "newick")
     # Read the info file to get the log-likelihood score of the final phylogeny
-    infofile_path = Path.join(outdir_path, "RAxML_info." + outfiles_id)
+    infofile_path = Path.joinpath(outdir_path, "RAxML_info." + outfiles_id)
     with open(infofile_path, "r") as infofile:
         # It is located at the last line that matches "TreeLogLk.*" pattern
         for line in infofile.readlines():
@@ -122,17 +127,23 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, fl
     return (phylogeny, score)
 
 
-def cleanup(command):
+def cleanup(command, tmpdir_path: Optional[str] = None):
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.
 
     Arguments :
         command: RAxML's command line executed.
+        tmpdir_path: Path of the directory we may have saved the RAxMl output data into, got from gen_args function.
+            (Only required while testing for reproducibility purposes or just if the user wants a specific folder to
+            allocate the result of the execution into. Otherwise, a random one will be provided).
     """
     if "-w" in command:
         index = command.index("-w") + 1
         outdir_path = command[index]
-        print(Path.dirname(outdir_path))
-        if Path.dirname(outdir_path) == tempfile.gettempdir():
-            shutil.rmtree(outdir_path)
+        if tmpdir_path is None:
+            dir_name = tempfile.gettempdir()
+        else:
+            dir_name = tmpdir_path
+        if (Path(outdir_path).parent == dir_name) and Path.exists(outdir_path):
+            os.remove(outdir_path)

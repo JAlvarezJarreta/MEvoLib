@@ -23,9 +23,6 @@ from typing import Optional
 import Bio.Phylo.BaseTree
 from Bio import Phylo
 
-from mevolib._utils import get_abspath
-
-
 SPRT_INFILE_FORMATS = ["fasta", "phylip"]
 
 KEYWORDS = {
@@ -52,7 +49,7 @@ def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional
         infile_path: Input alignment file path.
         bootstraps: Number of bootstraps to generate.
         log_tmpfile: Path of the directory we want to save the FastTree output data into (Only required while testing for
-            reproductibility purposes or just if the user wants a specific folder to allocate the result of the execution
+            reproducibility purposes or just if the user wants a specific folder to allocate the result of the execution
             into. Otherwise, a random one will be provided).
 
     Returns :
@@ -66,8 +63,8 @@ def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional
     # resultant phylogeny
     if "-log" not in argument_list:
         if log_tmpfile is None:
-            log_tmpfile = tempfile.NamedTemporaryFile(delete=False)
-        argument_list += ["-log", log_tmpfile.name]
+            log_tmpfile = tempfile.NamedTemporaryFile(delete=False).name
+        argument_list += ["-log", log_tmpfile]
     # Add the bootstrapping generation option if 'boostraps' is greater than 0
     if bootstraps > 0:
         argument_list += ["-boot", str(bootstraps)]
@@ -76,7 +73,7 @@ def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional
     return argument_list
 
 
-def get_results(command: list, output: str) -> Bio.Phylo.BaseTree:
+def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
     """
     Extract resultant phylogeny and its log-likelihood score from 'output' and
     files generated during the execution of 'command'.
@@ -89,10 +86,11 @@ def get_results(command: list, output: str) -> Bio.Phylo.BaseTree:
         Bio.Phylo.BaseTree: Resultant phylogenetic tree.
         float: Log-likelihood score of the phylogeny.
     """
+
     phylogeny = Phylo.read(StringIO(output), "newick")
     # Read the log file to get the log-likelihood score of the final phylogeny
     index = command.index("-log") + 1
-    logfile_path = get_abspath(command[index])
+    logfile_path = Path(command[index]).absolute()
     with open(logfile_path, "r") as logfile:
         # It is located at the last line that matches "TreeLogLk.*" pattern
         for line in logfile.readlines():
@@ -101,15 +99,22 @@ def get_results(command: list, output: str) -> Bio.Phylo.BaseTree:
     return (phylogeny, score)
 
 
-def cleanup(command: list) -> None:
+def cleanup(command: list, log_tmpfile: Optional[str] = None) -> None:
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.
 
     Arguments :
         command: FastTree's command line executed.
+        log_tmpfile: Path of the directory we may have saved the FastTree output data into, got from gen_args function.
+            (Only required while testing for reproducibility purposes or just if the user wants a specific folder to
+            allocate the result of the execution into. Otherwise, a random one will be provided).
     """
     index = command.index("-log") + 1
-    logfile_path = get_abspath(command[index])
-    if (Path.dirname(logfile_path) == tempfile.gettempdir()) and Path.lexists(logfile_path):
+    logfile_path = Path(command[index]).absolute()
+    if log_tmpfile is None:
+        dir_name = tempfile.gettempdir()
+    else:
+        dir_name = log_tmpfile
+    if (Path(logfile_path).parent == dir_name) and Path.exists(logfile_path):
         os.remove(logfile_path)
