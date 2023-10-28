@@ -90,8 +90,15 @@ disable = [
 ]
 
 [tool.mypy]
+explicit_package_bases = true
 ignore_missing_imports = true
+show_error_codes = true
 warn_unused_configs = true
 
 [tool.black]
 line-length = 110
+
+[tool.pytest.ini_options]
+addopts = "-v --tb=native"
+testpaths = ["tests"]
+norecursedirs = ["data", "docs", "*.egg_info"]
