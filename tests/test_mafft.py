@@ -28,11 +28,11 @@ class MockStdOut:
 
 def test_get_alignment(tmp_path, mocker) -> None:
     """TODO"""
-    expected_aln = pytest.flatfiles_dir / "f001.mafft_default.aln"
+    expected_aln = pytest.data_dir / "f001.mafft_default.aln"
     mocked_subprocess = mocker.patch("subprocess.run")
     mocked_subprocess.return_value = MockStdOut(expected_aln)
     output_path = tmp_path / "output.aln"
     align.get_alignment(
-        "mafft", str(pytest.flatfiles_dir / "f001.fasta"), "fasta", outfile=str(output_path)
+        "mafft", str(pytest.data_dir / "f001.fasta"), "fasta", outfile=str(output_path)
     )
-    assert filecmp.cmp(output_path, pytest.flatfiles_dir / "f001.mafft_default.aln", shallow=False)
+    assert filecmp.cmp(output_path, pytest.data_dir / "f001.mafft_default.aln", shallow=False)
