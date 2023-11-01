@@ -4,12 +4,29 @@ import pytest
 import random
 import os
 
-
 from Bio import Phylo
 from Bio.Phylo.Consensus import _BitString
 
 from mevolib.inference import _RAxML as Rax
 from mevolib._utils import NUMCORES
+
+
+class MockStdOut:
+    def __init__(self, tree_infile_path, tree_outfile_path, info_infile_path, info_outfile_path):
+        with open(tree_infile_path, "r") as fin:
+            self.stdout_tree = fin.read()
+        with open(tree_outfile_path, "w") as fin:
+            fin.write(self.stdout_tree)
+        with open(info_infile_path, "r") as fin:
+            self.stdout_info = fin.read()
+        with open(info_outfile_path, "w") as fin:
+            fin.write(self.stdout_info)
+
+    def get_mocked_tree_output(self):
+        return self.stdout_tree
+
+    def get_mocked_info_output(self):
+        return self.stdout_info
 
 
 class TestInferenceRAxML:
@@ -32,14 +49,8 @@ class TestInferenceRAxML:
     def compare(self, tree1, tree2):
         term_names1 = [term.name for term in tree1.get_terminals()]
         term_names2 = [term.name for term in tree2.get_terminals()]
-        # false if terminals are not the same
-        if set(term_names1) != set(term_names2):
-            return False
-        # true if _BitStrings are the same
-        if self._bitstrs(tree1) == self._bitstrs(tree2):
-            return True
-        else:
-            return False
+        # false if terminals or BitStrings are not the same
+        return set(term_names1) == set(term_names2) and self._bitstrs(tree1) == self._bitstrs(tree2)
 
     @pytest.mark.parametrize("format_list", [(["fasta", "phylip"])])
     def test_sprt_infile_formats(self, format_list: list):
@@ -155,7 +166,7 @@ class TestInferenceRAxML:
         assert arg_list == Rax.gen_args(args, infile_path, bootstraps, tmpdir_path, seed)
 
     @pytest.mark.parametrize(
-        "command, score, infile_path",
+        "command, score, infile_path, expected_inference_tree, expected_inference_info",
         [
             (
                 [
@@ -171,6 +182,8 @@ class TestInferenceRAxML:
                 ],
                 -1974.894224,
                 Path("tests/Fasta/f001.mafft_linsi.aln"),
+                Path("f001.mafft_linsi.RAxML_best_tree_1.aln"),
+                Path("f001.mafft_linsi.RAxML_info_1.aln"),
             ),
             (
                 [
@@ -186,10 +199,19 @@ class TestInferenceRAxML:
                 ],
                 -1988.653009,
                 Path("tests/Fasta/f001.mafft_linsi.aln"),
+                Path("f001.mafft_linsi.RAxML_best_tree_2.aln"),
+                Path("f001.mafft_linsi.RAxML_info_2.aln"),
             ),
         ],
     )
-    def test_get_results(self, command: list, score: float, infile_path: Path):
+    def test_get_results(
+        self,
+        command: list,
+        score: float,
+        infile_path: Path,
+        expected_inference_tree: Path,
+        expected_inference_info: Path,
+    ):
         """
         Test function to ensure the correct extraction of the phylogeny and it's associated score from a command and the
         resultant output.  Ultimately, it ensures the correct execution of FastTree get_results's function.
@@ -197,17 +219,30 @@ class TestInferenceRAxML:
          command: FastTree's command line executed.
          score: The associated score an inferenced phylogeny tree has.
          infile_path:  Input alignment file path.
+         expected_inference_tree: Path where the Phylo.BaseTree output of subprocess.run(command) is stored, to avoid the unnecesary
+            execution of such an expensive function.
+        expected_inference_info: Path where the information output (time, alignment patterns, score...) of subprocess.run(command)
+            is stored, to avoid the unnecesary execution of such an expensive function.
         """
         # random temporary file path generation to save the results of the execution into
         r = random.randint(1, 999999)
+
         treefile_path = Path.joinpath(self.tmp_dir, "RAxML_bestTree." + str(r))
+        infofile_path = Path.joinpath(self.tmp_dir, "RAxML_info." + str(r))
 
         command += ["-n", str(r), "-w", self.tmp_dir, "-s", infile_path.absolute()]
-        output = subprocess.run(
-            command, stderr=subprocess.DEVNULL, universal_newlines=True, check=True, stdout=subprocess.PIPE
-        ).stdout
+
+        expected_inference_tree = pytest.data_dir / expected_inference_tree
+        expected_inference_info = pytest.data_dir / expected_inference_info
+
+        run_mocker = MockStdOut(
+            expected_inference_tree, treefile_path, expected_inference_info, infofile_path
+        )
+        mocked_subprocess_tree = run_mocker.get_mocked_tree_output()
+        mocked_subprocess_info = run_mocker.get_mocked_info_output()
+
         phylogeny = Phylo.read(treefile_path, "newick")
-        res_tree, res_score = Rax.get_results(command, output)
+        res_tree, res_score = Rax.get_results(command, mocked_subprocess_info)
 
         assert score == res_score
         assert self.compare(phylogeny, res_tree)
