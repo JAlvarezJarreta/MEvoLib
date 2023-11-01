@@ -83,8 +83,8 @@ def gen_args(
         argument_list = ["-p", str(seed), "-n", str(pid), "-T", str(NUMCORES), "-w", tmpdir_path] + KEYWORDS[
             args
         ]
-    else:  # args not in KEYWORDS
-        argument_list = [arg for arg in args.split(" ")]
+    else:
+        argument_list = args.split(" ")
     # Add the bootstrapping generation option if 'boostraps' is greater than 0
     if bootstraps > 0:
         argument_list += ["-N", str(bootstraps)]
@@ -112,7 +112,7 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, fl
     if "-w" in command:
         index = command.index("-w") + 1
         outdir_path = command[index]
-    else:  # '-w' not in command
+    else:
         outdir_path = os.getcwd()
     # Read the final phylogeny from bestTree file
     treefile_path = Path.joinpath(outdir_path, "RAxML_bestTree." + outfiles_id)

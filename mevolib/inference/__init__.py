@@ -57,12 +57,12 @@ def get_keywords(tool: str) -> dict:
     tool = tool.lower()
     tool_lib_keys = _PHYLO_TOOL_TO_LIB.keys() | _BOOTS_TOOL_TO_LIB.keys()
     if tool not in tool_lib_keys:
-        raise ValueError(f'The tool "{tool}" isn\'t included in ' "MEvoLib.Inference")
+        raise ValueError(f"The tool '{tool}' isn't included in 'MEvoLib.Inference'")
     # else : # tool in tool_lib_keys
     keyword_dict = {}
     if tool in _PHYLO_TOOL_TO_LIB:
         tool_lib_dict = _PHYLO_TOOL_TO_LIB
-    else:  # tool in _BOOTS_TOOL_TO_LIB
+    else:
         tool_lib_dict = _BOOTS_TOOL_TO_LIB
     for key, value in tool_lib_dict.items():
         keyword_dict[key] = value
@@ -112,7 +112,7 @@ def get_phylogeny(
     Raises :
         ValueError: If the tool introduced isn't included in MEvoLib.
         IOError: If the input path or the input file provided doesn't exist.
-        RuntimeError:  If the call to the phylogenetic inference tool command raises an
+        RuntimeError: If the call to the phylogenetic inference tool command raises an
             exception.
 
     * The input file format must be supported by Bio.AlignIO.
@@ -127,7 +127,7 @@ def get_phylogeny(
         gen_args = tool_lib.gen_args
         get_results = tool_lib.get_results
         cleanup = tool_lib.cleanup
-    else:  # bin_name not in _PHYLO_TOOL_TO_LIB
+    else:
         raise ValueError(
             f'The phylogenetic inference tool "{bin_name}" isn\'t included in ' "MEvoLib.Inference"
         )

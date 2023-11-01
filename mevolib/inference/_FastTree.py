@@ -57,8 +57,8 @@ def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional
     """
     if args in KEYWORDS:
         argument_list = list(KEYWORDS[args])
-    else:  # args not in KEYWORDS
-        argument_list = [arg for arg in args.split(" ")]
+    else:
+        argument_list = args.split(" ")
     # Add the log file generation to get the log-likelihood score of the
     # resultant phylogeny
     if "-log" not in argument_list:
@@ -80,7 +80,7 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
 
     Arguments :
         command: FastTree's command line executed.
-        output:  Output from 'command' execution.
+        output: Output from 'command' execution.
 
     Returns :
         Bio.Phylo.BaseTree: Resultant phylogenetic tree.
@@ -90,8 +90,8 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
     phylogeny = Phylo.read(StringIO(output), "newick")
     # Read the log file to get the log-likelihood score of the final phylogeny
     index = command.index("-log") + 1
-    logfile_path = Path(command[index]).absolute()
-    with open(logfile_path, "r") as logfile:
+    logfile_path = Path(command[index])
+    with logfile_path.open("r") as logfile:
         # It is located at the last line that matches "TreeLogLk.*" pattern
         for line in logfile.readlines():
             if "TreeLogLk" in line:
