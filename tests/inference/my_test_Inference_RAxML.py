@@ -4,6 +4,7 @@ import random
 
 from Bio import Phylo
 from Bio.Phylo.Consensus import _BitString
+from Bio.Phylo import BaseTree
 import pytest
 
 from mevolib.inference import _RAxML as Rax
@@ -13,7 +14,7 @@ from mevolib._utils import NUMCORES
 class MockStdOut:
     """
     Class defined to avoid making subprocess.run(command) every time we want to test the test_get_results function.
-    As RAxML(HPC) gives the output splitted into some files, we store the results in two main files: the resultant
+    As RAxML(HPC) gives the output splitted into some files, we will store the results in two main files: the resultant
     tree itself (whose value is in stdout_tree) and the info associated to it (whose value is in stdout_info).
     Finally, we write this information in the matching output path, as the Inference get_results function expects a file
     to get some data from during its execution; and they have to be allocated in the temporary directory of the test
@@ -28,7 +29,9 @@ class MockStdOut:
         into; as the Inference module will need it to extract info from it.
     """
 
-    def __init__(self, tree_infile_path, tree_outfile_path, info_infile_path, info_outfile_path):
+    def __init__(
+        self, tree_infile_path: Path, tree_outfile_path: Path, info_infile_path: Path, info_outfile_path: Path
+    ):
         with open(tree_infile_path, "r") as fin:
             self.stdout_tree = fin.read()
         with open(tree_outfile_path, "w") as fin:
@@ -56,13 +59,7 @@ class TestInferenceRAxML:
     # Couple of functions used to compare Phylo Trees:
 
     # store and return all _BitStrings
-    def _bitstrs(self, tree):
-        """
-        Auxiliar function to extract a Phylo BaseTree terminals grouped by their clades and transform them into
-        a simplier representation (bitstrings) to compare phylogenetic trees.
-        Arguments:
-            tree: Phylo BaseTree object, whose strcuture wants to be simplified to compare it woth another one.
-        """
+    def _bitstrs(self, tree: BaseTree):
         bitstrs = set()
         term_names = [term.name for term in tree.get_terminals()]
         term_names.sort()
@@ -73,17 +70,7 @@ class TestInferenceRAxML:
             bitstrs.add(bitstr)
         return bitstrs
 
-    def compare(self, tree1, tree2):
-        """
-        Function to compare a couple of phylogenetic trees (Phylo BaseTree), so that test_get_results function
-        is able to check if both, local and Inference's given tree are similar or not.
-        (WARNING: this is not a 100% precise method, as it does make a terminals comparison, and not a
-        character-by-character one. However, for distinguishing phylogenetic trees (which is the purpose of this
-        module), it is more than enough.
-        Arguments:
-            tree1: First Phylo BaseTree that wants to be compared.
-            tree2: Second Phylo BaseTree that wants to be compared.
-        """
+    def compare(self, tree1: BaseTree, tree2: BaseTree):
         term_names1 = [term.name for term in tree1.get_terminals()]
         term_names2 = [term.name for term in tree2.get_terminals()]
         # false if terminals or BitStrings are not the same
@@ -136,12 +123,13 @@ class TestInferenceRAxML:
             assert Rax.KEYWORDS[key] == keywords[key]
 
     @pytest.mark.parametrize(
-        "args, infile_path, bootstraps, seed, arg_list",
+        "args, infile_path, bootstraps, tmpdir_path, seed, arg_list",
         [
             (
                 "JC+CAT",
                 "tests/Fasta/f001.mafft_linsi.aln",
                 1,
+                tmp_dir,
                 404,
                 [
                     "-p",
@@ -166,6 +154,7 @@ class TestInferenceRAxML:
                 "-p 648 -m GTRGAMMA --HKY85",
                 "tests/Fasta/f001.mafft_linsi.aln",
                 0,
+                None,
                 648,
                 [
                     "-p",
@@ -179,7 +168,9 @@ class TestInferenceRAxML:
             ),
         ],
     )
-    def test_gen_args(self, args: str, infile_path: str, bootstraps: int, seed: int, arg_list: list):
+    def test_gen_args(
+        self, args: str, infile_path: str, bootstraps: int, tmpdir_path: str, seed: int, arg_list: list
+    ):
         """
         Test function to ensure the construction of an argument list taking into account the parameters a
         command might need, and how it needs them. Ultimately, it ensures the correct execution of RAxML
@@ -189,11 +180,14 @@ class TestInferenceRAxML:
                 infile and outfile arguments.
             infile_path: Input alignment file path.
             bootstraps: Number of bootstraps to generate.
+            tmpdir_path: Path of the directory we want to save the RAxML output data into (Only required while testing for
+                reproducibility purposes or just if the user wants a specific folder to allocate the result of the execution
+                into. Otherwise, a random one will be provided).
             seed: Specify a random number seed for the parsimony inferences (Only required for while testing for
                 reproducibility purposes. Otherwise, a random one will be provided).
             arg_list: Handmade constructed argument list as the expected result the real function should return.
         """
-        assert arg_list == Rax.gen_args(args, infile_path, bootstraps, self.tmp_dir, seed)
+        assert arg_list == Rax.gen_args(args, infile_path, bootstraps, tmpdir_path, seed)
 
     @pytest.mark.parametrize(
         "command, score, infile_path, expected_inference_tree, expected_inference_info",
@@ -212,8 +206,8 @@ class TestInferenceRAxML:
                 ],
                 -1974.894224,
                 Path("tests/Fasta/f001.mafft_linsi.aln"),
-                Path("f001.mafft_linsi.RAxML_best_tree_1.aln"),
-                Path("f001.mafft_linsi.RAxML_info_1.aln"),
+                Path("f001.mafft_linsi.RAxML_best_tree_1"),
+                Path("f001.mafft_linsi.RAxML_info_1"),
             ),
             (
                 [
@@ -229,8 +223,8 @@ class TestInferenceRAxML:
                 ],
                 -1988.653009,
                 Path("tests/Fasta/f001.mafft_linsi.aln"),
-                Path("f001.mafft_linsi.RAxML_best_tree_2.aln"),
-                Path("f001.mafft_linsi.RAxML_info_2.aln"),
+                Path("f001.mafft_linsi.RAxML_best_tree_2"),
+                Path("f001.mafft_linsi.RAxML_info_2"),
             ),
         ],
     )
@@ -296,17 +290,17 @@ class TestInferenceRAxML:
     @pytest.mark.parametrize(
         "command",
         [
-            
-            "-w",
-            tmp_dir,
-            
+            [
+                "-w",
+                tmp_dir,
+            ],
         ],
     )
     def test_cleanup(self, command: list):
         """
         Test function to ensure the correct removal of all the files of a given directory.
         Arguments :
-            command: FastTree's command line executed.
+            command: RAxML's command line executed.
         """
         Rax.cleanup(command)
         assert self.tmp_dir.exists() == False

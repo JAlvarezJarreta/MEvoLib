@@ -1,4 +1,4 @@
-Command: fasttree -gtr -nt -nopr -quiet -log /mnt/c/Users/sermo/tfg/MEvoLib/tests/fasttree_tmp_dir/FastTree_bestTree.569933 /mnt/c/Users/sermo/tfg/MEvoLib/tests/Fasta/f001.mafft_default.aln
+Command: fasttree -gtr -nt -nopr -quiet -log /mnt/c/Users/sermo/tfg/MEvoLib/tests/inference_init_tmp_dir/FastTree_bestTree.935385 /mnt/c/Users/sermo/tfg/MEvoLib/tests/Fasta/f001.mafft_default.aln
 FastTree Version 2.1.11 Double precision (No SSE3)
 Alignment: /mnt/c/Users/sermo/tfg/MEvoLib/tests/Fasta/f001.mafft_default.aln
 Nucleotide distances: Jukes-Cantor Joins: balanced Support: SH-like 1000
