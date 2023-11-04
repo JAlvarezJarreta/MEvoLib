@@ -123,13 +123,12 @@ class TestInferenceRAxML:
             assert Rax.KEYWORDS[key] == keywords[key]
 
     @pytest.mark.parametrize(
-        "args, infile_path, bootstraps, tmpdir_path, seed, arg_list",
+        "args, infile_path, bootstraps, seed, arg_list",
         [
             (
                 "JC+CAT",
                 "tests/Fasta/f001.mafft_linsi.aln",
                 1,
-                tmp_dir,
                 404,
                 [
                     "-p",
@@ -154,7 +153,6 @@ class TestInferenceRAxML:
                 "-p 648 -m GTRGAMMA --HKY85",
                 "tests/Fasta/f001.mafft_linsi.aln",
                 0,
-                None,
                 648,
                 [
                     "-p",
@@ -187,7 +185,7 @@ class TestInferenceRAxML:
                 reproducibility purposes. Otherwise, a random one will be provided).
             arg_list: Handmade constructed argument list as the expected result the real function should return.
         """
-        assert arg_list == Rax.gen_args(args, infile_path, bootstraps, tmpdir_path, seed)
+        assert arg_list == Rax.gen_args(args, infile_path, bootstraps, self.tmp_dir, seed)
 
     @pytest.mark.parametrize(
         "command, score, infile_path, expected_inference_tree, expected_inference_info",
