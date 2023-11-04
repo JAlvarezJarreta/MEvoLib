@@ -18,7 +18,6 @@ import os
 import random
 import tempfile
 import shutil
-from io import StringIO
 from pathlib import Path
 from typing import Optional
 
@@ -127,23 +126,18 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, fl
     return (phylogeny, score)
 
 
-def cleanup(command, tmpdir_path: Optional[str] = None):
+def cleanup(command):
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.
 
     Arguments :
         command: RAxML's command line executed.
-        tmpdir_path: Path of the directory we may have saved the RAxMl output data into, got from gen_args function.
-            (Only required while testing for reproducibility purposes or just if the user wants a specific folder to
-            allocate the result of the execution into. Otherwise, a random one will be provided).
+
     """
     if "-w" in command:
         index = command.index("-w") + 1
         outdir_path = command[index]
-        if tmpdir_path is None:
-            dir_name = tempfile.gettempdir()
-        else:
-            dir_name = tmpdir_path
-        if (Path(outdir_path).parent == dir_name) and Path.exists(outdir_path):
-            os.remove(outdir_path)
+       
+        if Path.exists(outdir_path):
+            shutil.rmtree(outdir_path)

@@ -14,7 +14,7 @@
 # limitations under the License.
 """MEvoLib's variables and library functions to ease the usage of FastTree."""
 
-import os
+import shutil
 import tempfile
 from io import StringIO
 from pathlib import Path
@@ -91,30 +91,26 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
     # Read the log file to get the log-likelihood score of the final phylogeny
     index = command.index("-log") + 1
     logfile_path = Path(command[index])
+    score=-1
     with logfile_path.open("r") as logfile:
         # It is located at the last line that matches "TreeLogLk.*" pattern
         for line in logfile.readlines():
             if "TreeLogLk" in line:
-                score = float(line.split("\t")[2])
+                score = float(line.split("\t")[2])  
     return (phylogeny, score)
 
 
-def cleanup(command: list, log_tmpfile: Optional[str] = None) -> None:
+def cleanup(command: list) -> None:
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.
 
     Arguments :
         command: FastTree's command line executed.
-        log_tmpfile: Path of the directory we may have saved the FastTree output data into, got from gen_args function.
-            (Only required while testing for reproducibility purposes or just if the user wants a specific folder to
-            allocate the result of the execution into. Otherwise, a random one will be provided).
     """
-    index = command.index("-log") + 1
-    logfile_path = Path(command[index]).absolute()
-    if log_tmpfile is None:
-        dir_name = tempfile.gettempdir()
-    else:
-        dir_name = log_tmpfile
-    if (Path(logfile_path).parent == dir_name) and Path.exists(logfile_path):
-        os.remove(logfile_path)
+    if "-log" in command:
+        index = command.index("-log") + 1
+        outdir_path = command[index]
+       
+        if Path.exists(outdir_path):
+            shutil.rmtree(outdir_path) 
