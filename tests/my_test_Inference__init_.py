@@ -4,12 +4,12 @@ from pathlib import Path
 import random
 from typing import ContextManager
 import subprocess
-import pytest
-from pytest import raises
 
 from Bio import Phylo
 from Bio.Phylo import BaseTree
 from Bio.Phylo.Consensus import _BitString
+import pytest
+from pytest import raises
 
 from mevolib import inference
 from mevolib.inference import _FastTree as Fast, _RAxML as Rax

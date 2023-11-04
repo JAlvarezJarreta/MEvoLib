@@ -1,11 +1,11 @@
-from pathlib import Path
-import subprocess
-import pytest
-import random
 import os
+from pathlib import Path
+import random
+import subprocess
 
 from Bio import Phylo
 from Bio.Phylo.Consensus import _BitString
+import pytest
 
 from mevolib.inference import _RAxML as Rax
 from mevolib._utils import NUMCORES

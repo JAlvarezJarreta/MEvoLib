@@ -1,11 +1,11 @@
+from io import StringIO
 from pathlib import Path
 import random
 import subprocess
-import pytest
-from io import StringIO
 
 from Bio import Phylo
 from Bio.Phylo.Consensus import _BitString
+import pytest
 
 from mevolib.inference import _FastTree as Fast
 
