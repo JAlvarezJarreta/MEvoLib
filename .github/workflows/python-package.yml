@@ -78,7 +78,6 @@ jobs:
 
     steps:
       - name: Test with pytest
-        uses: actions/checkout@v3
         run: |
           pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
 
