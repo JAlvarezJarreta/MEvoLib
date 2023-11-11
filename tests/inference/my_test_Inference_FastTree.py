@@ -20,6 +20,7 @@ class MockStdOut:
     to get some data from during its execution; and they have to be allocated in the temporary directory of the test
     class (and not in the data one) because every execution generates a couple of these two files with a random number
     in its path, so that storing and managing all of them could be quite expensive in memory terms.
+
     Arguments:
         tree_infile_path: Path where the resultant tree of the command execution is stored into.
         tree_outfile_path: Path where the resultant tree of the command execution and its score should be copied into; as the
@@ -39,12 +40,22 @@ class MockStdOut:
 
 
 class TestInferenceFastTree:
+    """
+    Class made to ensure the correct operating of MEvoLib Inference FastTree module' functions.
+    """
+
     tmp_dir: Path = Path("tests/fasttree_tmp_dir/").absolute()
     if tmp_dir.exists() == False:
         os.mkdir(tmp_dir)
     # Couple of functions used to compare Phylo Trees:
 
-    # store and return all _BitStrings
+    """ 
+    Divides a phylogenetic tree in function of the clades terminals, providing a way to compare trees.
+    
+    Arguments:
+        tree: Phylo BaseTree object that wants to be transformed into bitstrings to get a comparison way.
+    """
+
     def _bitstrs(self, tree: BaseTree):
         bitstrs = set()
         term_names = [term.name for term in tree.get_terminals()]
@@ -56,6 +67,16 @@ class TestInferenceFastTree:
             bitstrs.add(bitstr)
         return bitstrs
 
+    """ 
+    Compares two phylogenetic trees and check they are "equal" (it is not 100% effective because of it 
+    not being a char-by-char comparison; but still quite effective for the purposes of this library).
+    
+    Arguments:
+        tree1: First Phylo BaseTree object that wants to be compared.
+        tree2: Second Phylo BaseTree object that wants to be compared.
+    """
+
+    # Compare
     def compare(self, tree1: BaseTree, tree2: BaseTree):
         term_names1 = [term.name for term in tree1.get_terminals()]
         term_names2 = [term.name for term in tree2.get_terminals()]
@@ -66,7 +87,8 @@ class TestInferenceFastTree:
     def test_sprt_infile_formats(self, format_list: list):
         """
         Test function to check that FastTree module supports the required infile formats.
-        Arguments :
+
+        Arguments:
             format_list: List of accepted infile formats for using FastTree tool.
         """
         assert len(Fast.SPRT_INFILE_FORMATS) == len(format_list)
@@ -92,6 +114,7 @@ class TestInferenceFastTree:
         """
         Test function to check that FastTree module has the same keys and values for the keywords dictionary,
         that will be used later to pass arguments to a command.
+
         Arguments :
             keywords: Dictionary where keys are shortcuts for arguments combinations and values are lists of
             arguments a command may receive.
@@ -103,13 +126,12 @@ class TestInferenceFastTree:
             assert Fast.KEYWORDS[key] == keywords[key]
 
     @pytest.mark.parametrize(
-        "args, infile_path, bootstraps, log_tmpfile, arg_list",
+        "args, infile_path, bootstraps, arg_list",
         [
             (
                 "GTR+CAT",
                 "tests/Fasta/f001.mafft_default.aln",
                 1,
-                tmp_dir,
                 [
                     "-gtr",
                     "-nt",
@@ -126,16 +148,16 @@ class TestInferenceFastTree:
                 "-nt -nopr",
                 "tests/Fasta/f001.mafft_default.aln",
                 0,
-                tmp_dir,
                 ["-nt", "-nopr", "-log", tmp_dir, "tests/Fasta/f001.mafft_default.aln"],
             ),
         ],
     )
-    def test_gen_args(self, args: str, infile_path: str, bootstraps: int, log_tmpfile: str, arg_list: list):
+    def test_gen_args(self, args: str, infile_path: str, bootstraps: int, arg_list: list):
         """
         Test function to ensure the construction of an argument list taking into account the parameters a
         command might need, and how it needs them. Ultimately, it ensures the correct execution of FastTree
         gen_args's function.
+
         Arguments :
             args: Keyword or arguments to use in the call of FastTree, excluding
                 infile and outfile arguments.
@@ -185,10 +207,12 @@ class TestInferenceFastTree:
         """
         Test function to ensure the correct extraction of the phylogeny and it's associated score from a command and the
         resultant output.  Ultimately, it ensures the correct execution of FastTree get_results's function.
+
         Arguments :
          command: FastTree's command line executed.
          score: The associated score an inferenced phylogeny tree has.
-         infile_path:  Input alignment file path.
+         infile_path: Input alignment file path.
+         expected_output: Path of the output that the execution of the command would get.
         """
         # random temporary file path generation to save the results of the execution into
         r = random.randint(1, 999999)
@@ -208,19 +232,32 @@ class TestInferenceFastTree:
         assert score == res_score
 
     @pytest.mark.parametrize(
-        "command",
+        "command, tmp_file",
         [
-            [
-                "-log",
+            (
+                [
+                    "-log",
+                    tmp_dir,
+                ],
+                None,
+            ),
+            (
+                [
+                    "-log",
+                    tmp_dir,
+                ],
                 tmp_dir,
-            ],
+            ),
         ],
     )
-    def test_cleanup(self, command: list):
+    def test_cleanup(self, command: list, tmp_file: str):
         """
         Test function to ensure the correct removal of all the files of a given directory.
+
         Arguments :
             command: FastTree's command line executed.
+            tmp_file: Path of the folder we want to delete (Just for testing purposes,
+            because when called from __init__.py, the cleanup input is a bit different).
         """
-        Fast.cleanup(command)
+        Fast.cleanup(command, tmp_file)
         assert self.tmp_dir.exists() == False
