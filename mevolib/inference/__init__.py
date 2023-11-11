@@ -78,10 +78,11 @@ def get_phylogeny(
     outfile_format: Optional[str] = "newick",
     bootstraps: Optional[int] = 0,
     tmp_file: Optional[str] = None,
+    parent_file: Optional[str] = None,
     seed: Optional[int] = None,
 ) -> (Bio.Phylo.BaseTree, float):
     """
-    Infer the phylogeny from the input alignment using the phylogenetic
+    Infers the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
     Bio.Phylo.BaseTree object and saved in the ouput file (if provided). If
     'infile' or 'outfile' contain a relative path, the current working directory
@@ -102,6 +103,9 @@ def get_phylogeny(
         tmp_file: Path of the directory we want to save the selected tool's output data into (Only required while testing for
             reproducibility purposes or just if the user wants a specific folder to allocate the result of the execution
             into. Otherwise, a random one will be provided).
+        parent_file: Path of the directory we want to save all the tmp_file's data into (Only required while testing for
+            reproducibility purposes or just if the user wants a specific folder to allocate the result of the tmp_files
+            into.).
         seed: Specify a random number seed for the parsimony inferences (Only required for while testing for
             reproducibility purposes. Otherwise, a random one will be provided).
 
@@ -139,11 +143,14 @@ def get_phylogeny(
         if tmp_file is None:
             tmp_file = tempfile.NamedTemporaryFile()
             infile_path = tmp_file.name
-            out_file = tmp_file.name
-        else:
-            out_file = tmp_file
-        AlignIO.convert(infile_path, infile_format, out_file, sprt_infile_formats[0])
 
+        out_file = tmp_file.name
+
+        AlignIO.convert(infile_path, infile_format, out_file, sprt_infile_formats[0])
+        infile_path = Path(out_file).absolute()
+
+    if parent_file is None:
+        parent_file = tmp_file
     # Create full command line list
     if bin_name == "raxml":
         command = ["raxmlHPC"] + gen_args(args, infile_path, bootstraps, tmp_file, seed)
@@ -155,7 +162,7 @@ def get_phylogeny(
             command, stderr=subprocess.DEVNULL, universal_newlines=True, check=True, stdout=subprocess.PIPE
         ).stdout
     except subprocess.CalledProcessError as e:
-        cleanup(command, tmp_file)
+        cleanup(command, parent_file)
         raise RuntimeError(f'Running "{e.cmd}" raised an exception')
     else:
         phylogeny, score = get_results(command, output)
@@ -163,7 +170,7 @@ def get_phylogeny(
             # Save the resultant phylogeny in the given outfile and format
             outfile_path = Path(outfile).absolute()
             Phylo.write(phylogeny, outfile_path, outfile_format)
-        cleanup(command, tmp_file)
+        cleanup(command, parent_file)
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
         # log-likelihood score
         return phylogeny, score

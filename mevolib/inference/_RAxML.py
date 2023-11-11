@@ -126,18 +126,23 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, fl
     return (phylogeny, score)
 
 
-def cleanup(command):
+def cleanup(command: list, tmp_file: Optional[str] = None) -> None:
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.
 
     Arguments :
-        command: RAxML's command line executed.
-
+        command: FastTree's command line executed.
+        tmp_file: Path of the folder we want to delete (Just for testing purposes,
+        because when called from __init__.py, the cleanup input is a bit different).
     """
-    if "-w" in command:
-        index = command.index("-w") + 1
-        outdir_path = command[index]
-       
-        if Path.exists(outdir_path):
-            shutil.rmtree(outdir_path)
+
+    if tmp_file is None:
+        if "-w" in command:
+            index = command.index("-w") + 1
+            outdir_path = command[index]
+    else:
+        outdir_path = tmp_file
+
+    if Path.exists(outdir_path):
+        shutil.rmtree(outdir_path)

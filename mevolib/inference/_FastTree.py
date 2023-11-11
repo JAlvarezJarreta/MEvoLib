@@ -91,26 +91,32 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
     # Read the log file to get the log-likelihood score of the final phylogeny
     index = command.index("-log") + 1
     logfile_path = Path(command[index])
-    score=-1
+    score = -1
     with logfile_path.open("r") as logfile:
         # It is located at the last line that matches "TreeLogLk.*" pattern
         for line in logfile.readlines():
             if "TreeLogLk" in line:
-                score = float(line.split("\t")[2])  
+                score = float(line.split("\t")[2])
     return (phylogeny, score)
 
 
-def cleanup(command: list) -> None:
+def cleanup(command: list, tmp_file: Optional[str] = None) -> None:
     """
     Remove the temporary files and directories created (if any) in gen_args()
     function.
 
     Arguments :
         command: FastTree's command line executed.
+        tmp_file: Path of the folder we want to delete (Just for testing purposes,
+        because when called from __init__.py, the cleanup input is a bit different).
     """
-    if "-log" in command:
-        index = command.index("-log") + 1
-        outdir_path = command[index]
-       
-        if Path.exists(outdir_path):
-            shutil.rmtree(outdir_path) 
+
+    if tmp_file is None:
+        if "-log" in command:
+            index = command.index("-log") + 1
+            outdir_path = command[index]
+    else:
+        outdir_path = tmp_file
+
+    if Path.exists(outdir_path):
+        shutil.rmtree(outdir_path)
