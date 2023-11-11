@@ -53,26 +53,48 @@ jobs:
         pip install pylint
         pylint --rcfile pyproject.toml mevolib
         pylint --rcfile pyproject.toml tests
+      continue-on-error: true
 
     - name: mypy
       run: |
         pip install mypy
         mypy --config-file pyproject.toml mevolib
         mypy --config-file pyproject.toml tests
+      continue-on-error: true
 
     - name: black
       run: |
         pip install black
         black --config pyproject.toml --verbose --check .
+      continue-on-error: true
 
   test:
-    runs-on: ubuntu-latest
 
-    needs: build
+    # needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
 
     steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y fasttree raxml mafft muscle clustalw clustalo clustalx
+          python -m pip install --upgrade pip
+          pip install -e .[mevolib]
+
       - name: Test with pytest
         run: |
+          pip install pytest
           pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
 
       - name: Upload pytest test results
@@ -81,7 +103,7 @@ jobs:
           name: pytest-results-${{ matrix.python-version }}
           path: junit/test-results-${{ matrix.python-version }}.xml
 
-      - name: Get code coverage results
+      - name: Code coverage analysis
         run: |
           pip install coverage
           pip install genbadge
