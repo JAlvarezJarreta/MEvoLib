@@ -73,7 +73,7 @@ class TestInferenceInit:
     """
 
     tmp_dir: Path = Path("tests/inference_init_tmp_dir/").absolute()
-    if tmp_dir.exists() == False:
+    if not tmp_dir.exists():
         os.mkdir(tmp_dir)
 
     # store and return all _BitStrings
@@ -301,7 +301,7 @@ class TestInferenceInit:
             score: Phylogenetic score associated to the inference of the input_file using the selected tool.
             expected: Context Manager that indicates whether or not an exception should be raised.
         """
-        if self.tmp_dir.exists() == False:
+        if not self.tmp_dir.exists():
             os.mkdir(self.tmp_dir)
         with expected:
             run_mocker = MockStdOut()

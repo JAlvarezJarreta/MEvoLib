@@ -45,7 +45,7 @@ class TestInferenceFastTree:
     """
 
     tmp_dir: Path = Path("tests/fasttree_tmp_dir/").absolute()
-    if tmp_dir.exists() == False:
+    if not tmp_dir.exists():
         os.mkdir(tmp_dir)
     # Couple of functions used to compare Phylo Trees:
 
@@ -260,4 +260,4 @@ class TestInferenceFastTree:
             because when called from __init__.py, the cleanup input is a bit different).
         """
         Fast.cleanup(command, tmp_file)
-        assert self.tmp_dir.exists() == False
+        assert not self.tmp_dir.exists()

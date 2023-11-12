@@ -55,7 +55,7 @@ class TestInferenceRAxML:
     """
 
     tmp_dir: Path = Path("tests/raxml_tmp_dir/").absolute()
-    if tmp_dir.exists() == False:
+    if not tmp_dir.exists():
         os.mkdir(tmp_dir)
     # Couple of functions used to compare Phylo Trees:
 
@@ -317,4 +317,4 @@ class TestInferenceRAxML:
 
         """
         Rax.cleanup(command, tmp_file)
-        assert self.tmp_dir.exists() == False
+        assert not self.tmp_dir.exists()
