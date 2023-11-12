@@ -97,7 +97,7 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
         for line in logfile.readlines():
             if "TreeLogLk" in line:
                 score = float(line.split("\t")[2])
-    return (phylogeny, score)
+    return phylogeny, score
 
 
 def cleanup(command: list, tmp_file: Optional[str] = None) -> None:
