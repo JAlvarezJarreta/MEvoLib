@@ -20,9 +20,9 @@ import math
 from Bio.SeqRecord import SeqRecord
 
 
-def map_seqs (record_list: list, num_sets: int) -> dict:
+def map_seqs(record_list: list, num_sets: int) -> dict:
     """Naive splicing in `num_sets` sets of the sequences at `record_list`.
-    
+
     The maximum fragment length per set is calculated as follows:
 
         frag_length_per_set = ceiling( maximum_sequence_length / 'num_sets' )
@@ -32,27 +32,29 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
         seq_length: Number of sets of sequence slices.
 
     Returns:
-        dict: Dictionary with the set identifiers as keys and the corresponding sequence fragments as values 
+        dict: Dictionary with the set identifiers as keys and the corresponding sequence fragments as values
             in lists of SeqRecord objects.
 
     """
     # Get maximum and minimum length to determine fragment size for the given number of sets
-    max_len = len(max(record_list, key = lambda x: len(x.seq)))
+    max_len = len(max(record_list, key=lambda x: len(x.seq)))
     max_frag_len = int(math.ceil(float(max_len) / num_sets))
     min_frag_len = max_frag_len - 1
     # Get the number of sets that will have the maximum length sequences to balance the distribution per set
     big_sets = max_len % num_sets
-    small_sets = num_sets - big_sets	
+    small_sets = num_sets - big_sets
     # Minimum string length for the given number of sets (with zero-filling)
     num_zeros = len(str(num_sets))
     # Generate all the set ids and their corresponding starting site
     first_range = big_sets * max_frag_len
-    frag_list = [('cset{}'.format(str(i).zfill(num_zeros)), value)
-                    for i, value in enumerate(range(0, first_range,
-					                                max_frag_len), 1)]
-    frag_list += [('cset{}'.format(str(i).zfill(num_zeros)), value)
-                    for i, value in enumerate(range(first_range, max_len,
-					                                min_frag_len), big_sets+1)]
+    frag_list = [
+        ("cset{}".format(str(i).zfill(num_zeros)), value)
+        for i, value in enumerate(range(0, first_range, max_frag_len), 1)
+    ]
+    frag_list += [
+        ("cset{}".format(str(i).zfill(num_zeros)), value)
+        for i, value in enumerate(range(first_range, max_len, min_frag_len), big_sets + 1)
+    ]
     set_dict = {}
     for record in iter(record_list):
         for set_id, start in frag_list:
@@ -61,7 +63,8 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
                 break
             else:
                 end = start + max_frag_len
-                frag_record = SeqRecord(record.seq[start:end], id=record.id,
-                                        name=record.name, description=set_id)
+                frag_record = SeqRecord(
+                    record.seq[start:end], id=record.id, name=record.name, description=set_id
+                )
                 set_dict.setdefault(set_id, []).append(frag_record)
     return set_dict

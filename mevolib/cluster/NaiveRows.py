@@ -19,9 +19,9 @@ import math
 import random
 
 
-def map_seqs (record_list: list, num_sets: int) -> dict:
+def map_seqs(record_list: list, num_sets: int) -> dict:
     """Naive distribution in `num_sets` sets of the sequences at `record_list`.
-    
+
     The maximum number of sequences per set is calculated as follows:
 
         sequences_per_set = ceiling( total_number_of_sequences / 'num_sets' )
@@ -31,14 +31,14 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
         num_sets: Number of sets.
 
     Returns:
-        dict: Dictionary with the set identifiers as keys and the corresponding sequences as values in lists 
+        dict: Dictionary with the set identifiers as keys and the corresponding sequences as values in lists
             of SeqRecord objects.
     """
     num_seqs = len(record_list)
     # Determine the minimum and maximum number of sequences per set
     min_seqs_set = int(math.floor(float(num_seqs) / num_sets))
     max_seqs_set = min_seqs_set + 1
-    # Get the number of sets that will have the maximum number of sequences to balance the distribution of 
+    # Get the number of sets that will have the maximum number of sequences to balance the distribution of
     # sequences per set
     big_sets = num_seqs % num_sets
     small_sets = num_sets - big_sets
@@ -50,7 +50,7 @@ def map_seqs (record_list: list, num_sets: int) -> dict:
     set_dict = {}
     start = 0
     for index, set_size in enumerate(set_size_list, 1):
-        set_id = 'rset{}'.format(str(index).zfill(num_zeros))
+        set_id = "rset{}".format(str(index).zfill(num_zeros))
         end = start + set_size
         set_dict[set_id] = record_list[start:end]
         start = end

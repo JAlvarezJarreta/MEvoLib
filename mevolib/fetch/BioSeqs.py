@@ -1,12 +1,12 @@
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
-
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
- 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,22 +34,22 @@ from typing import Optional
 
 
 # Dictionary with the corresponding retrieval type of each Entrez database supported by BioSeqs class
-ENTREZ_DB_DICT = {'nuccore': 'gbwithparts', 'nucest': 'gb', 'nucgss': 'gb', 'popset': 'gb', 'protein': 'gp'}
+ENTREZ_DB_DICT = {"nuccore": "gbwithparts", "nucest": "gb", "nucgss": "gb", "popset": "gb", "protein": "gp"}
 # Constant that limits the maximum number of sequences that can be fetched
 MAX_NUM_SEQS = 100000
 
 
-def _get_entrez_db_rettype (entrez_db: str) -> str:
+def _get_entrez_db_rettype(entrez_db: str) -> str:
     """Checks if the given entrez database is supported by the BioSeqs class.
-    
+
     Supported Entrez databases are stored in `ENTREZ_DB_DICT`.
 
-    Args: 
+    Args:
         entrez_db: Entrez database name
 
     Raises:
         ValueError: If the introduced database is not supported.
-    
+
     Returns:
         The corresponding retrieval type for the given entrez database.
 
@@ -60,30 +60,30 @@ def _get_entrez_db_rettype (entrez_db: str) -> str:
         raise ValueError(f"'{entrez_db}' is not a supported NCBI's Entrez DB")
 
 
-def _estimate_batch_size (record: str) -> int:
+def _estimate_batch_size(record: str) -> int:
     """Calculates the advisable batch size given the recommendations of Entrez and the record size.
 
     Args:
         record: Record of the sequence in text format.
-           
-    * It is calculated considering a 1Mbps download speed and a desirable maximum fetch time of 5 minutes 
+
+    * It is calculated considering a 1Mbps download speed and a desirable maximum fetch time of 5 minutes
     per batch.
     """
     record_size = sys.getsizeof(record)
     # Entrez advises a ceiling of 200 identifiers per request, and return at least 1 if the record is very big
-    return (int(max(min(200, numpy.floor(3.75e7/record_size)), 1)))
+    return int(max(min(200, numpy.floor(3.75e7 / record_size)), 1))
 
 
 class BioSeqs:
-    """A BioSeqs object holds SeqRecord objects (Bio.SeqRecord from Biopython) and information about their 
+    """A BioSeqs object holds SeqRecord objects (Bio.SeqRecord from Biopython) and information about their
     source.
 
     Attributes:
         data  (dict): Dictionary where the SeqRecord objects are stored.
-       
+
     Examples:
 
-        Even though the user can create a BioSeqs object by hand, there are three main methods provided to 
+        Even though the user can create a BioSeqs object by hand, there are three main methods provided to
         make things easier:
 
         >>> from MEvoLib.BioSeqs import BioSeqs
@@ -149,8 +149,7 @@ class BioSeqs:
         >>> seqsdb.write('new_seqs.gb')
     """
 
-
-    def __init__ (self, seq_dict: dict, report: list) -> None:
+    def __init__(self, seq_dict: dict, report: list) -> None:
         """Creates a BioSeqs object with `seq_dict` and `report` information.
 
         Args:
@@ -161,12 +160,11 @@ class BioSeqs:
         self.data = seq_dict
         self._report = report
 
-
     @classmethod
-    def from_bioseqs (cls, bioseqs_file: str) -> BioSeqs:
+    def from_bioseqs(cls, bioseqs_file: str) -> BioSeqs:
         """Creates a BioSeqs object retrieving all the information from previously saved BioSeqs sequence and
         report files.
-        
+
         If `bioseqs_file` contains a relative path, the current working directory will be used to get
         the absolute path.
 
@@ -178,28 +176,28 @@ class BioSeqs:
                 in the report document.
         """
         data_filepath = Path(bioseqs_file).resolve()
-        report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
+        report_filepath = os.path.splitext(data_filepath)[0] + ".rep"
         # Load all the contents into a new BioSeqs object
-        seq_dict = SeqIO.to_dict(SeqIO.parse(data_filepath, 'genbank'))
+        seq_dict = SeqIO.to_dict(SeqIO.parse(data_filepath, "genbank"))
         report = []
-        with open(report_filepath, 'r') as report_file:
+        with open(report_filepath, "r") as report_file:
             str_num_seqs = report_file.readline()
-            num_seqs = int(str_num_seqs.split(':')[-1])
+            num_seqs = int(str_num_seqs.split(":")[-1])
             if len(seq_dict) != num_seqs:
-                raise ValueError('The number of sequences at report file does not match the number' \
-                                 ' of sequences loaded')
+                raise ValueError(
+                    "The number of sequences at report file does not match the number" " of sequences loaded"
+                )
             # Ignore "History:" line
             report_file.readline()
             for line in report_file.readlines():
-                date_time, src_type, src, details = line.strip().split('    ')
+                date_time, src_type, src, details = line.strip().split("    ")
                 report.append((date_time, src_type, src, details))
         return cls(seq_dict, report)
 
-
     @classmethod
-    def from_seqfile (cls, seqfile: str, fileformat: str) -> BioSeqs:
+    def from_seqfile(cls, seqfile: str, fileformat: str) -> BioSeqs:
         """Creates a BioSeqs object retrieving all the information stored at the sequence file provided.
-        
+
         If `seqfile` contains a relative path, the current working directory will be used to get the
         absolute path.
 
@@ -211,24 +209,25 @@ class BioSeqs:
             IOError: If the path or the file provided doesn't exist.
 
         * The file format must be supported by Bio.SeqIO.
-        * If the file format provided doesn't correspond to the actual file format, an empty sequence 
+        * If the file format provided doesn't correspond to the actual file format, an empty sequence
         dictionary will be created.
         """
         filepath = Path(seqfile).resolve()
         # Read the sequence file and create a new BioSeqs object, generating a
         # new report list
         seq_dict = {}
-        for record in SeqIO.parse(filepath, fileformat):         
-            seq_dict[record.id] = record 
-            
-        date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        report = [(date_time, 'local', filepath, fileformat)]
+        for record in SeqIO.parse(filepath, fileformat):
+            seq_dict[record.id] = record
+
+        date_time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        report = [(date_time, "local", filepath, fileformat)]
         return cls(seq_dict, report)
 
-
     @classmethod
-    def from_entrez (cls, email: str, entrez_db: str, query: str, max_fetch: Optional[int] = sys.maxsize) -> BioSeqs:
-        """Create a BioSeqs object fetching the sequences that matches the query at the provided database from 
+    def from_entrez(
+        cls, email: str, entrez_db: str, query: str, max_fetch: Optional[int] = sys.maxsize
+    ) -> BioSeqs:
+        """Create a BioSeqs object fetching the sequences that matches the query at the provided database from
         NCBI's Entrez.
 
         Args:
@@ -237,23 +236,23 @@ class BioSeqs:
             query: Query to fetch the desired information.
             max_fetch: Maximum number of sequences to fetch.
 
-        * The e-mail information is considered sensible information and it won't be saved in any public or 
+        * The e-mail information is considered sensible information and it won't be saved in any public or
         private variable of the object.
         """
         Entrez.email = email
         db_rettype = _get_entrez_db_rettype(entrez_db)
         seq_dict = {}
-        # Execute Entrez.esearch() to get the total number of sequences that matches the query in the Entrez 
+        # Execute Entrez.esearch() to get the total number of sequences that matches the query in the Entrez
         # database
-        handle = Entrez.esearch(db=entrez_db, term=query, rettype='count')
-        available_seqs = int(Entrez.read(handle)['Count'])
+        handle = Entrez.esearch(db=entrez_db, term=query, rettype="count")
+        available_seqs = int(Entrez.read(handle)["Count"])
         handle.close()
         num_seqs = min(max_fetch, available_seqs)
         if available_seqs < 1:
-            warnings.warn('The query provided didn\'t return any sequence')
+            warnings.warn("The query provided didn't return any sequence")
         elif max_fetch < 1:
             warnings.warn('"max_fetch" forces to create an empty dictionary')
-        else: # num_seqs >= 1
+        else:  # num_seqs >= 1
             # Execute again Entrez.esearch() giving the total number of
             # sequences to get the complete list of Entrez database's sequence
             # identifiers
@@ -262,23 +261,24 @@ class BioSeqs:
                 handle = Entrez.esearch(db=entrez_db, term=query, restart=index, retmax=num_seqs)
                 record = Entrez.read(handle)
                 handle.close()
-                sequence_ids += record['IdList']
+                sequence_ids += record["IdList"]
             # Fetch the first sequence and estimate the batch size
-            fetch_handle = Entrez.efetch(db=entrez_db, id=sequence_ids[0], retmode='text', rettype=db_rettype)
+            fetch_handle = Entrez.efetch(db=entrez_db, id=sequence_ids[0], retmode="text", rettype=db_rettype)
             record_str = fetch_handle.read()
             fetch_handle.close()
-            record = SeqIO.read(io.StringIO(record_str), 'genbank')
+            record = SeqIO.read(io.StringIO(record_str), "genbank")
             seq_dict[record.id] = record
             batch_size = _estimate_batch_size(record_str)
-            # In batches of 'batch_size', fetch the Entrez database information of each sequence in text 
+            # In batches of 'batch_size', fetch the Entrez database information of each sequence in text
             # format through Entrez.efetch()
             start = 1
             exceptRaised = False
             while start < num_seqs:
                 end = start + batch_size
                 try:
-                    fetch_handle = Entrez.efetch(db=entrez_db, id=sequence_ids[start:end], retmode='text',
-                                                 rettype=db_rettype)
+                    fetch_handle = Entrez.efetch(
+                        db=entrez_db, id=sequence_ids[start:end], retmode="text", rettype=db_rettype
+                    )
                 except:
                     # If it is the first time for this batch, wait for a
                     # minute to see if we can recover from the exception
@@ -287,46 +287,44 @@ class BioSeqs:
                         warnings.warn(("Exception raised durig fetching. Trying" "to recover..."))
                         sleep(60)
                     else:
-                        warnings.warn(("Exception raised for second time. "
-                                       "Saving current progress and exiting."))
+                        warnings.warn(
+                            ("Exception raised for second time. " "Saving current progress and exiting.")
+                        )
                         break
                 else:
                     exceptRaised = False
-                    for record in SeqIO.parse(fetch_handle, 'genbank'):
+                    for record in SeqIO.parse(fetch_handle, "genbank"):
                         seq_dict[record.id] = record
                     fetch_handle.close()
                     start += batch_size
         # Generate the corresponding report tuple
-        date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        report = [(date_time, 'entrez', entrez_db, query)]
+        date_time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        report = [(date_time, "entrez", entrez_db, query)]
         return cls(seq_dict, report)
 
-
-    def __len__ (self) -> int:
+    def __len__(self) -> int:
         """Returns the total number of sequences."""
-        
-        return (len(self.data))
 
+        return len(self.data)
 
-    def __str__ (self) -> str:
+    def __str__(self) -> str:
         """Fancy print of the data stored in the BioSeqs object."""
-        
-        output = 'DB: {'
+
+        output = "DB: {"
         end = min(5, len(self))
         for index, key in enumerate(itertools.islice(self.data.keys(), end)):
             output += key
             if index < (end - 1):
-                output += ', '
+                output += ", "
         if len(self) != end:
-            output += ',...'
-        output += '}}\nNum. sequences: {:d}\nHistory:\n'.format(len(self))
-        output += '\n'.join(['    '.join(x)  for x in self._report])
+            output += ",..."
+        output += "}}\nNum. sequences: {:d}\nHistory:\n".format(len(self))
+        output += "\n".join(["    ".join(x) for x in self._report])
         return output
 
-
-    def include (self, seqfile: str, fileformat: str) -> None:
+    def include(self, seqfile: str, fileformat: str) -> None:
         """Adds the information of the sequence file to the BioSeqs object.
-        
+
         For any matching sequence, the new information (from the external sequence file) will replace
         the existing one.
 
@@ -345,11 +343,10 @@ class BioSeqs:
         if new_bioseqs.data:
             self._report.extend(new_bioseqs._report)
 
-
-    def join (self, new_bioseqs: BioSeqs) -> None:
+    def join(self, new_bioseqs: BioSeqs) -> None:
         """Joins the information of the BioSeqs object with another BioSeqs object.
 
-        For any matching sequence, the new information (from the external BioSeqs object) will replace the 
+        For any matching sequence, the new information (from the external BioSeqs object) will replace the
         existing one.
 
         Args:
@@ -360,13 +357,12 @@ class BioSeqs:
         self._report.extend(new_bioseqs._report)
         self._report.sort(key=itemgetter(0))
 
-
-    def update (self, email: str) -> None:
-        """Updates the BioSeqs object from the last NCBI's Entrez database and query values stored in the 
+    def update(self, email: str) -> None:
+        """Updates the BioSeqs object from the last NCBI's Entrez database and query values stored in the
         report list.
-        
+
         All the sequences stored must have their GenBank identifier information in the annotations
-        property. The deleted sequences from the database will be deleted in the object and the 
+        property. The deleted sequences from the database will be deleted in the object and the
         new sequences will be fetched and stored.
 
         Args:
@@ -376,12 +372,12 @@ class BioSeqs:
             ValueError: If there is no entrez entry in the report list.
             ValueError: If any sequence hasn't its GenBank identifier information in the annotations property.
 
-        * The e-mail information is considered sensible information and it won't be saved in any public or 
+        * The e-mail information is considered sensible information and it won't be saved in any public or
         private variable of the object.
         """
         # Get the last entrez entry of the report
         for record in reversed(self._report):
-            if record[1] == 'entrez':
+            if record[1] == "entrez":
                 date_time, src_type, entrez_db, query = record
                 break
         else:
@@ -391,29 +387,29 @@ class BioSeqs:
         seq_dict = copy.copy(self.data)
         Entrez.email = email
         db_rettype = _get_entrez_db_rettype(entrez_db)
-        # Execute Entrez.esearch() to get the total number of sequences that matches the query in the Entrez 
+        # Execute Entrez.esearch() to get the total number of sequences that matches the query in the Entrez
         # database
-        handle = Entrez.esearch(db=entrez_db, term=query, rettype='count')
-        num_seqs = int(Entrez.read(handle)['Count'])
+        handle = Entrez.esearch(db=entrez_db, term=query, rettype="count")
+        num_seqs = int(Entrez.read(handle)["Count"])
         handle.close()
         if num_seqs == 0:
-            warnings.warn('The query stored didn\'t return any sequence')
+            warnings.warn("The query stored didn't return any sequence")
         else:
-            # Execute again Entrez.esearch() giving the total number of sequences to get the complete list of 
+            # Execute again Entrez.esearch() giving the total number of sequences to get the complete list of
             # Entrez database's sequence identifiers
             updated_seq_ids = set()
             for index in range(0, num_seqs, MAX_NUM_SEQS):
                 handle = Entrez.esearch(db=entrez_db, term=query, restart=index, retmax=num_seqs)
                 record = Entrez.read(handle)
                 handle.close()
-                updated_seq_ids.update(record['IdList'])
+                updated_seq_ids.update(record["IdList"])
             # Get an "entrez identifier: accession" dictionary of the stored sequences
             gi_acc_dict = {}
             try:
                 for key, value in seq_dict.items():
-                    gi_acc_dict[value.annotations['gi']] = key
+                    gi_acc_dict[value.annotations["gi"]] = key
             except KeyError:
-                raise ValueError('Missing genbank identifier')
+                raise ValueError("Missing genbank identifier")
             else:
                 # Use that dictionary to check which of the stored identifiers
                 # have been removed from the Entrez database
@@ -429,16 +425,15 @@ class BioSeqs:
                 num_to_fetch = len(ids_to_fetch)
                 if num_to_fetch > 0:
                     # Fetch the first sequence and estimate the batch size
-                    fetch_handle = Entrez.efetch(db=entrez_db,
-                                                 id=ids_to_fetch[0],
-                                                 retmode='text',
-                                                 rettype=db_rettype)
+                    fetch_handle = Entrez.efetch(
+                        db=entrez_db, id=ids_to_fetch[0], retmode="text", rettype=db_rettype
+                    )
                     record_str = fetch_handle.read()
                     fetch_handle.close()
-                    record = SeqIO.read(record_str, 'genbank')
+                    record = SeqIO.read(record_str, "genbank")
                     seq_dict[record.id] = record
                     batch_size = _estimate_batch_size(record_str)
-                    # In batches of 'batch_size', fetch the Entrez database information of each new sequence 
+                    # In batches of 'batch_size', fetch the Entrez database information of each new sequence
                     # in text format through Entrez.efetch()
                     start = 1
                     exceptRaised = False
@@ -446,37 +441,39 @@ class BioSeqs:
                         end = start + batch_size
                         try:
                             fetch_handle = Entrez.efetch(
-                                    db=entrez_db, id=ids_to_fetch[start:end],
-                                    retmode='text', rettype=db_rettype)
+                                db=entrez_db, id=ids_to_fetch[start:end], retmode="text", rettype=db_rettype
+                            )
                         except:
-                            # If it is the first time for this batch, wait for a minute to see if we can 
+                            # If it is the first time for this batch, wait for a minute to see if we can
                             # recover from the exception
                             if not exceptRaised:
-                                warnings.warn(("Exception raised durig fetching"
-                                               ". Trying to recover..."))
+                                warnings.warn(("Exception raised durig fetching" ". Trying to recover..."))
                                 exceptRaised = True
                                 sleep(60)
                             else:
-                                warnings.warn(("Exception raised for second "
-                                               "time. Saving current progress "
-                                               "and exiting."))
+                                warnings.warn(
+                                    (
+                                        "Exception raised for second "
+                                        "time. Saving current progress "
+                                        "and exiting."
+                                    )
+                                )
                                 break
                         else:
                             exceptRaised = False
-                            for record in SeqIO.parse(fetch_handle, 'genbank'):
+                            for record in SeqIO.parse(fetch_handle, "genbank"):
                                 seq_dict[record.id] = record
                             fetch_handle.close()
                             start += batch_size
                     # The process has ended correctly so we can replace the old dictionary with the new one
                     self.data = seq_dict
                     # Generate the corresponding report tuple
-                    date_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-                    self._report.append((date_time, 'entrez', entrez_db, query))
+                    date_time = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+                    self._report.append((date_time, "entrez", entrez_db, query))
 
-
-    def write (self, bioseqs_file: str) -> None:
+    def write(self, bioseqs_file: str) -> None:
         """Saves all sequences stored at the BioSeqs object in the `bioseqs_file` (in GENBANK format).
-        
+
         A file with a detailed report of the sequences will be created replacing the extension of
         `bioseqs_file` by ".rep". If `bioseqs_file` contains a relative path, the current working
         directory will be used to get the absolute path. If any file already exists, it will be
@@ -490,15 +487,14 @@ class BioSeqs:
 
         """
         data_filepath = Path(bioseqs_file).resolve()
-        report_filepath = os.path.splitext(data_filepath)[0] + '.rep'
+        report_filepath = os.path.splitext(data_filepath)[0] + ".rep"
         # Generate a single string with all the report content
-        str_report = '\n'.join(['    '.join(x)  for x in self._report])
+        str_report = "\n".join(["    ".join(x) for x in self._report])
         # Write all the information in the BioSeqs files
         try:
-            SeqIO.write(self.data.values(), data_filepath, 'genbank')
-            with open(report_filepath, 'w') as report_file:
-                report_file.write('Num. sequences: {:d}\nHistory:\n' \
-                                  '{:s}'.format(len(self), str_report))
+            SeqIO.write(self.data.values(), data_filepath, "genbank")
+            with open(report_filepath, "w") as report_file:
+                report_file.write("Num. sequences: {:d}\nHistory:\n" "{:s}".format(len(self), str_report))
         except IOError:
             raise
         except:
@@ -508,9 +504,8 @@ class BioSeqs:
                 os.remove(report_filepath)
             raise
 
-
-    def statistics (self):
-        """Returns the total number of sequences stored and the mean, standard deviation, minimum and 
+    def statistics(self):
+        """Returns the total number of sequences stored and the mean, standard deviation, minimum and
         maximum values of their length.
 
         Returns:
@@ -525,7 +520,7 @@ class BioSeqs:
             numpy.int64
                 Maximum length of the sequences.
         """
-        seqs_length = [len(record)  for record in self.data.values()]
+        seqs_length = [len(record) for record in self.data.values()]
         mean_value = numpy.mean(seqs_length)
         std_value = numpy.std(seqs_length)
         min_value = numpy.amin(seqs_length)
@@ -535,14 +530,13 @@ class BioSeqs:
 
 def call_fetch_gb_seqs(query: str, name: str) -> None:
     """Default call for from_entrez function"""
-    seq_db = BioSeqs.from_entrez(
-        email="user@example.com", entrez_db="nuccore", query=query)
+    seq_db = BioSeqs.from_entrez(email="user@example.com", entrez_db="nuccore", query=query)
     print(seq_db.statistics())
-    seq_db.write(name + '.gb')    
+    seq_db.write(name + ".gb")
 
 
-def main ():
-    """Default call for BioSeqs module."""    
+def main():
+    """Default call for BioSeqs module."""
     parser = argparse.ArgumentParser()
     parser.add_argument("-q", "--query", required=True, help="Query sentence (Entrez format)")
     parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")

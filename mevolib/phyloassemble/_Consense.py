@@ -23,8 +23,8 @@ from Bio import Phylo
 from mevolib._utils import get_abspath
 
 
-SPRT_INFILE_FORMATS = ['newick']
-KEYWORDS = {'default': ['R', '2', 'Y']} # majority rule consensus
+SPRT_INFILE_FORMATS = ["newick"]
+KEYWORDS = {"default": ["R", "2", "Y"]}  # majority rule consensus
 
 
 def gen_args(args: str, infile_path: str, outfile: str) -> List:
@@ -41,12 +41,12 @@ def gen_args(args: str, infile_path: str, outfile: str) -> List:
     else:
         # Output files will be saved in temporary files to retrieve the consensus tree
         outfile_path = os.path.join(
-            tempfile.gettempdir(),
-            tempfile.gettempprefix() + next(tempfile._get_candidate_names())
+            tempfile.gettempdir(), tempfile.gettempprefix() + next(tempfile._get_candidate_names())
         )
     # Create full command line list
     argument_list = [infile_path, outfile_path]
     return argument_list
+
 
 def gen_stdin_content(args: str) -> str:
     """Returns the standard input content generated from `args`.
@@ -62,8 +62,8 @@ def gen_stdin_content(args: str) -> str:
     else:
         options = [opt for opt in args.split(args[1])]
     # If the output file already exists, overwrite it
-    options.append('R')
-    stdin_content = '\n'.join(options) + '\n'
+    options.append("R")
+    stdin_content = "\n".join(options) + "\n"
     return stdin_content
 
 
@@ -79,10 +79,10 @@ def get_results(command: List) -> Bio.Phylo.BaseTree:
     """
     outfile_path = command[2]
     try:
-        consensus_tree = Phylo.read(outfile_path, 'newick')
+        consensus_tree = Phylo.read(outfile_path, "newick")
     except IOError as e:
         cleanup(command)
-        raise IOError('The given arguments did not generate a consensus tree file')
+        raise IOError("The given arguments did not generate a consensus tree file")
     else:
         return consensus_tree
 
