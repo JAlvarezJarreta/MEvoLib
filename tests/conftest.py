@@ -12,20 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Global pytest configuration to run MEvoLib unit tests"""
+"""Global pytest configuration to run MEvoLib unit tests."""
+
 from pathlib import Path
 
 import pytest
 from pytest import Config
 
 
-def pytest_configure():
-    pytest.flatfiles_dir = Path(__file__).parent / "tests" / "flatfiles"
 def pytest_configure(config: Config) -> None:
     """Adds global variables and configuration attributes.
+
     `Pytest initialisation hook
     <https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_configure>`_.
+
     Args:
-        config: Access to configuration values, pluginmanager and plugin hooks.
+        config: Access to configuration values, plugin manager and plugin hooks.
+
     """
-    pytest.data_dir = Path(__file__).parent / "data"
+    pytest.data_dir = Path(__file__).parent / "flatfiles"
