@@ -16,6 +16,7 @@
 
 import os
 import multiprocessing
+from pathlib import Path
 import tempfile
 
 
@@ -32,10 +33,18 @@ def get_abspath(filename: str) -> str:
         filename: File name to get the absolute path from.
 
     """
+    if os.path.isdir(filename):
+        raise ValueError("expected file, not dir")
     if not os.path.isabs(filename):
         return os.path.join(os.getcwd(), filename)
     else:
         return filename
+
+
+def write_content(filepath, content) -> None:
+    """TODO"""
+    with Path(filepath).open("w") as fout:
+        fout.write(content)
 
 
 def get_tempfile_path() -> str:

@@ -37,8 +37,10 @@ _TOOL_TO_LIB = {
 }
 
 
-def get_tools() -> list:
+def get_tools(y: int = 0) -> list:
     """Returns a list of alignment software tools included in the current version of MEvoLib."""
+    if y != 0:
+        raise ValueError()
     return list(_TOOL_TO_LIB.keys())
 
 
