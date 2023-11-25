@@ -24,16 +24,15 @@ from mevolib._utils import get_abspath
 from mevolib.phyloassemble import Consense
 
 
-_STREE_TOOL_TO_LIB = { }
-_CONS_TOOL_TO_LIB = { 'consense': Consense }
+_STREE_TOOL_TO_LIB = {}
+_CONS_TOOL_TO_LIB = {"consense": Consense}
 
 
 def get_tools() -> dict:
     """Returns a dict of supertree and consensus tree tools included in the current version of MEvoLib."""
-    return dict([
-               ('supertree', list(_STREE_TOOL_TO_LIB.keys())),
-               ('consensus', list(_CONS_TOOL_TO_LIB.keys()))
-           ])
+    return dict(
+        [("supertree", list(_STREE_TOOL_TO_LIB.keys())), ("consensus", list(_CONS_TOOL_TO_LIB.keys()))]
+    )
 
 
 def get_keywords(tool: str) -> dict:
@@ -54,13 +53,19 @@ def get_keywords(tool: str) -> dict:
         tool_lib_dict = _STREE_TOOL_TO_LIB
     else:
         tool_lib_dict = _CONS_TOOL_TO_LIB
-    for key, value in iter(tool_lib_dict[tool].KEYWORDS.items()) :
-        keyword_dict[key] = ' '.join(value)
+    for key, value in iter(tool_lib_dict[tool].KEYWORDS.items()):
+        keyword_dict[key] = " ".join(value)
     return keyword_dict
 
 
-def get_consensus_tree(binary: str, infile: str, infile_format: str, args: str = 'default',
-                       outfile: str = None, outfile_format: str = 'newick' ) -> Bio.Phylo.BaseTree:
+def get_consensus_tree(
+    binary: str,
+    infile: str,
+    infile_format: str,
+    args: str = "default",
+    outfile: str = None,
+    outfile_format: str = "newick",
+) -> Bio.Phylo.BaseTree:
     """
     Calculate the consensus tree of the input trees file with the given
     arguments. The resultant consensus tree is returned as a Bio.Phylo.BaseTree
@@ -77,7 +82,7 @@ def get_consensus_tree(binary: str, infile: str, infile_format: str, args: str =
             excluding infile and outfile arguments. By default, 'default'
             arguments are used.
             * For Consense, the second character will be used as separator of
-            the different arguments. 
+            the different arguments.
         outfile: Consensus tree output file.
         outfile_format: Output file format. By default, NEWICK format.
 
@@ -117,12 +122,18 @@ def get_consensus_tree(binary: str, infile: str, infile_format: str, args: str =
     # Generate the standard input file content
     stdin_content = gen_stdin_content(args)
     # Create the input file with the given options
-    with tempfile.NamedTemporaryFile(mode='w+') as stdin_file:
+    with tempfile.NamedTemporaryFile(mode="w+") as stdin_file:
         stdin_file.write(stdin_content)
         stdin_file.seek(0)
         # Run the consensus process
-        subprocess.run(command, stdin=stdin_file, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                       universal_newlines=True, check=True)
+        subprocess.run(
+            command,
+            stdin=stdin_file,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            universal_newlines=True,
+            check=True,
+        )
         consensus_tree = get_results(command)
         cleanup(command)
         # Return the resultant consensus tree as a ``Bio.Phylo.BaseTree`` object

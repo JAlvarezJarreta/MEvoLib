@@ -31,9 +31,9 @@ import Bio.Align
 from pathlib import Path
 
 _TOOL_TO_LIB = {
-    'clustalo': _ClustalOmega,
-    'mafft': _Mafft,
-    'muscle': _Muscle,
+    "clustalo": _ClustalOmega,
+    "mafft": _Mafft,
+    "muscle": _Muscle,
 }
 
 
@@ -57,13 +57,19 @@ def get_keywords(tool: str) -> dict:
         raise ValueError(f'The alignment tool "{tool}" is not included in MEvoLib.Align')
     keyword_dict = {}
     for key, value in _TOOL_TO_LIB[tool].KEYWORDS.items():
-        keyword_dict[key] = ' '.join(value)
+        keyword_dict[key] = " ".join(value)
     return keyword_dict
 
 
-def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'default',
-                  outfile: Optional[str] = None, outfile_format: str = 'fasta',
-                  **kwargs: dict) -> Bio.Align.MultipleSeqAlignment:
+def get_alignment(
+    binary: str,
+    infile: str,
+    infile_format: str,
+    args: str = "default",
+    outfile: Optional[str] = None,
+    outfile_format: str = "fasta",
+    **kwargs: dict,
+) -> Bio.Align.MultipleSeqAlignment:
     """Returns the result of aligning the sequences using the given alignment tool and arguments.
 
     The resultant alignment is returned as a Bio.Align.MultipleSeqAlign object and saved in the output
@@ -102,8 +108,8 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
         keywords = tool_lib.KEYWORDS
     else:
         # Include the required variables through **kwargs dictionary
-        sprt_infile_formats = kwargs['informats']
-        infile_cmd = kwargs['incmd']
+        sprt_infile_formats = kwargs["informats"]
+        infile_cmd = kwargs["incmd"]
         keywords = dict()
     # Get the command line to run in order to get the resultant alignment
     infile_path = get_abspath(infile)
@@ -118,17 +124,18 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
         arg_list = keywords[args]
     else:
         # Remove possible empty strings in the given arguments
-        arg_list = [arg for arg in args.split(' ')]
+        arg_list = [arg for arg in args.split(" ")]
     # Create full command line list (removing empty elements)
     command = [x for x in [binary] + arg_list + [infile_cmd, infile_path] if x]
     # Run the alignment process handling any Runtime exception
     try:
-        output = subprocess.run(command, stderr=subprocess.DEVNULL, universal_newlines=True, check=True,
-                                stdout=subprocess.PIPE).stdout
+        output = subprocess.run(
+            command, stderr=subprocess.DEVNULL, universal_newlines=True, check=True, stdout=subprocess.PIPE
+        ).stdout
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f'Running "{" ".join(e.cmd)}" raised an exception')
     else:
-        alignment = AlignIO.read(StringIO(output), 'fasta')
+        alignment = AlignIO.read(StringIO(output), "fasta")
         if outfile:
             # Save the resultant alignment in the given outfile and format
             outfile_path = get_abspath(outfile)
@@ -136,8 +143,9 @@ def get_alignment(binary: str, infile: str, infile_format: str, args: str = 'def
         # Return the resultant alignment as a Bio.Align.MultipleSeqAligment object
         return alignment
 
+
 def main():
-    """Default call for Align module."""     
+    """Default call for Align module."""
     parser = argparse.ArgumentParser(
         description="Performs the sequences alignment using the given alignment tool and arguments"
     )
@@ -148,6 +156,11 @@ def main():
 
     # We split the input file to obtain its name
     filename = Path(args.input).stem
-    get_alignment(binary=args.tool, infile=args.input, infile_format='fasta', args='default', outfile= f"{filename}_align.fasta", outfile_format='fasta')  
-  
-    
+    get_alignment(
+        binary=args.tool,
+        infile=args.input,
+        infile_format="fasta",
+        args="default",
+        outfile=f"{filename}_align.fasta",
+        outfile_format="fasta",
+    )

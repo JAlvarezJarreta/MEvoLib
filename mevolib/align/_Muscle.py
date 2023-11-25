@@ -1,33 +1,26 @@
-#-------------------------------------------------------------------------------
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
 #
-#   MEvoLib  Copyright (C) 2016  J. Alvarez-Jarreta
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-#   This is free software, and you are welcome to redistribute it under certain
-#   conditions; type `show c' for details.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#-------------------------------------------------------------------------------
-# File :  _Muscle.py
-# Last version :  v1.00 ( 13/Jan/2016 )
-# Description :  MEvoLib's variables to ease the usage of Muscle.
-#-------------------------------------------------------------------------------
-# Historical report :
-#
-#   DATE :  13/Jan/2016
-#   VERSION :  v1.00
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#
-#-------------------------------------------------------------------------------
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""MEvoLib's variables to ease the usage of Muscle."""
 
-SPRT_INFILE_FORMATS = ['fasta']
+SPRT_INFILE_FORMATS = ["fasta"]
 
-INFILE_CMD = '-in'
+INFILE_CMD = "-in"
 
-KEYWORDS = { 'default':  ['-quiet'],
-             'fastdna':  ['-maxiters', '1', '-diags', '-quiet'],
-             'fastprot': ['-maxiters', '1', '-diags', '-sv', '-distance1',
-                          'kbit20_3', '-quiet'],
-             'largein':  ['-maxiters', '2', '-quiet'] }
-
-
-#-------------------------------------------------------------------------------
+KEYWORDS = {
+    "default": ["-quiet"],
+    "fastdna": ["-maxiters", "1", "-diags", "-quiet"],
+    "fastprot": ["-maxiters", "1", "-diags", "-sv", "-distance1", "kbit20_3", "-quiet"],
+    "largein": ["-maxiters", "2", "-quiet"],
+}

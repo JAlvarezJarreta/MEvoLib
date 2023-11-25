@@ -1,37 +1,23 @@
-#-------------------------------------------------------------------------------
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
 #
-#   MEvoLib  Copyright (C) 2016  J. Alvarez-Jarreta
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#   This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-#   This is free software, and you are welcome to redistribute it under certain
-#   conditions; type `show c' for details.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-#-------------------------------------------------------------------------------
-# File :  rCRS.py
-# Last version :  v1.00 ( 05/Feb/2016 )
-# Description :  Human mitochondrial DNA revised Cambridge Reference Sequence
-#       (rCRS)'s filepath and Bio.SeqRecord object.
-#-------------------------------------------------------------------------------
-# Historical report :
-#
-#   DATE :  05/Feb/2016
-#   VERSION :  v1.00
-#   AUTHOR(s) :  J. Alvarez-Jarreta
-#
-#-------------------------------------------------------------------------------
-
-from __future__ import absolute_import
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import os
 
 from Bio import SeqIO
 
 
-#-------------------------------------------------------------------------------
+FILEPATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "rCRS.gb")
 
-FILEPATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'rCRS.gb')
-
-RECORD = SeqIO.read(FILEPATH, 'gb')
-
-
-#-------------------------------------------------------------------------------
+RECORD = SeqIO.read(FILEPATH, "gb")

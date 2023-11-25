@@ -41,6 +41,5 @@ def get_abspath(filename: str) -> str:
 def get_tempfile_path() -> str:
     """Returns the path of a new temporary file name without creating it."""
     return os.path.join(
-        tempfile.gettempdir(),
-        tempfile.gettempprefix() + next(tempfile._get_candidate_names())
+        tempfile.gettempdir(), tempfile.gettempprefix() + next(tempfile._get_candidate_names())
     )
