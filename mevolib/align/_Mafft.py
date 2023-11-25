@@ -12,10 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Stub based on setuptools for the "editable" installations."""
+"""MEvoLib's variables to ease the usage of Mafft."""
 
-from setuptools import setup
+from mevolib._utils import NUMCORES
 
 
-if __name__ == "__main__":
-    setup()
+SPRT_INFILE_FORMATS = ['fasta']
+INFILE_CMD = ''
+KEYWORDS = {
+    'default': ['--auto', '--quiet', '--thread', str(NUMCORES)],
+    'linsi': ['--localpair', '--maxiterate', '1000', '--quiet', '--thread', str(NUMCORES)],
+    'parttree': ['--parttree', '--retree', '2', '--partsize', '1000', '--quiet', '--thread', str(NUMCORES)],
+}
