@@ -14,6 +14,7 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle different phylogenetic inference and bootstrapping tools."""
 
+import argparse
 import tempfile
 import subprocess
 from typing import Optional
@@ -137,6 +138,7 @@ def get_phylogeny(
         )
     # Get the command line to run in order to get the resultant phylogeny
     infile_path = Path(infile).absolute()
+    print("Hzlo: ",Path(infile_path))
     # If the input file format is not supported by the phylogenetic inference
     # tool, convert it to a temporary supported file
     if infile_format.lower() not in sprt_infile_formats:
@@ -156,6 +158,7 @@ def get_phylogeny(
         command = ["raxmlHPC"] + gen_args(args, infile_path, bootstraps, tmp_file, seed)
     else:
         command = [bin_name] + gen_args(args, infile_path, bootstraps, tmp_file)
+        print(f'bin_name: {bin_name}, infile_path: {infile_path}, bootstraps: {bootstraps}, tmp_file: {tmp_file}, command:{command}')
     # Run the phylogenetic inference process handling any Runtime exception
     try:
         output = subprocess.run(
@@ -174,3 +177,43 @@ def get_phylogeny(
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
         # log-likelihood score
         return phylogeny, score
+
+def main():
+    """Default call for Inference module."""
+    parser = argparse.ArgumentParser(
+        description="Infers the phylogeny of a given set of aligned genes using the given inference"
+        + " tool and arguments"
+    )
+    parser.add_argument(
+        "-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool."
+    )
+    parser.add_argument("-i", "--input", required=True, help="Aligned sequences input file")
+    parser.add_argument("-if", "--informat", required=False, help="Input file format (fasta, by default)")
+    parser.add_argument(
+        "-a",
+        "--args",
+        required=False,
+        help="Keyword or arguments to use in the call of the phylogenetic"
+        + " inference tool, excluding infile and outfile arguments. By default, 'default ' arguments are used.",
+    )
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    parser.add_argument("-of", "--outformat", required=False, help="Output file format. By default, 'NEWICK' format.")
+    parser.add_argument(
+        "-b",
+        "--bootstraps",
+        required=False,
+        help="Number of bootstraps to generate. By default, 0 (only uses the input alignment).",
+    )
+    args = parser.parse_args()
+
+    # We split the input file to obtain its name
+    filename = Path(args.input).stem
+    out_format = "newick" if args.outformat is None else args.outformat
+    get_phylogeny(
+        binary=args.tool,
+        infile=args.input,
+        infile_format="fasta" if args.informat is None else args.informat,
+        args="default" if args.args is None else args.args,
+        outfile=f"{filename}_inference.{out_format}",
+        outfile_format=out_format,
+    )
