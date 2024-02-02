@@ -138,7 +138,6 @@ def get_phylogeny(
         )
     # Get the command line to run in order to get the resultant phylogeny
     infile_path = Path(infile).absolute()
-    print("Hzlo: ",Path(infile_path))
     # If the input file format is not supported by the phylogenetic inference
     # tool, convert it to a temporary supported file
     if infile_format.lower() not in sprt_infile_formats:
@@ -158,7 +157,6 @@ def get_phylogeny(
         command = ["raxmlHPC"] + gen_args(args, infile_path, bootstraps, tmp_file, seed)
     else:
         command = [bin_name] + gen_args(args, infile_path, bootstraps, tmp_file)
-        print(f'bin_name: {bin_name}, infile_path: {infile_path}, bootstraps: {bootstraps}, tmp_file: {tmp_file}, command:{command}')
     # Run the phylogenetic inference process handling any Runtime exception
     try:
         output = subprocess.run(
