@@ -179,39 +179,45 @@ def get_phylogeny(
 def main():
     """Default call for Inference module."""
     parser = argparse.ArgumentParser(
-        description="Infers the phylogeny of a given set of aligned genes using the given inference"
-        + " tool and arguments"
+        description=(
+            "Infers the phylogeny of a given set of aligned genes using the given inference tool "
+            "and arguments"
+        )
     )
+    parser.formatter_class = argparse.ArgumentDefaultsHelpFormatter
     parser.add_argument(
-        "-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool."
+        "-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool"
     )
     parser.add_argument("-i", "--input", required=True, help="Aligned sequences input file")
-    parser.add_argument("-if", "--informat", required=False, help="Input file format (fasta, by default)")
+    parser.add_argument("-if", "--informat", required=False, default="fasta", help="Input file format")
     parser.add_argument(
         "-a",
         "--args",
         required=False,
-        help="Keyword or arguments to use in the call of the phylogenetic"
-        + " inference tool, excluding infile and outfile arguments. By default, 'default ' arguments are used.",
+        default="default",
+        help=(
+            "Keyword or arguments to use in the call of the phylogenetic inference tool, excluding "
+            "infile and outfile arguments"
+        )
     )
     parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
-    parser.add_argument("-of", "--outformat", required=False, help="Output file format. By default, 'NEWICK' format.")
+    parser.add_argument("-of", "--outformat", required=False, default="newick", help="Output file format")
     parser.add_argument(
         "-b",
         "--bootstraps",
         required=False,
-        help="Number of bootstraps to generate. By default, 0 (only uses the input alignment).",
+        default=0,
+        help="Number of bootstraps to generate",
     )
     args = parser.parse_args()
 
     # We split the input file to obtain its name
     filename = Path(args.input).stem
-    out_format = "newick" if args.outformat is None else args.outformat
     get_phylogeny(
         binary=args.tool,
         infile=args.input,
-        infile_format="fasta" if args.informat is None else args.informat,
-        args="default" if args.args is None else args.args,
+        infile_format=args.informat,
+        args=args.args,
         outfile=f"{filename}_inference.{out_format}",
-        outfile_format=out_format,
+        outfile_format=args.outformat,
     )
