@@ -14,6 +14,7 @@
 # limitations under the License.
 """Functions aimed to provide an easy interface to handle different phylogenetic inference and bootstrapping tools."""
 
+import argparse
 import tempfile
 import subprocess
 from typing import Optional
@@ -174,3 +175,49 @@ def get_phylogeny(
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
         # log-likelihood score
         return phylogeny, score
+
+def main():
+    """Default call for Inference module."""
+    parser = argparse.ArgumentParser(
+        description=(
+            "Infers the phylogeny of a given set of aligned genes using the given inference tool "
+            "and arguments"
+        )
+    )
+    parser.formatter_class = argparse.ArgumentDefaultsHelpFormatter
+    parser.add_argument(
+        "-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool"
+    )
+    parser.add_argument("-i", "--input", required=True, help="Aligned sequences input file")
+    parser.add_argument("-if", "--informat", required=False, default="fasta", help="Input file format")
+    parser.add_argument(
+        "-a",
+        "--args",
+        required=False,
+        default="default",
+        help=(
+            "Keyword or arguments to use in the call of the phylogenetic inference tool, excluding "
+            "infile and outfile arguments"
+        )
+    )
+    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    parser.add_argument("-of", "--outformat", required=False, default="newick", help="Output file format")
+    parser.add_argument(
+        "-b",
+        "--bootstraps",
+        required=False,
+        default=0,
+        help="Number of bootstraps to generate",
+    )
+    args = parser.parse_args()
+
+    # We split the input file to obtain its name
+    filename = Path(args.input).stem
+    get_phylogeny(
+        binary=args.tool,
+        infile=args.input,
+        infile_format=args.informat,
+        args=args.args,
+        outfile=f"{filename}_inference.{out_format}",
+        outfile_format=args.outformat,
+    )
