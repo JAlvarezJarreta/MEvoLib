@@ -19,12 +19,13 @@ import random
 import tempfile
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
-import Bio.Phylo.BaseTree
+import Bio
 from Bio import Phylo
 
 from mevolib._utils import NUMCORES
+
 
 SPRT_INFILE_FORMATS = ["fasta", "phylip"]
 
@@ -92,7 +93,7 @@ def gen_args(
     return argument_list
 
 
-def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree.Tree, float]:
+def get_results(command: list, output: str) -> Tuple[Bio.Phylo.BaseTree.Tree, float]:
     """
     Extract resultant phylogeny and its log-likelihood score from 'output' and
     files generated during the execution of 'command'.

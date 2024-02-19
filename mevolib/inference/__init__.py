@@ -17,10 +17,10 @@
 import argparse
 import tempfile
 import subprocess
-from typing import Optional
+from typing import Optional, Tuple
 from pathlib import Path
 
-import Bio.Phylo.BaseTree
+import Bio
 from Bio import AlignIO, Phylo
 
 from . import _RAxML
@@ -81,11 +81,11 @@ def get_phylogeny(
     tmp_file: Optional[str] = None,
     parent_file: Optional[str] = None,
     seed: Optional[int] = None,
-) -> (Bio.Phylo.BaseTree, float):
+) -> Tuple[Bio.Phylo.BaseTree.Tree, float]:
     """
     Infers the phylogeny from the input alignment using the phylogenetic
     inference tool and arguments given. The resultant phylogeny is returned as a
-    Bio.Phylo.BaseTree object and saved in the ouput file (if provided). If
+    Bio.Phylo.BaseTree.Tree object and saved in the output file (if provided). If
     'infile' or 'outfile' contain a relative path, the current working directory
     will be used to get the absolute path. If the output file already exists,
     the old file will be overwritten without any warning.
@@ -111,7 +111,7 @@ def get_phylogeny(
             reproducibility purposes. Otherwise, a random one will be provided).
 
     Returns :
-        Bio.Phylo.BaseTree: Resultant phylogenetic tree.
+        Bio.Phylo.BaseTree.Tree: Resultant phylogenetic tree.
         float: Log-likelihood score of the phylogeny.
 
     Raises :
@@ -172,9 +172,10 @@ def get_phylogeny(
             outfile_path = Path(outfile).absolute()
             Phylo.write(phylogeny, outfile_path, outfile_format)
         cleanup(command, parent_file)
-        # Return the resultant phylogeny as a Bio.Phylo.BaseTree object and its
+        # Return the resultant phylogeny as a Bio.Phylo.BaseTree.Tree object and its
         # log-likelihood score
         return phylogeny, score
+
 
 def main():
     """Default call for Inference module."""
@@ -189,7 +190,7 @@ def main():
         "-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool"
     )
     parser.add_argument("-i", "--input", required=True, help="Aligned sequences input file")
-    parser.add_argument("-if", "--informat", required=False, default="fasta", help="Input file format")
+    parser.add_argument("--informat", required=False, default="fasta", help="Input file format")
     parser.add_argument(
         "-a",
         "--args",
@@ -200,8 +201,8 @@ def main():
             "infile and outfile arguments"
         )
     )
-    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
-    parser.add_argument("-of", "--outformat", required=False, default="newick", help="Output file format")
+    parser.add_argument("-o", "--output", required=False, default=".", help="Output directory path")
+    parser.add_argument("--outformat", required=False, default="newick", help="Output file format")
     parser.add_argument(
         "-b",
         "--bootstraps",
@@ -218,6 +219,6 @@ def main():
         infile=args.input,
         infile_format=args.informat,
         args=args.args,
-        outfile=f"{filename}_inference.{out_format}",
+        outfile=f"{args.output}/{filename}_inference.{args.outformat}",
         outfile_format=args.outformat,
     )
