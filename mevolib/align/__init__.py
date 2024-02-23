@@ -140,7 +140,7 @@ def get_alignment(
             # Save the resultant alignment in the given outfile and format
             outfile_path = get_abspath(outfile)
             AlignIO.write(alignment, outfile_path, outfile_format)
-        # Return the resultant alignment as a Bio.Align.MultipleSeqAligment object
+        # Return the resultant alignment as a Bio.Align.MultipleSeqAlignment object
         return alignment
 
 
@@ -151,7 +151,9 @@ def main():
     )
     parser.add_argument("-t", "--tool", required=True, help="Alignment tool")
     parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
-    parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    parser.add_argument("--informat", required=False, default="fasta", help="Input file format")
+    parser.add_argument("-o", "--output", required=False, default=".", help="Output directory path")
+    parser.add_argument("--outformat", required=False, default="fasta", help="Output file format")
     args = parser.parse_args()
 
     # We split the input file to obtain its name
@@ -159,8 +161,8 @@ def main():
     get_alignment(
         binary=args.tool,
         infile=args.input,
-        infile_format="fasta",
+        infile_format=args.informat,
         args="default",
-        outfile=f"{filename}_align.fasta",
-        outfile_format="fasta",
+        outfile=f"{args.output}/{filename}_aligned.{args.outformat}",
+        outfile_format=args.outformat,
     )

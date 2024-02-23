@@ -18,9 +18,9 @@ import shutil
 import tempfile
 from io import StringIO
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
-import Bio.Phylo.BaseTree
+import Bio
 from Bio import Phylo
 
 SPRT_INFILE_FORMATS = ["fasta", "phylip"]
@@ -73,7 +73,7 @@ def gen_args(args: str, infile_path: str, bootstraps: int, log_tmpfile: Optional
     return argument_list
 
 
-def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
+def get_results(command: list, output: str) -> Tuple[Bio.Phylo.BaseTree.Tree, float]:
     """
     Extract resultant phylogeny and its log-likelihood score from 'output' and
     files generated during the execution of 'command'.
@@ -83,7 +83,7 @@ def get_results(command: list, output: str) -> tuple[Bio.Phylo.BaseTree, float]:
         output: Output from 'command' execution.
 
     Returns :
-        Bio.Phylo.BaseTree: Resultant phylogenetic tree.
+        Bio.Phylo.BaseTree.Tree: Resultant phylogenetic tree.
         float: Log-likelihood score of the phylogeny.
     """
 
@@ -118,5 +118,5 @@ def cleanup(command: list, tmp_file: Optional[str] = None) -> None:
     else:
         outdir_path = tmp_file
 
-    if Path.exists(outdir_path):
-        shutil.rmtree(outdir_path)
+    if Path(outdir_path).exists:
+        shutil.rmtree(outdir_path, ignore_errors=True)

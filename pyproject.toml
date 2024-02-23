@@ -81,6 +81,7 @@ paper = "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-016
 fetch_genbank_seqs = "mevolib.fetch.BioSeqs:main"
 get_genes = "mevolib.cluster:main"
 get_align = "mevolib.align:main"
+get_inference = "mevolib.inference:main"
 
 [tool.setuptools]
 package-dir = {"" = "."}
