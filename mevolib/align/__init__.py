@@ -152,6 +152,14 @@ def main():
     parser.add_argument("-t", "--tool", required=True, help="Alignment tool")
     parser.add_argument("-i", "--input", required=True, help="FASTA file of unaligned sequences")
     parser.add_argument("--informat", required=False, default="fasta", help="Input file format")
+    parser.add_argument(
+        "--args",
+        required=False,
+        default="default",
+        help=(
+            "Keyword or arguments to use in the call of the alignment tool, excluding input and output files"
+        )
+    )
     parser.add_argument("-o", "--output", required=False, default=".", help="Output directory path")
     parser.add_argument("--outformat", required=False, default="fasta", help="Output file format")
     args = parser.parse_args()
@@ -162,7 +170,7 @@ def main():
         binary=args.tool,
         infile=args.input,
         infile_format=args.informat,
-        args="default",
+        args=args.args,
         outfile=f"{args.output}/{filename}_aligned.{args.outformat}",
         outfile_format=args.outformat,
     )
