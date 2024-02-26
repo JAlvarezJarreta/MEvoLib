@@ -18,7 +18,7 @@
 import tempfile
 import itertools
 import math
-from typing import Optional
+from typing import Optional, Tuple
 
 import Bio.SeqRecord
 from Bio import SeqIO
@@ -90,7 +90,7 @@ _FEAT_QUAL_DICT = {
 
 def _normalization(
     record: Bio.SeqRecord, refseq_record: Bio.SeqRecord, alignment_bin: str
-) -> tuple[Bio.Seq, list]:
+) -> Tuple[Bio.Seq.Seq, list]:
     """Normalizes the input sequence with the reference sequence.
 
     The normalization consists on aligning both sequences and removing those sites where a gap has
