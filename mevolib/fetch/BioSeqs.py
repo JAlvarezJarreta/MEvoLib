@@ -285,7 +285,7 @@ class BioSeqs:
                     # minute to see if we can recover from the exception
                     if not exceptRaised:
                         exceptRaised = True
-                        warnings.warn(("Exception raised durig fetching. Trying" "to recover..."))
+                        warnings.warn(("Exception raised during fetching. Trying" "to recover..."))
                         sleep(60)
                     else:
                         warnings.warn(
