@@ -273,6 +273,7 @@ def map_seqs(
                     # Generation of the content of the set dictionary that will
                     # be returned
                     new_key = "{}.{}".format(feat_key, qual_key.split(":")[0])
+                    new_key = new_key.replace(" ", "_")
                     set_dict.setdefault(new_key, []).extend(qual_value)
                     # For every existing pair of qualifiers, if the number of
                     # records that hold both is below the calculated threshold,
