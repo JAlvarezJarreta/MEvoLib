@@ -224,9 +224,7 @@ class BioSeqs:
         return cls(seq_dict, report)
 
     @classmethod
-    def from_entrez(
-        cls, email: str, entrez_db: str, query: str, max_fetch: Optional[int] = sys.maxsize
-    ) -> BioSeqs:
+    def from_entrez(cls, email: str, entrez_db: str, query: str, max_fetch: Optional[int] = None) -> BioSeqs:
         """Create a BioSeqs object fetching the sequences that matches the query at the provided database from
         NCBI's Entrez.
 
@@ -247,10 +245,13 @@ class BioSeqs:
         handle = Entrez.esearch(db=entrez_db, term=query, rettype="count")
         available_seqs = int(Entrez.read(handle)["Count"])
         handle.close()
-        num_seqs = min(max_fetch, available_seqs)
+        if max_fetch:
+            num_seqs = min(max_fetch, available_seqs)
+        else:
+            num_seqs = available_seqs
         if available_seqs < 1:
             warnings.warn("The query provided didn't return any sequence")
-        elif max_fetch < 1:
+        elif isinstance(max_fetch, int) and (max_fetch < 1):
             warnings.warn('"max_fetch" forces to create an empty dictionary')
         else:  # num_seqs >= 1
             # Execute again Entrez.esearch() giving the total number of
@@ -284,7 +285,7 @@ class BioSeqs:
                     # minute to see if we can recover from the exception
                     if not exceptRaised:
                         exceptRaised = True
-                        warnings.warn(("Exception raised durig fetching. Trying" "to recover..."))
+                        warnings.warn(("Exception raised during fetching. Trying" "to recover..."))
                         sleep(60)
                     else:
                         warnings.warn(
@@ -528,9 +529,9 @@ class BioSeqs:
         return (len(self), mean_value, std_value, min_value, max_value)
 
 
-def call_fetch_gb_seqs(query: str, name: str) -> None:
+def call_fetch_gb_seqs(query: str, name: str, max_fetch: Optional[int] = None) -> None:
     """Default call for from_entrez function"""
-    seq_db = BioSeqs.from_entrez(email="user@example.com", entrez_db="nuccore", query=query)
+    seq_db = BioSeqs.from_entrez(email="user@example.com", entrez_db="nuccore", query=query, max_fetch=max_fetch)
     print(seq_db.statistics())
     seq_db.write(name + ".gb")
 
@@ -540,5 +541,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-q", "--query", required=True, help="Query sentence (Entrez format)")
     parser.add_argument("-o", "--output", required=True, help="Output file name (without extension)")
+    parser.add_argument("--max_seqs", type=int, default=None, help="Maximum number of sequences to fetch")
     args = parser.parse_args()
-    call_fetch_gb_seqs(args.query, args.output)
+    call_fetch_gb_seqs(args.query, args.output, args.max_seqs)

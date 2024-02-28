@@ -18,7 +18,7 @@
 import tempfile
 import itertools
 import math
-from typing import Optional
+from typing import Optional, Tuple
 
 import Bio.SeqRecord
 from Bio import SeqIO
@@ -90,7 +90,7 @@ _FEAT_QUAL_DICT = {
 
 def _normalization(
     record: Bio.SeqRecord, refseq_record: Bio.SeqRecord, alignment_bin: str
-) -> tuple[Bio.Seq, list]:
+) -> Tuple[Bio.Seq.Seq, list]:
     """Normalizes the input sequence with the reference sequence.
 
     The normalization consists on aligning both sequences and removing those sites where a gap has
@@ -273,6 +273,7 @@ def map_seqs(
                     # Generation of the content of the set dictionary that will
                     # be returned
                     new_key = "{}.{}".format(feat_key, qual_key.split(":")[0])
+                    new_key = new_key.replace(" ", "_")
                     set_dict.setdefault(new_key, []).extend(qual_value)
                     # For every existing pair of qualifiers, if the number of
                     # records that hold both is below the calculated threshold,
