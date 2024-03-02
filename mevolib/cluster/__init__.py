@@ -35,9 +35,9 @@ from time import sleep
 
 _METHOD_TO_FUNC = {
     "genes": Genes.map_seqs,
-    "rows": NaiveRows.map_seqs,
-    "cols": NaiveCols.map_seqs,
-    "prd": PRD.map_seqs,
+    # "rows": NaiveRows.map_seqs,
+    # "cols": NaiveCols.map_seqs,
+    # "prd": PRD.map_seqs,
 }
 
 
