@@ -89,11 +89,14 @@ package-dir = {"" = "."}
 [tool.setuptools.dynamic]
 version = {attr = "mevolib.__version__"}
 
+[tool.setuptools.package-data]
+"mevolib.data" = ["rCRS.gb"]
+
 [build-system]
 requires = [
-    "setuptools",
-    "setuptools-scm",
-    "wheel"
+    "setuptools >= 60",
+    "setuptools-scm >= 8.0",
+    "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
