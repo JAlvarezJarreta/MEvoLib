@@ -13,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib
+import importlib.resources
 
 from Bio import SeqIO
 
 
-with importlib.resources.path("mevolib.data", "rCRS.py") as file_path:
+with importlib.resources.path("mevolib.data", "rCRS.gb") as file_path:
     FILEPATH = file_path
     RECORD = SeqIO.read(file_path, "gb")
