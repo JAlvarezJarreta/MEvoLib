@@ -16,11 +16,8 @@
 
 SPRT_INFILE_FORMATS = ["fasta"]
 
-INFILE_CMD = "-in"
+INFILE_CMD = "-align"
 
 KEYWORDS = {
-    "default": ["-quiet"],
-    "fastdna": ["-maxiters", "1", "-diags", "-quiet"],
-    "fastprot": ["-maxiters", "1", "-diags", "-sv", "-distance1", "kbit20_3", "-quiet"],
-    "largein": ["-maxiters", "2", "-quiet"],
+    "default": ["-output /dev/stdout"],
 }
