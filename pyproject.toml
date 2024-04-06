@@ -122,8 +122,8 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 addopts = "-v --tb=native"
-testpaths = ["mevlib/tests"]
-norecursedirs = ["data", "docs", "*.egg_info"]
+testpaths = ["tests"]
+norecursedirs = ["data", "docs", "*.egg_info", "old_unittests"]
 
 [tool.coverage.run]
 branch = true
