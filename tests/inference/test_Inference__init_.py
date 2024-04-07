@@ -159,7 +159,7 @@ class TestInferenceInit:
         [
             (
                 "FastTree",
-                "tests/Fasta/f001.mafft_default.aln",
+                "tests/flatfiles/f001.mafft_default.aln",
                 Path("f001.mafft_default.FastTree_output_1"),
                 None,
                 None,
@@ -181,7 +181,7 @@ class TestInferenceInit:
             ),
             (
                 "RAxML",
-                "tests/Fasta/f001.mafft_linsi.aln",
+                "tests/flatfiles/f001.mafft_linsi.aln",
                 None,
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
@@ -208,7 +208,7 @@ class TestInferenceInit:
             ),
             (
                 "RAxMLh",
-                "tests/Fasta/f001.mafft_linsi.aln",
+                "tests/flatfiles/f001.mafft_linsi.aln",
                 None,
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
@@ -235,7 +235,7 @@ class TestInferenceInit:
             ),
             (
                 "FastTree",
-                "tests/data/output_aln.stockholm",
+                "tests/flatfiles/output_aln.stockholm",
                 Path("f001.mafft_default.FastTree_output_1"),
                 None,
                 None,
