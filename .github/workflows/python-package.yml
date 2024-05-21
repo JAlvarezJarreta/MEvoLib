@@ -9,8 +9,6 @@ on:
       - main
 
   pull_request:
-    types:
-        - closed
     branches:
       - main
 
