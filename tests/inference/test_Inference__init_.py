@@ -166,7 +166,7 @@ class TestInferenceInit:
                 "fasta",
                 "GTR+CAT",
                 None,
-                None,
+                "newick",
                 0,
                 None,
                 [
@@ -188,7 +188,7 @@ class TestInferenceInit:
                 "fasta",
                 "default",
                 None,
-                None,
+                "newick",
                 1,
                 404,
                 [
@@ -215,7 +215,7 @@ class TestInferenceInit:
                 "fasta",
                 "default",
                 None,
-                None,
+                "newick",
                 1,
                 404,
                 [
