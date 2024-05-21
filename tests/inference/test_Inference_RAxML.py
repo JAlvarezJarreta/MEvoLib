@@ -130,7 +130,7 @@ class TestInferenceRAxML:
         [
             (
                 "JC+CAT",
-                "tests/Fasta/f001.mafft_linsi.aln",
+                "tests/flatfiles/f001.mafft_linsi.aln",
                 1,
                 404,
                 [
@@ -149,12 +149,12 @@ class TestInferenceRAxML:
                     "-N",
                     "1",
                     "-s",
-                    "tests/Fasta/f001.mafft_linsi.aln",
+                    "tests/flatfiles/f001.mafft_linsi.aln",
                 ],
             ),
             (
                 "-p 648 -m GTRGAMMA --HKY85",
-                "tests/Fasta/f001.mafft_linsi.aln",
+                "tests/flatfiles/f001.mafft_linsi.aln",
                 0,
                 648,
                 [
@@ -164,7 +164,7 @@ class TestInferenceRAxML:
                     "GTRGAMMA",
                     "--HKY85",
                     "-s",
-                    "tests/Fasta/f001.mafft_linsi.aln",
+                    "tests/flatfiles/f001.mafft_linsi.aln",
                 ],
             ),
         ],
@@ -205,7 +205,7 @@ class TestInferenceRAxML:
                     "1",
                 ],
                 -1974.894224,
-                Path("tests/Fasta/f001.mafft_linsi.aln"),
+                Path("tests/flatfiles/f001.mafft_linsi.aln"),
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
             ),
@@ -222,7 +222,7 @@ class TestInferenceRAxML:
                     "--silent",
                 ],
                 -1988.653009,
-                Path("tests/Fasta/f001.mafft_linsi.aln"),
+                Path("tests/flatfiles/f001.mafft_linsi.aln"),
                 Path("f001.mafft_linsi.RAxML_best_tree_2"),
                 Path("f001.mafft_linsi.RAxML_info_2"),
             ),
