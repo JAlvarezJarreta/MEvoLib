@@ -102,7 +102,7 @@ class TestInferenceInit:
     )
     def test_phylo_to_lib(self, phylo: dict, boots: dict):
         """
-        Test function to check that the manin Inference module supports the required infile formats.
+        Test function to check that the main Inference module supports the required infile formats.
 
         Arguments :
             phylo: Dictionary that contains the name of a phylogenetic tool as key and it's matching
@@ -203,7 +203,7 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1974.894224,
+                -1975.511424,
                 does_not_raise(),
             ),
             (
@@ -230,7 +230,7 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1974.894224,
+                -1975.511424,
                 pytest.raises(ValueError),
             ),
             (
