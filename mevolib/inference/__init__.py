@@ -186,9 +186,7 @@ def main():
         )
     )
     parser.formatter_class = argparse.ArgumentDefaultsHelpFormatter
-    parser.add_argument(
-        "-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool"
-    )
+    parser.add_argument("-t", "--tool", required=True, help="Name or path of the phylogenetic inference tool")
     parser.add_argument("-i", "--input", required=True, help="Aligned sequences input file")
     parser.add_argument("--informat", required=False, default="fasta", help="Input file format")
     parser.add_argument(
@@ -199,7 +197,7 @@ def main():
         help=(
             "Keyword or arguments to use in the call of the phylogenetic inference tool, excluding "
             "infile and outfile arguments"
-        )
+        ),
     )
     parser.add_argument("-o", "--output", required=False, default=".", help="Output directory path")
     parser.add_argument("--outformat", required=False, default="newick", help="Output file format")

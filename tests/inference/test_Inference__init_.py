@@ -102,7 +102,7 @@ class TestInferenceInit:
     )
     def test_phylo_to_lib(self, phylo: dict, boots: dict):
         """
-        Test function to check that the manin Inference module supports the required infile formats.
+        Test function to check that the main Inference module supports the required infile formats.
 
         Arguments :
             phylo: Dictionary that contains the name of a phylogenetic tool as key and it's matching
@@ -159,14 +159,14 @@ class TestInferenceInit:
         [
             (
                 "FastTree",
-                "tests/Fasta/f001.mafft_default.aln",
+                "tests/flatfiles/f001.mafft_default.aln",
                 Path("f001.mafft_default.FastTree_output_1"),
                 None,
                 None,
                 "fasta",
                 "GTR+CAT",
                 None,
-                None,
+                "newick",
                 0,
                 None,
                 [
@@ -181,14 +181,14 @@ class TestInferenceInit:
             ),
             (
                 "RAxML",
-                "tests/Fasta/f001.mafft_linsi.aln",
+                "tests/flatfiles/f001.mafft_linsi.aln",
                 None,
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
                 "fasta",
                 "default",
                 None,
-                None,
+                "newick",
                 1,
                 404,
                 [
@@ -203,19 +203,19 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1974.894224,
+                -1975.511424,
                 does_not_raise(),
             ),
             (
                 "RAxMLh",
-                "tests/Fasta/f001.mafft_linsi.aln",
+                "tests/flatfiles/f001.mafft_linsi.aln",
                 None,
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
                 "fasta",
                 "default",
                 None,
-                None,
+                "newick",
                 1,
                 404,
                 [
@@ -230,12 +230,12 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1974.894224,
+                -1975.511424,
                 pytest.raises(ValueError),
             ),
             (
                 "FastTree",
-                "tests/data/output_aln.stockholm",
+                "tests/flatfiles/output_aln.stockholm",
                 Path("f001.mafft_default.FastTree_output_1"),
                 None,
                 None,

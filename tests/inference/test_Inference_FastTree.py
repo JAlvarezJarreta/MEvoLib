@@ -130,7 +130,7 @@ class TestInferenceFastTree:
         [
             (
                 "GTR+CAT",
-                "tests/Fasta/f001.mafft_default.aln",
+                "tests/flatfiles/f001.mafft_default.aln",
                 1,
                 [
                     "-gtr",
@@ -141,14 +141,14 @@ class TestInferenceFastTree:
                     tmp_dir,
                     "-boot",
                     "1",
-                    "tests/Fasta/f001.mafft_default.aln",
+                    "tests/flatfiles/f001.mafft_default.aln",
                 ],
             ),
             (
                 "-nt -nopr",
-                "tests/Fasta/f001.mafft_default.aln",
+                "tests/flatfiles/f001.mafft_default.aln",
                 0,
-                ["-nt", "-nopr", "-log", tmp_dir, "tests/Fasta/f001.mafft_default.aln"],
+                ["-nt", "-nopr", "-log", tmp_dir, "tests/flatfiles/f001.mafft_default.aln"],
             ),
         ],
     )

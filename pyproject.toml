@@ -53,6 +53,7 @@ dependencies = [
 cicd = [
     "black",
     "coverage",
+    "genbadge",
     "mypy",
     "pylint",
     "pytest",
@@ -122,7 +123,7 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 addopts = "-v --tb=native"
-testpaths = ["mevlib/tests"]
+testpaths = ["tests"]
 norecursedirs = ["data", "docs", "*.egg_info"]
 
 [tool.coverage.run]
