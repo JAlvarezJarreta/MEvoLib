@@ -58,6 +58,7 @@ cicd = [
     "mypy",
     "pylint",
     "pytest",
+    "six",
     "types-requests",
 ]
 dev = [
