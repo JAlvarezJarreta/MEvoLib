@@ -287,7 +287,7 @@ class TestInferenceRAxML:
         assert str_tree == res_tree.format("newick")
        """
 
-   @pytest.mark.parametrize(
+    @pytest.mark.parametrize(
         "command, tmp_file",
         [
             (["-w", tmp_dir], None),
