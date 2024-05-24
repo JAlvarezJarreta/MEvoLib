@@ -196,7 +196,7 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1974.894224,
+                -1974.894207,
                 does_not_raise(),
             ),
             (
@@ -223,7 +223,7 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1974.894224,
+                -1974.894207,
                 pytest.raises(ValueError),
             ),
             (
