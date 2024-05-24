@@ -263,7 +263,6 @@ class TestInferenceRAxML:
         run_mocker = MockStdOut(
             expected_inference_tree, treefile_path, expected_inference_info, infofile_path
         )
-        mocked_subprocess_tree = run_mocker.get_mocked_tree_output()
         mocked_subprocess_info = run_mocker.get_mocked_info_output()
 
         phylogeny = Phylo.read(treefile_path, "newick")
