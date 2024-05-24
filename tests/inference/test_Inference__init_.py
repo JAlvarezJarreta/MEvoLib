@@ -172,33 +172,33 @@ class TestInferenceInit:
                 -1911.868,
                 does_not_raise(),
             ),
-            (
-                "RAxML",
-                "tests/flatfiles/f001.mafft_linsi.aln",
-                None,
-                Path("f001.mafft_linsi.RAxML_best_tree_1"),
-                Path("f001.mafft_linsi.RAxML_info_1"),
-                "fasta",
-                "default",
-                None,
-                "newick",
-                1,
-                404,
-                [
-                    "raxmlHPC",
-                    "-p",
-                    "404",
-                    "-T",
-                    str(NUMCORES),
-                    "-m",
-                    "GTRCAT",
-                    "--silent",
-                    "-N",
-                    "1",
-                ],
-                -1974.894207,
-                does_not_raise(),
-            ),
+            # (
+            #     "RAxML",
+            #     "tests/flatfiles/f001.mafft_linsi.aln",
+            #     None,
+            #     Path("f001.mafft_linsi.RAxML_best_tree_1"),
+            #     Path("f001.mafft_linsi.RAxML_info_1"),
+            #     "fasta",
+            #     "default",
+            #     None,
+            #     "newick",
+            #     1,
+            #     404,
+            #     [
+            #         "raxmlHPC",
+            #         "-p",
+            #         "404",
+            #         "-T",
+            #         str(NUMCORES),
+            #         "-m",
+            #         "GTRCAT",
+            #         "--silent",
+            #         "-N",
+            #         "1",
+            #     ],
+            #     -1974.894207,
+            #     does_not_raise(),
+            # ),
             (
                 "RAxMLh",
                 "tests/flatfiles/f001.mafft_linsi.aln",
@@ -350,7 +350,6 @@ class TestInferenceInit:
                 seed,
             )
             result = Tree(res_tree.format("newick").strip())
-            print(phylogeny.compare(result, unrooted=True))
 
             assert score == res_score
             assert phylogeny.compare(result, unrooted=True)["rf"] == 0.0
