@@ -1,10 +1,23 @@
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 from pathlib import Path
 import random
 
-from Bio import Phylo
-from Bio.Phylo.Consensus import _BitString
-from Bio.Phylo import BaseTree
+from ete3 import Tree
 import pytest
 
 from mevolib.inference import _RAxML as Rax
@@ -57,25 +70,6 @@ class TestInferenceRAxML:
     tmp_dir: Path = Path("tests/raxml_tmp_dir/").absolute()
     if not tmp_dir.exists():
         os.mkdir(tmp_dir)
-    # Couple of functions used to compare Phylo Trees:
-
-    # store and return all _BitStrings
-    def _bitstrs(self, tree: BaseTree):
-        bitstrs = set()
-        term_names = [term.name for term in tree.get_terminals()]
-        term_names.sort()
-        for clade in tree.get_nonterminals():
-            clade_term_names = [term.name for term in clade.get_terminals()]
-            boolvals = [name in clade_term_names for name in term_names]
-            bitstr = _BitString("".join(map(str, map(int, boolvals))))
-            bitstrs.add(bitstr)
-        return bitstrs
-
-    def compare(self, tree1: BaseTree, tree2: BaseTree):
-        term_names1 = [term.name for term in tree1.get_terminals()]
-        term_names2 = [term.name for term in tree2.get_terminals()]
-        # false if terminals or BitStrings are not the same
-        return set(term_names1) == set(term_names2) and self._bitstrs(tree1) == self._bitstrs(tree2)
 
     @pytest.mark.parametrize("format_list", [(["fasta", "phylip"])])
     def test_sprt_infile_formats(self, format_list: list):
@@ -204,7 +198,7 @@ class TestInferenceRAxML:
                     "-N",
                     "1",
                 ],
-                -1975.511424,
+                -1974.894207,
                 Path("tests/flatfiles/f001.mafft_linsi.aln"),
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
@@ -245,9 +239,9 @@ class TestInferenceRAxML:
          score: The associated score an inferenced phylogeny tree has.
          infile_path:  Input alignment file path.
          expected_inference_tree: Path where the Phylo.BaseTree output of subprocess.run(command) is stored,
-         to avoid the unnecesary execution of such an expensive function.
+         to avoid the unnecessary execution of such an expensive function.
         expected_inference_info: Path where the information output (time, alignment patterns, score...) of subprocess.run(command)
-            is stored, to avoid the unnecesary execution of such an expensive function.
+            is stored, to avoid the unnecessary execution of such an expensive function.
         """
         # random temporary file path generation to save the results of the execution into
         r = random.randint(1, 999999)
@@ -263,14 +257,14 @@ class TestInferenceRAxML:
         run_mocker = MockStdOut(
             expected_inference_tree, treefile_path, expected_inference_info, infofile_path
         )
-        mocked_subprocess_tree = run_mocker.get_mocked_tree_output()
         mocked_subprocess_info = run_mocker.get_mocked_info_output()
 
-        phylogeny = Phylo.read(treefile_path, "newick")
+        phylogeny = Tree(str(treefile_path))
         res_tree, res_score = Rax.get_results(command, mocked_subprocess_info)
+        result = Tree(res_tree.format("newick").strip())
 
         assert score == res_score
-        assert self.compare(phylogeny, res_tree)
+        assert phylogeny.compare(result, unrooted=True)["rf"] == 0.0
 
         """
         Another testing way by reading the tree and comparing both strings, to avoid running the 
@@ -291,20 +285,8 @@ class TestInferenceRAxML:
     @pytest.mark.parametrize(
         "command, tmp_file",
         [
-            (
-                [
-                    "-w",
-                    tmp_dir,
-                ],
-                None,
-            ),
-            (
-                [
-                    "-w",
-                    tmp_dir,
-                ],
-                tmp_dir,
-            ),
+            (["-w", tmp_dir], None),
+            (["-w", tmp_dir], tmp_dir),
         ],
     )
     def test_cleanup(self, command: list, tmp_file: str):

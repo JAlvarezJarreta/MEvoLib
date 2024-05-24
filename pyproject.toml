@@ -53,10 +53,12 @@ dependencies = [
 cicd = [
     "black",
     "coverage",
-    "genbadge",
+    "ete3",
+    "genbadge[coverage]",
     "mypy",
     "pylint",
     "pytest",
+    "six",
     "types-requests",
 ]
 dev = [
