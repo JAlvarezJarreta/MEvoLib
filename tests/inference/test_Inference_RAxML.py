@@ -245,9 +245,9 @@ class TestInferenceRAxML:
          score: The associated score an inferenced phylogeny tree has.
          infile_path:  Input alignment file path.
          expected_inference_tree: Path where the Phylo.BaseTree output of subprocess.run(command) is stored,
-         to avoid the unnecesary execution of such an expensive function.
+         to avoid the unnecessary execution of such an expensive function.
         expected_inference_info: Path where the information output (time, alignment patterns, score...) of subprocess.run(command)
-            is stored, to avoid the unnecesary execution of such an expensive function.
+            is stored, to avoid the unnecessary execution of such an expensive function.
         """
         # random temporary file path generation to save the results of the execution into
         r = random.randint(1, 999999)

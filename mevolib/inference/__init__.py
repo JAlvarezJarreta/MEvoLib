@@ -171,7 +171,7 @@ def get_phylogeny(
             # Save the resultant phylogeny in the given outfile and format
             outfile_path = Path(outfile).absolute()
             Phylo.write(phylogeny, outfile_path, outfile_format)
-        cleanup(command, parent_file)
+        # cleanup(command, parent_file)
         # Return the resultant phylogeny as a Bio.Phylo.BaseTree.Tree object and its
         # log-likelihood score
         return phylogeny, score

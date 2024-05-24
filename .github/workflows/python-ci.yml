@@ -101,7 +101,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
-          path: ./tests/raxml_tmp_dir
+          path: ./tests/inference_init_tmp_dir
 
       - name: Add coverage reports
         uses: xportation/junit-coverage-report@main
