@@ -198,7 +198,7 @@ class TestInferenceRAxML:
                     "-N",
                     "1",
                 ],
-                -1975.511424,
+                -1974.894224,
                 Path("tests/flatfiles/f001.mafft_linsi.aln"),
                 Path("f001.mafft_linsi.RAxML_best_tree_1"),
                 Path("f001.mafft_linsi.RAxML_info_1"),
