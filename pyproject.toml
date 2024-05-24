@@ -54,7 +54,7 @@ cicd = [
     "black",
     "coverage",
     "ete3",
-    "genbadge",
+    "genbadge[coverage]",
     "mypy",
     "pylint",
     "pytest",
