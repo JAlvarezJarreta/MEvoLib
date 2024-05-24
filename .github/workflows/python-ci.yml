@@ -39,6 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/python_build
+
       - name: Run pylint
         run: |
           pylint --rcfile pyproject.toml mevolib
@@ -53,6 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/python_build
+
       - name: Run mypy
         run: |
           mypy --config-file pyproject.toml mevolib
@@ -67,6 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/python_build
+
       - name: Run black
         run: |
           black --config pyproject.toml --check .
@@ -80,19 +83,46 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/python_build
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y fasttree raxml mafft muscle clustalo
+
       - name: Run pytest with coverage
         run: |
           coverage run -m pytest --junitxml=./reports/test-results-${{ matrix.python-version }}.xml
           coverage xml -o ./reports/coverage/coverage.xml
           genbadge coverage -i ./reports/coverage/coverage.xml -o ./reports/coverage/coverage-badge.svg
           coverage report -m
+
       - name: Add coverage reports
         uses: xportation/junit-coverage-report@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           junit-path: ./reports/unit/test-results-${{ matrix.python-version }}.xml
           coverage-path: ./reports/coverage/coverage.xml
+
+      - name: Upload badge as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: badge
+          path: ./reports/coverage/coverage-badge.svg
+          if-no-files-found: error
+
+      - name: Commit badge
+        continue-on-error: true
+        env:
+          BADGE: ./reports/coverage/coverage-badge.svg
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add "${BADGE}"
+          git commit -m "Add/Update badge"
+
+      - name: Push badge commit
+        uses: ad-m/github-push-action@master
+        if: ${{ success() }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: badges
