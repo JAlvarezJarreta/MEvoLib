@@ -1,11 +1,23 @@
-from io import StringIO
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 from pathlib import Path
 import random
 
-from Bio import Phylo
-from Bio.Phylo.Consensus import _BitString
-from Bio.Phylo import BaseTree
+from ete3 import Tree
 import pytest
 
 from mevolib.inference import _FastTree as Fast
@@ -47,41 +59,6 @@ class TestInferenceFastTree:
     tmp_dir: Path = Path("tests/fasttree_tmp_dir/").absolute()
     if not tmp_dir.exists():
         os.mkdir(tmp_dir)
-    # Couple of functions used to compare Phylo Trees:
-
-    """ 
-    Divides a phylogenetic tree in function of the clades terminals, providing a way to compare trees.
-    
-    Arguments:
-        tree: Phylo BaseTree object that wants to be transformed into bitstrings to get a comparison way.
-    """
-
-    def _bitstrs(self, tree: BaseTree):
-        bitstrs = set()
-        term_names = [term.name for term in tree.get_terminals()]
-        term_names.sort()
-        for clade in tree.get_nonterminals():
-            clade_term_names = [term.name for term in clade.get_terminals()]
-            boolvals = [name in clade_term_names for name in term_names]
-            bitstr = _BitString("".join(map(str, map(int, boolvals))))
-            bitstrs.add(bitstr)
-        return bitstrs
-
-    """ 
-    Compares two phylogenetic trees and check they are "equal" (it is not 100% effective because of it 
-    not being a char-by-char comparison; but still quite effective for the purposes of this library).
-    
-    Arguments:
-        tree1: First Phylo BaseTree object that wants to be compared.
-        tree2: Second Phylo BaseTree object that wants to be compared.
-    """
-
-    # Compare
-    def compare(self, tree1: BaseTree, tree2: BaseTree):
-        term_names1 = [term.name for term in tree1.get_terminals()]
-        term_names2 = [term.name for term in tree2.get_terminals()]
-        # false if terminals or BitStrings are not the same
-        return set(term_names1) == set(term_names2) and self._bitstrs(tree1) == self._bitstrs(tree2)
 
     @pytest.mark.parametrize("format_list", [(["fasta", "phylip"])])
     def test_sprt_infile_formats(self, format_list: list):
@@ -225,29 +202,18 @@ class TestInferenceFastTree:
         run_mocker = MockStdOut(expected_output, treefile_path, score)
         mocked_subprocess_output = run_mocker.get_mocked_output()
 
-        phylogeny = Phylo.read(StringIO(mocked_subprocess_output), "newick")
+        phylogeny = Tree(mocked_subprocess_output)
         res_tree, res_score = Fast.get_results(command, mocked_subprocess_output)
+        result = Tree(res_tree.format("newick").strip())
 
-        assert self.compare(phylogeny, res_tree)
         assert score == res_score
+        assert phylogeny.compare(result, unrooted=True)["rf"] == 0.0
 
     @pytest.mark.parametrize(
         "command, tmp_file",
         [
-            (
-                [
-                    "-log",
-                    tmp_dir,
-                ],
-                None,
-            ),
-            (
-                [
-                    "-log",
-                    tmp_dir,
-                ],
-                tmp_dir,
-            ),
+            (["-log", tmp_dir], None),
+            (["-log", tmp_dir], tmp_dir),
         ],
     )
     def test_cleanup(self, command: list, tmp_file: str):
