@@ -9,6 +9,7 @@ import subprocess
 from Bio import Phylo
 from Bio.Phylo import BaseTree
 from Bio.Phylo.Consensus import _BitString
+from ete3 import Tree
 import pytest
 from pytest import raises
 
@@ -75,24 +76,6 @@ class TestInferenceInit:
     tmp_dir: Path = Path("tests/inference_init_tmp_dir/").absolute()
     if not tmp_dir.exists():
         os.mkdir(tmp_dir)
-
-    # store and return all _BitStrings
-    def _bitstrs(self, tree):
-        bitstrs = set()
-        term_names = [term.name for term in tree.get_terminals()]
-        term_names.sort()
-        for clade in tree.get_nonterminals():
-            clade_term_names = [term.name for term in clade.get_terminals()]
-            boolvals = [name in clade_term_names for name in term_names]
-            bitstr = _BitString("".join(map(str, map(int, boolvals))))
-            bitstrs.add(bitstr)
-        return bitstrs
-
-    def compare(self, tree1, tree2):
-        term_names1 = [term.name for term in tree1.get_terminals()]
-        term_names2 = [term.name for term in tree2.get_terminals()]
-        # false if terminals or BitStrings are not the same
-        return set(term_names1) == set(term_names2) and self._bitstrs(tree1) == self._bitstrs(tree2)
 
     @pytest.mark.parametrize(
         "phylo, boots",
@@ -323,7 +306,7 @@ class TestInferenceInit:
                 run_mocker.fastTreeAction(expected_output_fast, treefile_path, score)
                 mocked_subprocess_output = run_mocker.get_mocked_output()
 
-                phylogeny = Phylo.read(StringIO(mocked_subprocess_output), "newick")
+                phylogeny = Tree(mocked_subprocess_output)
 
             else:
                 command += ["-n", str(r), "-w", self.tmp_dir, "-s", infile_path]
@@ -342,7 +325,7 @@ class TestInferenceInit:
 
                 mocked_subprocess_tree = run_mocker.get_mocked_tree_output()
 
-                phylogeny = Phylo.read(StringIO(mocked_subprocess_tree), "newick")
+                phylogeny = Tree(mocked_subprocess_tree)
 
             res_tree, res_score = inference.get_phylogeny(
                 binary,
@@ -356,6 +339,7 @@ class TestInferenceInit:
                 self.tmp_dir,
                 seed,
             )
+            result = Tree(res_tree.format("newick").strip())
 
-            assert self.compare(phylogeny, res_tree)
+            assert phylogeny.compare(result, unrooted=True)["rf"] == 0.0
             assert score == res_score

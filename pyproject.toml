@@ -53,6 +53,7 @@ dependencies = [
 cicd = [
     "black",
     "coverage",
+    "ete3",
     "genbadge",
     "mypy",
     "pylint",
