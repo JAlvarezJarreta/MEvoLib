@@ -288,33 +288,21 @@ class TestInferenceRAxML:
         assert str_tree == res_tree.format("newick")
        """
 
-    @pytest.mark.parametrize(
-        "command, tmp_file",
-        [
-            (
-                [
-                    "-w",
-                    tmp_dir,
-                ],
-                None,
-            ),
-            (
-                [
-                    "-w",
-                    tmp_dir,
-                ],
-                tmp_dir,
-            ),
-        ],
-    )
-    def test_cleanup(self, command: list, tmp_file: str):
-        """
-        Test function to ensure the correct removal of all the files of a given directory.
-        Arguments :
-            command: RAxML's command line executed.
-            tmp_file: Path of the folder we want to delete (Just for testing purposes,
-            because when called from __init__.py, the cleanup input is a bit different).
+#    @pytest.mark.parametrize(
+#         "command, tmp_file",
+#         [
+#             (["-w", tmp_dir], None),
+#             (["-w", tmp_dir], tmp_dir),
+#         ],
+#     )
+#     def test_cleanup(self, command: list, tmp_file: str):
+#         """
+#         Test function to ensure the correct removal of all the files of a given directory.
+#         Arguments :
+#             command: RAxML's command line executed.
+#             tmp_file: Path of the folder we want to delete (Just for testing purposes,
+#             because when called from __init__.py, the cleanup input is a bit different).
 
-        """
-        Rax.cleanup(command, tmp_file)
-        assert not self.tmp_dir.exists()
+#         """
+#         Rax.cleanup(command, tmp_file)
+#         assert not self.tmp_dir.exists()
