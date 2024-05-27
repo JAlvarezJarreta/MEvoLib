@@ -92,37 +92,39 @@ jobs:
       - name: Run pytest with coverage
         run: |
           coverage run -m pytest --junitxml=./reports/test-results-${{ matrix.python-version }}.xml
-          coverage xml -o ./reports/coverage/coverage.xml
-          genbadge coverage -i ./reports/coverage/coverage.xml -o ./reports/coverage/coverage-badge.svg
+          coverage xml -o ./reports/coverage.xml
+          genbadge coverage -i ./reports/coverage.xml -o ./reports/coverage-badge.svg
           coverage report -m
 
-      - name: Add coverage reports
-        uses: xportation/junit-coverage-report@main
+      - name: Add pytest coverage reports
+        id: coverage_report
+        uses: MishaKav/pytest-coverage-comment@main
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          junit-path: ./reports/unit/test-results-${{ matrix.python-version }}.xml
-          coverage-path: ./reports/coverage/coverage.xml
+          pytest-xml-coverage-path: ./reports/coverage.xml
+          junitxml-path: ./reports/test-results-${{ matrix.python-version }}.xml
 
-      - name: Upload badge as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: badge
-          path: ./reports/coverage/coverage-badge.svg
-          if-no-files-found: error
-
-      - name: Commit badge
-        continue-on-error: true
-        env:
-          BADGE: ./reports/coverage/coverage-badge.svg
+      - name: Check the output coverage
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add "${BADGE}"
-          git commit -m "Add/Update badge"
+          echo "Coverage Percentage - ${{ steps.coverage_report.outputs.coverage }}"
+          echo "Coverage Color - ${{ steps.coverage_report.outputs.color }}"
+          echo "Coverage Html - ${{ steps.coverage_report.outputs.coverageHtml }}"
 
-      - name: Push badge commit
-        uses: ad-m/github-push-action@master
-        if: ${{ success() }}
+          echo "Coverage Warnings - ${{ steps.coverage_report.outputs.warnings }}"
+
+          echo "Coverage Errors - ${{ steps.coverage_report.outputs.errors }}"
+          echo "Coverage Failures - ${{ steps.coverage_report.outputs.failures }}"
+          echo "Coverage Skipped - ${{ steps.coverage_report.outputs.skipped }}"
+          echo "Coverage Tests - ${{ steps.coverage_report.outputs.tests }}"
+          echo "Coverage Time - ${{ steps.coverage_report.outputs.time }}"
+
+          echo "Not Success Test Info - ${{ steps.coverage_report.outputs.notSuccessTestInfo }}"
+
+      - name: Create the Badge
+        uses: schneegans/dynamic-badges-action@v1.6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: badges
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 0c3fa1e9db6f5dcbe69b6b4a3f4a0501
+          filename: ./reports/coverage-badge.svg
+          label: Coverage
+          message: ${{ steps.coverage_report.outputs.coverage }}
+        if: ${{ github.event_name == 'push' }}
