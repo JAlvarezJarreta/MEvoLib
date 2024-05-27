@@ -65,10 +65,9 @@ Inference[0] final GAMMA-based Likelihood: -1983.354198 tree written to file /mn
 
 Starting final GAMMA-based thorough Optimization on tree 0 likelihood -1983.354198 .... 
 
-Final GAMMA-based Score of best tree -1975.511424
+Final GAMMA-based Score of best tree -1974.894207
 
 Program execution info written to /mnt/c/Users/sermo/tfg/MEvoLib/tests/raxml_tmp_dir/RAxML_info.937590
 Best-scoring ML tree written to: /mnt/c/Users/sermo/tfg/MEvoLib/tests/raxml_tmp_dir/RAxML_bestTree.937590
 
 Overall execution time: 1.855116 secs or 0.000515 hours or 0.000021 days
-

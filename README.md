@@ -1,6 +1,7 @@
 # **M**olecular **Evo**lution **Lib**rary for Python
 
-[![CI](https://github.com/JAlvarezJarreta/MEvoLib/actions/workflows/python-ci.yml/badge.svg?branch=main)](https://github.com/JAlvarezJarreta/MEvoLib/actions/workflows/python-ci.yml)
+[![Python CI](https://github.com/JAlvarezJarreta/MEvoLib/actions/workflows/python-ci.yml/badge.svg?branch=main)](https://github.com/JAlvarezJarreta/MEvoLib/actions/workflows/python-ci.yml)
+![Coverage](https://raw.githubusercontent.com/JAlvarezJarreta/badge-actionMEvoLib/badges/master/coverage-badge.svg)
 
 The MEvoLib is a library of freely available Python tools for molecular evolution.
 

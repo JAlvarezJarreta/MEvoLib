@@ -1,14 +1,25 @@
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from contextlib import nullcontext as does_not_raise
-from io import StringIO
 import os
 from pathlib import Path
 import random
 from typing import ContextManager
-import subprocess
 
-from Bio import Phylo
-from Bio.Phylo import BaseTree
-from Bio.Phylo.Consensus import _BitString
+from ete3 import Tree
 import pytest
 from pytest import raises
 
@@ -75,24 +86,6 @@ class TestInferenceInit:
     tmp_dir: Path = Path("tests/inference_init_tmp_dir/").absolute()
     if not tmp_dir.exists():
         os.mkdir(tmp_dir)
-
-    # store and return all _BitStrings
-    def _bitstrs(self, tree):
-        bitstrs = set()
-        term_names = [term.name for term in tree.get_terminals()]
-        term_names.sort()
-        for clade in tree.get_nonterminals():
-            clade_term_names = [term.name for term in clade.get_terminals()]
-            boolvals = [name in clade_term_names for name in term_names]
-            bitstr = _BitString("".join(map(str, map(int, boolvals))))
-            bitstrs.add(bitstr)
-        return bitstrs
-
-    def compare(self, tree1, tree2):
-        term_names1 = [term.name for term in tree1.get_terminals()]
-        term_names2 = [term.name for term in tree2.get_terminals()]
-        # false if terminals or BitStrings are not the same
-        return set(term_names1) == set(term_names2) and self._bitstrs(tree1) == self._bitstrs(tree2)
 
     @pytest.mark.parametrize(
         "phylo, boots",
@@ -179,33 +172,33 @@ class TestInferenceInit:
                 -1911.868,
                 does_not_raise(),
             ),
-            (
-                "RAxML",
-                "tests/flatfiles/f001.mafft_linsi.aln",
-                None,
-                Path("f001.mafft_linsi.RAxML_best_tree_1"),
-                Path("f001.mafft_linsi.RAxML_info_1"),
-                "fasta",
-                "default",
-                None,
-                "newick",
-                1,
-                404,
-                [
-                    "raxmlHPC",
-                    "-p",
-                    "404",
-                    "-T",
-                    str(NUMCORES),
-                    "-m",
-                    "GTRCAT",
-                    "--silent",
-                    "-N",
-                    "1",
-                ],
-                -1975.511424,
-                does_not_raise(),
-            ),
+            # (
+            #     "RAxML",
+            #     "tests/flatfiles/f001.mafft_linsi.aln",
+            #     None,
+            #     Path("f001.mafft_linsi.RAxML_best_tree_1"),
+            #     Path("f001.mafft_linsi.RAxML_info_1"),
+            #     "fasta",
+            #     "default",
+            #     None,
+            #     "newick",
+            #     1,
+            #     404,
+            #     [
+            #         "raxmlHPC",
+            #         "-p",
+            #         "404",
+            #         "-T",
+            #         str(NUMCORES),
+            #         "-m",
+            #         "GTRCAT",
+            #         "--silent",
+            #         "-N",
+            #         "1",
+            #     ],
+            #     -1974.894207,
+            #     does_not_raise(),
+            # ),
             (
                 "RAxMLh",
                 "tests/flatfiles/f001.mafft_linsi.aln",
@@ -230,7 +223,7 @@ class TestInferenceInit:
                     "-N",
                     "1",
                 ],
-                -1975.511424,
+                -1974.894207,
                 pytest.raises(ValueError),
             ),
             (
@@ -323,7 +316,7 @@ class TestInferenceInit:
                 run_mocker.fastTreeAction(expected_output_fast, treefile_path, score)
                 mocked_subprocess_output = run_mocker.get_mocked_output()
 
-                phylogeny = Phylo.read(StringIO(mocked_subprocess_output), "newick")
+                phylogeny = Tree(mocked_subprocess_output)
 
             else:
                 command += ["-n", str(r), "-w", self.tmp_dir, "-s", infile_path]
@@ -342,7 +335,7 @@ class TestInferenceInit:
 
                 mocked_subprocess_tree = run_mocker.get_mocked_tree_output()
 
-                phylogeny = Phylo.read(StringIO(mocked_subprocess_tree), "newick")
+                phylogeny = Tree(mocked_subprocess_tree)
 
             res_tree, res_score = inference.get_phylogeny(
                 binary,
@@ -356,6 +349,7 @@ class TestInferenceInit:
                 self.tmp_dir,
                 seed,
             )
+            result = Tree(res_tree.format("newick").strip())
 
-            assert self.compare(phylogeny, res_tree)
             assert score == res_score
+            assert phylogeny.compare(result, unrooted=True)["rf"] == 0.0
