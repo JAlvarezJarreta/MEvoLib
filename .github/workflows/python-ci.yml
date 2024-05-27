@@ -94,14 +94,14 @@ jobs:
           coverage run -m pytest --junitxml=./reports/test-results-${{ matrix.python-version }}.xml
           coverage xml -o ./reports/coverage.xml
           genbadge coverage -i ./reports/coverage.xml -o ./reports/coverage-badge.svg
-          coverage report -m > ./reports/coverage.txt
+          coverage report -m
 
       - name: Add pytest coverage reports
         id: coverage_report
         uses: MishaKav/pytest-coverage-comment@main
         with:
-          pytest-coverage-path: ./reports/coverage.txt
-          junitxml-path: ./reports/unit/test-results-${{ matrix.python-version }}.xml
+          pytest-xml-coverage-path: ./reports/coverage.xml
+          junitxml-path: ./reports/test-results-${{ matrix.python-version }}.xml
 
       - name: Check the output coverage
         run: |
