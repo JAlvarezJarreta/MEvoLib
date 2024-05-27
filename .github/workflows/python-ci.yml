@@ -102,6 +102,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           junit-path: ./reports/unit/test-results-${{ matrix.python-version }}.xml
           coverage-path: ./reports/coverage/coverage.xml
+        if: ${{ github.event_name == 'pull_request' }}
 
       - name: Upload badge as artifact
         uses: actions/upload-artifact@v4
@@ -109,6 +110,7 @@ jobs:
           name: badge
           path: ./reports/coverage/coverage-badge.svg
           if-no-files-found: error
+        if: ${{ github.event_name == 'push' }}
 
       - name: Commit badge
         continue-on-error: true
@@ -122,7 +124,7 @@ jobs:
 
       - name: Push badge commit
         uses: ad-m/github-push-action@master
-        if: ${{ success() }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: badges
+        if: ${{ success() }}
