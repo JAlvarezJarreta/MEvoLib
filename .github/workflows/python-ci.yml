@@ -93,8 +93,6 @@ jobs:
         run: |
           coverage run -m pytest --junitxml=./reports/test-results-${{ matrix.python-version }}.xml
           coverage xml -o ./reports/coverage.xml
-          genbadge coverage -i ./reports/coverage.xml -o ./reports/coverage-badge.svg
-          coverage report -m
 
       - name: Add pytest coverage reports
         id: coverage_report
@@ -124,7 +122,10 @@ jobs:
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: 0c3fa1e9db6f5dcbe69b6b4a3f4a0501
-          filename: ./reports/coverage-badge.svg
+          filename: coverage-badge.json
           label: Coverage
           message: ${{ steps.coverage_report.outputs.coverage }}
+          valColorRange: ${{ steps.coverage_report.outputs.coverage }}
+          minColorRange: 30
+          maxColorRange: 90
         if: ${{ github.event_name == 'push' }}
